@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A1628">
+  <title>Каталог специалистов — BusinessKlar</title>
+  <style>
+    :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
+    .sat-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 56px; border-bottom: 1px solid var(--border); background: rgba(10,22,40,.95); }
+    .sat-nav .logo { font-family: Fraunces, Georgia, serif; font-size: 18px; font-weight: 700; color: var(--gold); text-decoration: none; }
+    .sat-nav .logo span { color: var(--text); font-weight: 300; }
+    .sat-nav .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .sat-nav a.nav-btn { font-size: 12px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); text-decoration: none; }
+    .sat-nav a.nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .sat-nav a.nav-btn.active { border-color: var(--gold); color: var(--gold); }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 24px 18px 48px; }
+    h1 { font-size: 1.4rem; color: var(--gold); margin-bottom: 8px; }
+    .sub { color: var(--muted); font-size: 14px; margin-bottom: 16px; }
+    .filters { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 18px; align-items: center; }
+    .filters label { font-size: 12px; color: var(--muted); }
+    .filters select { background: rgba(18,32,64,.8); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 13px; }
+    .demo-banner { font-size: 13px; color: var(--gold); border: 1px dashed var(--border); padding: 12px 14px; border-radius: 12px; margin-bottom: 16px; background: rgba(201,168,76,.08); }
+    .list { display: flex; flex-direction: column; gap: 12px; }
+    .card { border: 1px solid var(--border); border-radius: 16px; padding: 18px; background: linear-gradient(145deg, rgba(18,32,64,.95), rgba(26,48,80,.35)); }
+    .card h3 { font-size: 17px; margin-bottom: 6px; }
+    .card .meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .card .tags { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
+    .card .cta { display: inline-block; padding: 8px 16px; background: var(--gold); color: var(--navy); font-weight: 600; border-radius: 10px; text-decoration: none; font-size: 13px; }
+    .empty { text-align: center; padding: 32px; color: var(--muted); border: 1px dashed var(--border); border-radius: 16px; }
+    #gate { padding: 32px 20px; border: 1px solid var(--border); border-radius: 16px; text-align: center; background: rgba(18,32,64,.5); margin: 24px auto; max-width: 560px; }
+    #gate p { color: var(--muted); font-size: 14px; line-height: 1.5; margin-bottom: 16px; }
+    #gate a { display: inline-block; padding: 12px 22px; background: var(--gold); color: var(--navy); font-weight: 600; border-radius: 12px; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header class="sat-nav">
+    <a class="logo" href="index.html">Business<span>Klar</span></a>
+    <div class="links">
+      <a class="nav-btn" href="index.html">Главная</a>
+      <a class="nav-btn active" href="specialists-home.html">Специалисты</a>
+      <a class="nav-btn" href="contact.html">Контакт</a>
+      <a class="nav-btn" href="dashboard.html">Кабинет</a>
+    </div>
+  </header>
+
+  <div id="gate" style="display:none">
+    <div id="gate-inner"></div>
+  </div>
+
+  <div id="main" style="display:none" class="wrap">
+    <h1 id="page-title">Каталог специалистов</h1>
+    <p class="sub" id="page-sub"></p>
+    <div class="filters">
+      <label>Город <select id="f-city"><option value="">Все</option></select></label>
+      <label>Язык <select id="f-lang"><option value="all">Все</option><option value="de">DE</option><option value="ru">RU</option><option value="en">EN</option></select></label>
+    </div>
+    <div id="demo-banner" class="demo-banner" style="display:none"></div>
+    <div id="list" class="list"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  var CAT_LABEL = { tax: 'Налоговые консультанты', accounting: 'Бухгалтеры', insurance: 'Страховые агенты', legal: 'Юридическая консультация' };
+
+  var DEMO_ROWS = [
+    { id: 'demo-1', company_name: 'Demo Steuerberatung Nord', categories: ['tax'], languages: ['de', 'ru'], cities: ['Berlin', 'Hamburg'], priority: 10, email: 'demo-steuer@example.com', phone: '+49 30 000000', address: 'Berlin (демо)' },
+    { id: 'demo-2', company_name: 'Demo Buchhaltung GmbH', categories: ['accounting'], languages: ['de', 'en'], cities: ['München'], priority: 20, email: 'demo-buch@example.com', phone: '+49 89 000000', address: 'München (демо)' },
+    { id: 'demo-3', company_name: 'Demo Versicherungsmakler', categories: ['insurance'], languages: ['de'], cities: ['Hamburg', 'Köln'], priority: 15, email: 'demo-insurance@example.com', phone: '+49 40 000000', address: 'Hamburg (демо)' },
+    { id: 'demo-4', company_name: 'Demo Rechtsanwälte', categories: ['legal'], languages: ['de', 'ru', 'en'], cities: ['Frankfurt am Main'], priority: 25, email: 'demo-legal@example.com', phone: '+49 69 000000', address: 'Frankfurt (демо)' }
+  ];
+
+  function arrHas(arr, val) {
+    if (!arr || !val) return false;
+    return arr.indexOf(val) !== -1;
+  }
+
+  function sortRows(rows, cityVal, langVal) {
+    return rows.slice().sort(function (a, b) {
+      var pa = a.priority != null ? Number(a.priority) : 999999;
+      var pb = b.priority != null ? Number(b.priority) : 999999;
+      if (pa !== pb) return pa - pb;
+      var ca = cityVal && arrHas(a.cities, cityVal) ? 1 : 0;
+      var cb = cityVal && arrHas(b.cities, cityVal) ? 1 : 0;
+      if (cb !== ca) return cb - ca;
+      var la = langVal && langVal !== 'all' && arrHas(a.languages, langVal) ? 1 : 0;
+      var lb = langVal && langVal !== 'all' && arrHas(b.languages, langVal) ? 1 : 0;
+      if (lb !== la) return lb - la;
+      return (a.company_name || '').localeCompare(b.company_name || '', 'ru');
+    });
+  }
+
+  function filterByCategory(rows, cat) {
+    if (!cat) return rows;
+    return rows.filter(function (r) {
+      var c = r.categories;
+      return Array.isArray(c) && c.indexOf(cat) !== -1;
+    });
+  }
+
+  function filterCityLang(rows, city, lang) {
+    return rows.filter(function (r) {
+      if (city && r.cities && r.cities.length && r.cities.indexOf(city) === -1) return false;
+      if (lang && lang !== 'all' && r.languages && r.languages.length && r.languages.indexOf(lang) === -1) return false;
+      return true;
+    });
+  }
+
+  function mailtoHref(email) {
+    var e = String(email || '').trim().replace(/[\s<>"']/g, '');
+    return e ? 'mailto:' + e : '#';
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function renderList(rows, citySel, langSel) {
+    var el = document.getElementById('list');
+    var filtered = filterCityLang(rows, citySel, langSel);
+    var sorted = sortRows(filtered, citySel, langSel);
+    if (!sorted.length) {
+      el.innerHTML =
+        '<div class="empty">Нет специалистов по выбранным фильтрам. Попробуйте снять ограничения по городу и языку или ' +
+        '<a href="specialists-home.html" style="color:var(--gold)">вернитесь к категориям</a>.</div>';
+      return;
+    }
+    el.innerHTML = sorted.map(function (r) {
+      var tags = [];
+      if (r.cities && r.cities.length) tags.push('Города: ' + r.cities.join(', '));
+      if (r.languages && r.languages.length) tags.push('Языки: ' + r.languages.join(', ').toUpperCase());
+      var mail = mailtoHref(r.email);
+      var cta = mail !== '#' ? '<a class="cta" href="' + escapeHtml(mail) + '">Связаться</a>' : '';
+      return '<div class="card"><h3>' + escapeHtml(r.company_name || '—') + '</h3>' +
+        '<div class="meta">' + escapeHtml(r.address || '') + (r.phone ? ' · ' + escapeHtml(r.phone) : '') + '</div>' +
+        (tags.length ? '<div class="tags">' + escapeHtml(tags.join(' · ')) + '</div>' : '') + cta + '</div>';
+    }).join('');
+  }
+
+  function fillCitySelect(rows, selected) {
+    var set = {};
+    rows.forEach(function (r) {
+      (r.cities || []).forEach(function (c) { if (c) set[c] = true; });
+    });
+    var cities = Object.keys(set).sort(function (a, b) { return a.localeCompare(b, 'de'); });
+    var sel = document.getElementById('f-city');
+    sel.textContent = '';
+    var o0 = document.createElement('option');
+    o0.value = '';
+    o0.textContent = 'Все';
+    sel.appendChild(o0);
+    cities.forEach(function (c) {
+      var o = document.createElement('option');
+      o.value = c;
+      o.textContent = c;
+      if (selected && c === selected) o.selected = true;
+      sel.appendChild(o);
+    });
+  }
+
+  (async function () {
+    var u = (await sb.auth.getUser()).data.user;
+    var gate = document.getElementById('gate');
+    var main = document.getElementById('main');
+    var inner = document.getElementById('gate-inner');
+    if (!u) {
+      gate.style.display = 'block';
+      main.style.display = 'none';
+      inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.25rem;margin-bottom:12px">Каталог для зарегистрированных пользователей</h1>' +
+        '<p>Чтобы просматривать каталог специалистов, войдите или зарегистрируйтесь в BusinessKlar.</p>' +
+        '<a href="index.html">Перейти в BusinessKlar</a>';
+      return;
+    }
+    gate.style.display = 'none';
+    main.style.display = 'block';
+
+    var params = new URLSearchParams(window.location.search);
+    var category = params.get('category') || '';
+    var urlCity = params.get('city') || '';
+    var urlLang = params.get('lang') || '';
+
+    document.getElementById('page-title').textContent = CAT_LABEL[category] || 'Каталог специалистов';
+    document.getElementById('page-sub').textContent = category ? 'Категория: ' + (CAT_LABEL[category] || category) : 'Все категории';
+
+    var q = await sb.from('consultants').select('*');
+    var allRows = [];
+    var useDemo = false;
+    if (q.error) {
+      console.warn(q.error);
+      allRows = DEMO_ROWS.slice();
+      useDemo = true;
+    } else if (!q.data || !q.data.length) {
+      allRows = DEMO_ROWS.slice();
+      useDemo = true;
+    } else {
+      allRows = q.data;
+    }
+
+    if (useDemo) {
+      document.getElementById('demo-banner').style.display = 'block';
+      document.getElementById('demo-banner').textContent = 'Показаны демонстрационные карточки. Добавьте записи в таблицу consultants в Supabase, чтобы видеть реальных специалистов.';
+    }
+
+    var catRows = filterByCategory(allRows, category);
+    if (!catRows.length && allRows.length && !useDemo) {
+      document.getElementById('list').innerHTML =
+        '<div class="empty">В этой категории пока нет специалистов в базе. Выберите другую категорию на ' +
+        '<a href="specialists-home.html" style="color:var(--gold)">главной странице каталога</a>.</div>';
+      document.getElementById('f-city').innerHTML = '<option value="">Все</option>';
+      document.getElementById('f-lang').value = urlLang && ['all', 'de', 'ru', 'en'].indexOf(urlLang) !== -1 ? urlLang : 'all';
+      return;
+    }
+
+    var fCity = document.getElementById('f-city');
+    var fLang = document.getElementById('f-lang');
+    fillCitySelect(catRows, '');
+    if (urlCity) {
+      fCity.value = urlCity;
+      if (fCity.value !== urlCity) {
+        var ox = document.createElement('option');
+        ox.value = urlCity;
+        ox.textContent = urlCity;
+        ox.selected = true;
+        fCity.appendChild(ox);
+      }
+    }
+    fLang.value = urlLang && ['all', 'de', 'ru', 'en'].indexOf(urlLang) !== -1 ? urlLang : 'all';
+
+    function refresh() {
+      renderList(catRows, fCity.value || '', fLang.value || 'all');
+    }
+
+    fCity.addEventListener('change', refresh);
+    fLang.addEventListener('change', refresh);
+    refresh();
+  })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A1628">
+  <title>Личный кабинет — BusinessKlar</title>
+  <style>
+    :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
+    .sat-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 56px; border-bottom: 1px solid var(--border); background: rgba(10,22,40,.95); }
+    .sat-nav .logo { font-family: Georgia, 'Times New Roman', serif; font-size: 18px; font-weight: 700; color: var(--gold); text-decoration: none; }
+    .sat-nav .logo span { color: var(--text); font-weight: 300; }
+    .sat-nav .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .sat-nav a.nav-btn { font-size: 12px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); text-decoration: none; }
+    .sat-nav a.nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .sat-nav a.nav-btn.active { border-color: var(--gold); color: var(--gold); }
+    .wrap { max-width: 900px; margin: 0 auto; padding: 28px 18px 48px; }
+    h1 { font-size: 1.45rem; color: var(--gold); margin-bottom: 8px; }
+    .sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .empty { text-align: center; padding: 48px 20px; border: 1px dashed var(--border); border-radius: 16px; color: var(--muted); font-size: 15px; }
+    .card { border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; background: linear-gradient(145deg, rgba(18,32,64,.95), rgba(26,48,80,.35)); }
+    .card h3 { font-size: 16px; margin-bottom: 6px; color: var(--cream, #F5EDD8); }
+    .card .meta { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+    .row-btns { display: flex; flex-wrap: wrap; gap: 8px; }
+    .row-btns a, .row-btns button { font-size: 12px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(18,32,64,.8); color: var(--gold); text-decoration: none; cursor: pointer; font-family: inherit; }
+    .row-btns a:hover, .row-btns button:hover { border-color: var(--gold); }
+    .row-btns .danger { color: #E88; border-color: rgba(232,136,136,.4); }
+    #gate { padding: 32px 20px; border: 1px solid var(--border); border-radius: 16px; text-align: center; background: rgba(18,32,64,.5); margin: 24px auto; max-width: 520px; }
+    #gate p { color: var(--muted); font-size: 14px; margin-bottom: 16px; line-height: 1.5; }
+    #gate a { display: inline-block; padding: 12px 22px; background: var(--gold); color: var(--navy); font-weight: 600; border-radius: 12px; text-decoration: none; }
+    #share-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 2000; align-items: center; justify-content: center; padding: 16px; }
+    #share-overlay.open { display: flex; }
+    #share-box { max-width: 420px; width: 100%; padding: 22px; border-radius: 16px; border: 1px solid var(--border); background: var(--navy); }
+    #share-box p { font-size: 13px; color: var(--muted); margin-bottom: 10px; word-break: break-all; }
+    #share-box .sb-btns { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+    #share-box button { padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--gold); color: var(--navy); font-weight: 600; cursor: pointer; font-family: inherit; }
+  </style>
+</head>
+<body>
+  <header class="sat-nav">
+    <a class="logo" href="index.html">Business<span>Klar</span></a>
+    <div class="links">
+      <a class="nav-btn" href="index.html">Главная</a>
+      <a class="nav-btn" href="specialists-home.html">Специалисты</a>
+      <a class="nav-btn" href="contact.html">Контакт</a>
+      <a class="nav-btn active" href="dashboard.html">Кабинет</a>
+    </div>
+  </header>
+
+  <div id="gate" style="display:none">
+    <div id="gate-inner"></div>
+  </div>
+
+  <div id="main" style="display:none" class="wrap">
+    <h1 id="welcome">Личный кабинет</h1>
+    <p class="sub" id="welcome-sub"></p>
+    <div id="list"></div>
+  </div>
+
+  <div id="share-overlay" onclick="if(event.target===this)document.getElementById('share-overlay').classList.remove('open')">
+    <div id="share-box" onclick="event.stopPropagation()">
+      <h2 style="font-size:1rem;color:var(--gold);margin-bottom:10px">Ссылка для просмотра</h2>
+      <p id="share-url"></p>
+      <div class="sb-btns">
+        <button type="button" id="share-copy">Копировать</button>
+        <button type="button" style="background:transparent;color:var(--text);border-color:var(--border)" onclick="document.getElementById('share-overlay').classList.remove('open')">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function shareUrlClean(token) {
+    return new URL('share.html?token=' + encodeURIComponent(token), window.location.href).href;
+  }
+
+  function caseTitle(row) {
+    var rd = row.result_data;
+    if (rd && rd.report_title) return rd.report_title;
+    if (row.activity_text) return row.activity_text;
+    if (row.legal_form) return row.legal_form;
+    return 'Расчёт';
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '—';
+    try {
+      return new Date(iso).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+    } catch (e) {
+      return String(iso);
+    }
+  }
+
+  async function ensureTokenForCase(caseId, uid) {
+    var q = await sb.from('business_cases').select('id, share_token, profile_id').eq('id', caseId).eq('profile_id', uid).maybeSingle();
+    if (q.error || !q.data) return null;
+    if (q.data.share_token) return q.data.share_token;
+    var token = crypto.randomUUID().replace(/-/g, '');
+    var up = await sb.from('business_cases').update({ share_token: token, is_shared: true }).eq('id', caseId).eq('profile_id', uid);
+    if (up.error) return null;
+    return token;
+  }
+
+  function openShareDialog(url) {
+    document.getElementById('share-url').textContent = url;
+    document.getElementById('share-overlay').classList.add('open');
+    document.getElementById('share-copy').onclick = function () {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function () { alert('Скопировано'); }).catch(function () { prompt('Копируйте:', url); });
+      } else {
+        prompt('Копируйте ссылку:', url);
+      }
+    };
+  }
+
+  function sortCases(rows) {
+    return rows.slice().sort(function (a, b) {
+      var ta = a.created_at ? Date.parse(a.created_at) : NaN;
+      var tb = b.created_at ? Date.parse(b.created_at) : NaN;
+      if (!isNaN(ta) && !isNaN(tb) && ta !== tb) return tb - ta;
+      return String(b.id || '').localeCompare(String(a.id || ''));
+    });
+  }
+
+  (async function () {
+    var gate = document.getElementById('gate');
+    var main = document.getElementById('main');
+    var inner = document.getElementById('gate-inner');
+    var list = document.getElementById('list');
+    try {
+    var u = (await sb.auth.getUser()).data.user;
+    if (!u) {
+      if (gate) gate.style.display = 'block';
+      if (main) main.style.display = 'none';
+      if (inner) {
+        inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.2rem;margin-bottom:12px">Вход в кабинет</h1>' +
+          '<p>Чтобы видеть сохранённые расчёты, войдите в BusinessKlar.</p>' +
+          '<a href="index.html">На главную</a>';
+      }
+      return;
+    }
+    if (gate) gate.style.display = 'none';
+    if (main) main.style.display = 'block';
+    var wEl = document.getElementById('welcome');
+    var wsEl = document.getElementById('welcome-sub');
+    if (wEl) wEl.textContent = 'Здравствуйте' + (u.email ? ', ' + u.email.split('@')[0] : '');
+    if (wsEl) wsEl.textContent = 'Сохранённые расчёты из облака. PDF и ссылка «поделиться» доступны здесь.';
+
+    var q = await sb.from('business_cases').select('*').eq('profile_id', u.id);
+    if (!list) return;
+    if (q.error) {
+      list.innerHTML = '<div class="empty">Не удалось загрузить список. Проверьте политики RLS в Supabase.</div>';
+      return;
+    }
+    var rows = sortCases(q.data || []);
+    if (!rows.length) {
+      list.innerHTML = '<div class="empty">У вас пока нет сохранённых расчётов. Пройдите опрос на главной и нажмите «Да, создать аккаунт и сохранить».</div>';
+      return;
+    }
+
+    list.innerHTML = rows.map(function (row) {
+      var id = row.id;
+      var title = caseTitle(row);
+      var dt = fmtDate(row.created_at);
+      return '<div class="card" data-case-id="' + id + '">' +
+        '<h3>' + escapeHtml(title) + '</h3>' +
+        '<div class="meta">' + escapeHtml(dt) + '</div>' +
+        '<div class="row-btns">' +
+        '<a href="index.html?case=' + encodeURIComponent(id) + '">Открыть</a>' +
+        '<a href="index.html?case=' + encodeURIComponent(id) + '&print=1">Скачать PDF</a>' +
+        '<button type="button" class="btn-share" data-id="' + id + '">Поделиться</button>' +
+        '<button type="button" class="danger btn-del" data-id="' + id + '">Удалить</button>' +
+        '</div></div>';
+    }).join('');
+
+    list.querySelectorAll('.btn-share').forEach(function (btn) {
+      btn.addEventListener('click', async function () {
+        var id = btn.getAttribute('data-id');
+        var tok = await ensureTokenForCase(id, u.id);
+        if (!tok) {
+          alert('Не удалось получить ссылку. Проверьте права в Supabase.');
+          return;
+        }
+        openShareDialog(shareUrlClean(tok));
+      });
+    });
+
+    list.querySelectorAll('.btn-del').forEach(function (btn) {
+      btn.addEventListener('click', async function () {
+        var id = btn.getAttribute('data-id');
+        if (!confirm('Удалить этот расчёт безвозвратно?')) return;
+        var del = await sb.from('business_cases').delete().eq('id', id).eq('profile_id', u.id);
+        if (del.error) {
+          alert('Не удалось удалить. Нужна политика DELETE в Supabase для business_cases.');
+          return;
+        }
+        btn.closest('.card').remove();
+        if (!list.querySelector('.card')) {
+          list.innerHTML = '<div class="empty">У вас пока нет сохранённых расчётов.</div>';
+        }
+      });
+    });
+    } catch (e) {
+      if (gate) gate.style.display = 'block';
+      if (main) main.style.display = 'none';
+      if (inner) {
+        inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.2rem;margin-bottom:12px">Ошибка</h1>' +
+          '<p>Не удалось загрузить кабинет. Откройте консоль или попробуйте позже.</p>' +
+          '<a href="index.html">На главную</a>';
+      }
+    }
+  })();
+
+  function escapeHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  </script>
+</body>
+</html>

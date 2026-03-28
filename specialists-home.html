@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A1628">
+  <title>Специалисты — BusinessKlar</title>
+  <style>
+    :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
+    .sat-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 56px; border-bottom: 1px solid var(--border); background: rgba(10,22,40,.95); }
+    .sat-nav .logo { font-family: Fraunces, Georgia, serif; font-size: 18px; font-weight: 700; color: var(--gold); text-decoration: none; }
+    .sat-nav .logo span { color: var(--text); font-weight: 300; }
+    .sat-nav .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .sat-nav a.nav-btn { font-size: 12px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); text-decoration: none; }
+    .sat-nav a.nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .sat-nav a.nav-btn.active { border-color: var(--gold); color: var(--gold); }
+    .wrap { max-width: 1000px; margin: 0 auto; padding: 28px 18px 48px; }
+    h1 { font-size: 1.5rem; color: var(--gold); margin-bottom: 10px; }
+    .intro { color: var(--muted); font-size: 14px; margin-bottom: 8px; }
+    .helper { font-size: 13px; color: var(--muted); margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+    .badge { display: inline-block; margin-bottom: 16px; padding: 8px 14px; border-radius: 999px; border: 1px solid var(--border); font-size: 13px; color: var(--gold); }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .tile { display: block; text-decoration: none; color: inherit; border-radius: 16px; padding: 22px; min-height: 150px; border: 1px solid var(--border); transition: transform .2s; background: linear-gradient(145deg, rgba(18,32,64,.95), rgba(26,48,80,.4)); }
+    .tile:hover { transform: translateY(-2px); border-color: rgba(201,168,76,.45); }
+    .tile .e { font-size: 26px; margin-bottom: 8px; }
+    .tile h2 { font-size: 16px; margin-bottom: 6px; }
+    .tile p { font-size: 12px; color: var(--muted); line-height: 1.4; }
+    #gate { padding: 32px 20px; border: 1px solid var(--border); border-radius: 16px; text-align: center; background: rgba(18,32,64,.5); }
+    #gate p { color: var(--muted); font-size: 14px; line-height: 1.5; margin-bottom: 16px; }
+    #gate a { display: inline-block; padding: 12px 22px; background: var(--gold); color: var(--navy); font-weight: 600; border-radius: 12px; text-decoration: none; }
+  </style>
+</head>
+<body>
+  <header class="sat-nav">
+    <a class="logo" href="index.html">Business<span>Klar</span></a>
+    <div class="links">
+      <a class="nav-btn" href="index.html">Главная</a>
+      <a class="nav-btn active" href="specialists-home.html">Специалисты</a>
+      <a class="nav-btn" href="contact.html">Контакт</a>
+      <a class="nav-btn" href="dashboard.html">Кабинет</a>
+    </div>
+  </header>
+  <div id="gate" style="display:none">
+    <div class="wrap"><div id="gate-inner"></div></div>
+  </div>
+  <div id="main" style="display:none">
+    <div class="wrap">
+      <h1>Специалисты для вашего бизнеса</h1>
+      <p class="intro">Выберите направление — откроется каталог в этой категории.</p>
+      <p class="helper">Каталог специалистов для запуска и ведения бизнеса в Германии</p>
+      <div id="city-badge" class="badge" style="display:none"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  (async function () {
+    var u = (await sb.auth.getUser()).data.user;
+    var gate = document.getElementById('gate');
+    var main = document.getElementById('main');
+    var inner = document.getElementById('gate-inner');
+    if (!u) {
+      gate.style.display = 'block';
+      main.style.display = 'none';
+      inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.25rem;margin-bottom:12px">Каталог для зарегистрированных пользователей</h1>' +
+        '<p>Чтобы просматривать каталог специалистов, войдите или зарегистрируйтесь в BusinessKlar (пройдите опрос и сохраните расчёт).</p>' +
+        '<a href="index.html">Перейти в BusinessKlar</a>';
+      return;
+    }
+    gate.style.display = 'none';
+    main.style.display = 'block';
+
+    var params = new URLSearchParams(window.location.search);
+    var city = params.get('city') || '';
+    var lang = params.get('lang') || '';
+    if (city) {
+      var b = document.getElementById('city-badge');
+      b.style.display = 'inline-block';
+      b.textContent = 'Ваш город: ' + city;
+    }
+    function qappend(base) {
+      var p = new URLSearchParams();
+      p.set('category', base);
+      if (city) p.set('city', city);
+      if (lang) p.set('lang', lang);
+      return 'specialists.html?' + p.toString();
+    }
+    var cats = [
+      { key: 'tax', title: 'Налоговые консультанты', desc: 'Налоги, Finanzamt, отчётность', emoji: '📊' },
+      { key: 'accounting', title: 'Бухгалтеры', desc: 'Бухгалтерия для ИП и компаний', emoji: '📒' },
+      { key: 'insurance', title: 'Страховые агенты', desc: 'Защита бизнеса и страховки', emoji: '🛡️' },
+      { key: 'legal', title: 'Юридическая консультация', desc: 'Договоры, регистрация, право', emoji: '⚖️' }
+    ];
+    document.getElementById('grid').innerHTML = cats.map(function (c) {
+      return '<a class="tile" href="' + qappend(c.key) + '"><div class="e">' + c.emoji + '</div><h2>' + c.title + '</h2><p>' + c.desc + '</p></a>';
+    }).join('');
+  })();
+  </script>
+</body>
+</html>

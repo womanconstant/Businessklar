@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A1628">
+  <title>Контакт — BusinessKlar</title>
+  <style>
+    :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
+    .sat-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 56px; border-bottom: 1px solid var(--border); background: rgba(10,22,40,.95); }
+    .sat-nav .logo { font-family: Fraunces, Georgia, serif; font-size: 18px; font-weight: 700; color: var(--gold); text-decoration: none; }
+    .sat-nav .logo span { color: var(--text); font-weight: 300; }
+    .sat-nav .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .sat-nav a.nav-btn { font-size: 12px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); text-decoration: none; }
+    .sat-nav a.nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .sat-nav a.nav-btn.active { border-color: var(--gold); color: var(--gold); }
+    .wrap { max-width: 560px; margin: 0 auto; padding: 28px 18px 48px; }
+    h1 { font-size: 1.45rem; color: var(--gold); margin-bottom: 10px; }
+    .lead { color: var(--muted); font-size: 14px; margin-bottom: 22px; line-height: 1.5; }
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    input, select, textarea { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(18,32,64,.85); color: var(--text); font-size: 14px; margin-bottom: 14px; font-family: inherit; }
+    textarea { min-height: 120px; resize: vertical; }
+    button { padding: 12px 22px; background: var(--gold); color: var(--navy); font-weight: 600; border: none; border-radius: 12px; cursor: pointer; font-size: 14px; }
+    button:hover { filter: brightness(1.05); }
+    .note { font-size: 12px; color: var(--muted); margin-top: 16px; }
+    #msg { margin-top: 14px; font-size: 14px; display: none; }
+  </style>
+</head>
+<body>
+  <header class="sat-nav">
+    <a class="logo" href="index.html">Business<span>Klar</span></a>
+    <div class="links">
+      <a class="nav-btn" href="index.html">Главная</a>
+      <a class="nav-btn" href="specialists-home.html">Специалисты</a>
+      <a class="nav-btn active" href="contact.html">Контакт</a>
+      <a class="nav-btn" href="dashboard.html">Кабинет</a>
+    </div>
+  </header>
+  <div class="wrap">
+    <h1>Связаться с нами</h1>
+    <p class="lead">Заполните форму — тема и текст уйдут на вашу почту через почтовый клиент (mailto). Для срочных вопросов укажите контакт в теле сообщения.</p>
+    <form id="f" novalidate>
+      <label for="topic">Тема обращения</label>
+      <select id="topic" name="topic" required>
+        <option value="">Выберите тему</option>
+        <option value="product">Вопрос по калькулятору / опросу</option>
+        <option value="account">Аккаунт и регистрация</option>
+        <option value="specialists">Каталог специалистов</option>
+        <option value="partnership">Сотрудничество</option>
+        <option value="other">Другое</option>
+      </select>
+      <label for="email">Ваш email</label>
+      <input type="email" id="email" name="email" required placeholder="you@example.com" autocomplete="email">
+      <label for="body">Сообщение</label>
+      <textarea id="body" name="body" required placeholder="Кратко опишите запрос"></textarea>
+      <button type="submit">Открыть письмо</button>
+    </form>
+    <p id="msg"></p>
+    <p class="note">Отправка идёт через ваш почтовый клиент. Адрес получателя задайте в настройках продукта или замените в коде страницы на нужный support-email.</p>
+  </div>
+  <script>
+  var SUPPORT = 'support@businessklar.example';
+  document.getElementById('f').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var topic = document.getElementById('topic').value;
+    var email = document.getElementById('email').value.trim();
+    var body = document.getElementById('body').value.trim();
+    if (!topic || !email || !body) {
+      var m = document.getElementById('msg');
+      m.style.display = 'block';
+      m.style.color = '#e88';
+      m.textContent = 'Заполните все поля.';
+      return;
+    }
+    var subj = '[BusinessKlar] ' + document.querySelector('#topic option:checked').textContent;
+    var text = 'От: ' + email + '\n\n' + body;
+    var href = 'mailto:' + SUPPORT + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(text);
+    window.location.href = href;
+  });
+  </script>
+</body>
+</html>
