@@ -960,6 +960,88 @@
       font-size: 12px
     }
 
+    .r-top5-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      align-items: start
+    }
+
+    @media (max-width: 960px) {
+      .r-top5-split {
+        grid-template-columns: 1fr
+      }
+    }
+
+    .r-top5-compliance .rpt-sec-h {
+      margin-top: 0
+    }
+
+    .compliance-wrap {
+      font-size: 13px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+      word-break: break-word
+    }
+
+    .comp-legal {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin: 0 0 12px
+    }
+
+    .comp-card {
+      border-radius: 12px;
+      padding: 14px 16px;
+      margin-bottom: 12px;
+      border: 1px solid rgba(255, 255, 255, .08);
+      background: rgba(255, 255, 255, .03)
+    }
+
+    .comp-card.comp-sev-high {
+      border-color: rgba(232, 85, 85, .35);
+      background: rgba(232, 85, 85, .07)
+    }
+
+    .comp-card.comp-sev-medium {
+      border-color: rgba(245, 180, 80, .35);
+      background: rgba(245, 180, 80, .06)
+    }
+
+    .comp-card.comp-sev-info {
+      border-color: rgba(120, 180, 255, .22);
+      background: rgba(120, 180, 255, .05)
+    }
+
+    .comp-sev-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin-bottom: 8px;
+      color: var(--text-muted)
+    }
+
+    .comp-title {
+      font-size: 15px;
+      margin: 0 0 8px
+    }
+
+    .comp-risk,
+    .comp-msg {
+      margin: 8px 0
+    }
+
+    .comp-link a {
+      color: var(--gold);
+      word-break: break-all
+    }
+
+    .comp-note {
+      font-size: 11px;
+      color: var(--text-muted)
+    }
+
     .cal-item {
       display: flex;
       align-items: flex-start;
@@ -1302,6 +1384,20 @@
       line-height: 1.35
     }
 
+    /* Guest on report: system print must not reproduce the plan (product rule) */
+    #bk-guest-print-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99998;
+      background: #fff;
+      color: #111;
+      padding: 28px;
+      font-size: 14px;
+      line-height: 1.5;
+      box-sizing: border-box
+    }
+
     /* === PRINT === */
     @media print {
 
@@ -1310,6 +1406,28 @@
       .modal-overlay,
       .no-print {
         display: none !important
+      }
+
+      /* Guest viewing report: hide entire app output; show denial sheet only */
+      html.bk-report-print-guest body * {
+        visibility: hidden !important
+      }
+
+      html.bk-report-print-guest #bk-guest-print-overlay,
+      html.bk-report-print-guest #bk-guest-print-overlay * {
+        visibility: visible !important
+      }
+
+      html.bk-report-print-guest #bk-guest-print-overlay {
+        display: block !important;
+        position: absolute !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100% !important;
+        min-height: 100% !important;
+        background: #fff !important;
+        color: #111 !important;
+        z-index: 99999 !important
       }
 
       body {
@@ -1325,6 +1443,10 @@
 
       #page-report.page.active {
         display: block !important
+      }
+
+      html.bk-report-print-guest #page-report.page.active {
+        display: none !important
       }
 
       .r-card {
@@ -1635,6 +1757,186 @@
       line-height: 1.45
     }
 
+    .bk-next-hero {
+      background: linear-gradient(155deg, rgba(18, 32, 64, .98), rgba(201, 168, 76, .12));
+      border: 2px solid rgba(201, 168, 76, .45);
+      border-radius: 22px;
+      padding: 28px 22px 26px;
+      margin: 28px 0 32px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, .28);
+      text-align: center;
+    }
+
+    .bk-next-hero h3 {
+      font-family: Fraunces, Georgia, serif;
+      font-size: 1.55rem;
+      color: var(--gold);
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+
+    .bk-next-hero .bk-next-lead {
+      font-size: 15px;
+      color: var(--text-muted);
+      margin-bottom: 22px;
+      line-height: 1.55;
+      max-width: 520px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .bk-next-btns {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 440px;
+      margin: 0 auto 22px;
+    }
+
+    @media (min-width: 640px) {
+      .bk-next-btns {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        max-width: 920px;
+      }
+      .bk-next-btns .btn-next-primary {
+        grid-column: span 1;
+      }
+    }
+
+    .btn-next-primary {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 14px 16px;
+      border-radius: 14px;
+      border: none;
+      background: var(--gold);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: filter .2s, transform .15s;
+    }
+
+    .btn-next-primary:hover {
+      filter: brightness(1.05);
+      transform: translateY(-1px);
+    }
+
+    .btn-next-sec {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid var(--border);
+      background: rgba(10, 22, 40, .65);
+      color: var(--cream);
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .btn-next-sec:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+    }
+
+    .bk-onboarding-mini {
+      text-align: left;
+      max-width: 520px;
+      margin: 0 auto 18px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: 1px solid rgba(201, 168, 76, .22);
+      background: rgba(10, 22, 40, .45);
+    }
+
+    .bk-onboarding-mini h4 {
+      font-size: 14px;
+      color: var(--gold);
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .bk-onboarding-mini ol {
+      margin: 0;
+      padding-left: 20px;
+      color: var(--text-muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .bk-onboarding-mini li {
+      margin-bottom: 6px;
+    }
+
+    .bk-next-decline {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 8px;
+    }
+
+    .bk-next-decline button {
+      background: none;
+      border: none;
+      color: var(--gold);
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: inherit;
+      font-family: inherit;
+      padding: 0;
+    }
+
+    .wnext-grid {
+      display: grid;
+      gap: 12px;
+      margin: 16px 0;
+      text-align: left;
+    }
+
+    @media (min-width: 640px) {
+      .wnext-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .wnext-item {
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255, 255, 255, .08);
+      background: rgba(0, 0, 0, .15);
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .wnext-item strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--gold);
+      font-size: 14px;
+    }
+
+    .wnext-item span {
+      color: var(--text-muted);
+    }
+
+    .save-benefit-strip {
+      font-size: 13px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: rgba(45, 200, 122, .08);
+      border: 1px solid rgba(45, 200, 122, .22);
+      margin-bottom: 16px;
+      line-height: 1.45;
+    }
+
     .guest-bar {
       margin-top: 14px;
       background: rgba(255, 200, 0, .07);
@@ -1710,7 +2012,7 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       margin-top: 4px;
-      z-index: 500;
+      z-index: 1002;
       overflow: hidden;
       box-shadow: 0 8px 24px rgba(0, 0, 0, .5)
     }
@@ -1752,10 +2054,49 @@
       font-size: 13px;
       color: var(--green)
     }
+
+    .city-fallback-hint {
+      margin-top: 10px;
+      padding: 10px 14px;
+      background: rgba(201, 168, 76, .1);
+      border: 1px solid rgba(201, 168, 76, .25);
+      border-radius: 10px;
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.45
+    }
+
+    .report-disclaimer {
+      margin-top: 24px;
+      padding: 16px 18px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: rgba(18, 32, 64, .45);
+      font-size: 12px;
+      line-height: 1.55;
+      color: var(--text-muted)
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: var(--gold);
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 13px;
+      padding: 0;
+      font-family: inherit
+    }
+
+    .modal .hidden-forgot {
+      display: none !important
+    }
   </style>
 </head>
 
 <body>
+
+  <div id="bk-guest-print-overlay" aria-hidden="true"></div>
 
   <!-- NAV -->
   <nav>
@@ -1766,6 +2107,7 @@
       <a class="nav-btn" id="nb-spec" href="specialists-home.html">Специалисты</a>
       <a class="nav-btn" id="nb-contact" href="contact.html">Контакт</a>
       <a class="nav-btn" id="nb-dash" href="dashboard.html">Кабинет</a>
+      <button type="button" class="nav-btn" id="nb-logout" style="display:none" onclick="window.bkLogout && window.bkLogout()">Logout</button>
       <button class="nav-btn" id="nb-feh" onclick="showPage('fehler');renderFehler()"
         style="font-size:10px;padding:4px 8px">⚠️ Fehler</button>
       <button class="nav-btn" id="nb-daten" onclick="showPage('datenschutz')"
@@ -1783,13 +2125,14 @@
     <!-- HOME -->
     <div id="page-home" class="page active">
       <section class="hero">
-        <div
+        <div class="hero-kicker" id="el-herok"
           style="font-size:10px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--text-muted);margin-bottom:10px">
-          Von null bis zum ersten Mitarbeiter &mdash; der vollst&auml;ndige Navigator</div>
+          Pers&ouml;nlicher Gr&uuml;ndungsplan</div>
         <div class="hero-badge" id="el-badge">&#127465;&#127466; Deutschland</div>
         <h1 id="el-h1">Ihr digitaler Navigator</h1>
         <p class="hero-sub" id="el-sub">Alles, was Sie brauchen.</p>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+        <p class="hero-micro" id="el-heromicro" style="font-size:13px;color:var(--text-muted);margin:12px 0 0;max-width:520px;text-align:center;line-height:1.5"></p>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:16px">
           <button class="btn-primary" id="el-cta" onclick="startSurvey(true)">Fragebogen &#8594; Bericht</button>
           <button class="btn-secondary" id="el-glosbtn" onclick="showPage('glossary')">&#128214; Glossar</button>
         </div>
@@ -1906,7 +2249,6 @@
         <div class="vcnt no-print" aria-live="polite"><span id="v-cnt">...</span></div>
         <div class="guest-bar no-print" role="status" id="guest-bar"><strong id="gn-t">Gastmodus</strong> &mdash; <span
             id="gn-d">Wir speichern keine Daten.</span></div>
-        <div id="r-save" class="no-print"></div>
         <!-- Unified single report -->
         <div id="r-top5"></div>
         <div id="r-oq"></div>
@@ -1914,15 +2256,14 @@
         <div id="r-fin"></div>
         <div id="r-ins"></div>
         <div id="r-cal-wrap"></div>
+        <div id="r-next-step" class="no-print"></div>
         <div id="r-fines"></div>
         <div id="r-closing"></div>
         <div id="r-upsell" class="no-print"></div>
-        <div id="r-pdf-gate-info" class="pdf-gate-panel no-print"
-          data-bk-default="Сохраните расчёт через блок выше: после входа расчёт попадёт в личный кабинет — там PDF, ссылка для друзей и доступ к каталогу специалистов.">
-          Сохраните расчёт через блок выше: после входа расчёт попадёт в личный кабинет — там PDF, ссылка для друзей и доступ к каталогу специалистов.
-        </div>
+        <div id="r-pdf-gate-info" class="pdf-gate-panel no-print"></div>
         <div id="r-pdf-gate-flash" class="no-print" style="display:none"></div>
         <div id="r-spec-cta" class="spec-cta-wrap no-print"></div>
+        <div id="r-disclaimer" class="report-disclaimer no-print" role="note"></div>
         <div style="display:flex;flex-direction:column;gap:12px;margin-top:32px">
 
           <button class="btn-primary no-print" style="width:100%;justify-content:center" onclick="startSurvey()"
@@ -1957,9 +2298,9 @@
             href="mailto:info@businessklar.de">info@businessklar.de</a></p>
         <h2>2. Erhobene Daten</h2>
         <h3>Gastmodus (Standard)</h3>
-        <p><strong>Keine personenbezogenen Daten werden gespeichert.</strong> Alle Eingaben bleiben lokal in Ihrem
-          Browser (localStorage) und werden beim Schlie&szlig;en gel&ouml;scht. Wir haben keinen Zugriff auf diese
-          Daten.</p>
+        <p><strong>Keine personenbezogenen Daten werden auf unseren Servern gespeichert.</strong> Fragebogen-Eingaben
+          k&ouml;nnen vor&uuml;bergehend nur in dieser Browser-Sitzung gehalten werden (sessionStorage) und sind nach
+          Schlie&szlig;en des Tabs nicht mehr verf&uuml;gbar. Drucken/PDF der Berechnung ist im Gastmodus nicht vorgesehen.</p>
         <h3>Registrierter Account (optional)</h3>
         <p>Bei freiwilliger Kontoerstellung: E-Mail (verschl&uuml;sselt), Fragebogen-Antworten, Berechnungsergebnisse.
           Schutz durch Row Level Security &mdash; kein anderer Nutzer hat Zugriff auf Ihre Daten.</p>
@@ -2023,10 +2364,14 @@
       </div>
       <h3 id="el-login" style="margin-bottom:6px">Вход</h3>
       <p id="el-logd" style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Сохранить расчёт в облаке</p>
+      <p id="auth-forgot-hint" style="display:none;font-size:13px;color:var(--text-muted);margin-bottom:8px"></p>
       <p id="auth-err"></p>
       <div class="modal-fld"><label>Email</label><input class="input-field" id="auth-email" type="email" placeholder="your@email.de" autocomplete="email">
       </div>
-      <div class="modal-fld"><label id="el-pw">Пароль</label><input class="input-field" id="auth-password" type="password" autocomplete="current-password"></div>
+      <div class="modal-fld" id="auth-pw-wrap"><label id="el-pw">Пароль</label><input class="input-field" id="auth-password" type="password" autocomplete="current-password"></div>
+      <p id="auth-forgot-wrap" style="margin:8px 0 0;font-size:13px"><button type="button" class="link-btn" id="auth-forgot-link">Passwort vergessen?</button>
+      <button type="button" class="link-btn" id="auth-back-login" style="display:none;margin-left:12px">Zurück</button></p>
+      <p id="auth-forgot-msg" style="font-size:13px;color:var(--text-muted);min-height:1.2em;margin-top:8px"></p>
       <div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">
         <button type="button" class="btn-primary" style="width:100%;justify-content:center"
           id="el-mbtn">Войти</button>
@@ -2048,11 +2393,17 @@
     </div>
   </div>
 
+  <script src="city-to-bl.js"></script>
+  <script src="city-authorities.js"></script>
+  <script src="compliance-locales.js"></script>
+  <script src="compliance-rules.js"></script>
+  <script src="report-i18n.js"></script>
   <script>
     // ============================================================
     // LANGUAGES
     // ============================================================
-    var LANGS = [
+    /** Full locale list kept in code for future; UI shows only these. */
+    var LANGS_ALL = [
       { c: 'de', f: '\uD83C\uDDE9\uD83C\uDDEA', n: 'Deutsch', nat: 'Deutsch' },
       { c: 'ru', f: '\uD83C\uDDF7\uD83C\uDDFA', n: 'Russisch', nat: '\u0420\u0443\u0441\u0441\u043a\u0438\u0439' },
       { c: 'uk', f: '\uD83C\uDDFA\uD83C\uDDE6', n: 'Ukrainisch', nat: '\u0423\u043a\u0440\u0430\u0457\u043d\u0441\u044c\u043a\u0430' },
@@ -2075,6 +2426,8 @@
       { c: 'vi', f: '\uD83C\uDDFB\uD83C\uDDF3', n: 'Vietnamesisch', nat: 'Ti\u1ebfng Vi\u1ec7t' },
       { c: 'zh', f: '\uD83C\uDDE8\uD83C\uDDF3', n: 'Chinesisch', nat: '\u4e2d\u6587' }
     ];
+    var SUPPORTED_UI_LANGS = ['de', 'en', 'ru', 'uk', 'pl', 'ro', 'tr', 'es'];
+    var LANGS = LANGS_ALL.filter(function (x) { return SUPPORTED_UI_LANGS.indexOf(x.c) >= 0; });
 
     // ============================================================
     // TRANSLATIONS
@@ -2082,11 +2435,11 @@
     var TX = {};
 
     TX.de = {
-      home: 'Startseite', glos: 'Glossar', surv: 'Fragebogen \u25ba',
+      home: 'Startseite', glos: 'Glossar', surv: 'Zum Plan (2\u20133 Min.) \u25ba',
       badge: '\uD83C\uDDE9\uD83C\uDDEA Deutschland \u00b7 D\u00fcsseldorf / NRW',
       h1: 'Ihr digitaler Navigator f\u00fcr <em>Registrierung</em> und Kalkulation<strong> Ihres Unternehmens in Deutschland</strong>',
-      sub: 'Alles, was Sie f\u00fcr einen <strong>richtigen</strong> Start brauchen.',
-      cta: 'Fragebogen \u2192 Bericht erhalten', glosbtn: '\uD83D\uDCD6 Glossar',
+      sub: 'Sie erhalten einen <strong>pers\u00f6nlichen Plan</strong>: passende Rechtsform, konkrete Schritte und belastbare Zahlen \u2014 aus Ihren Angaben.',
+      cta: 'Plan anzeigen \u2192', glosbtn: '\uD83D\uDCD6 Glossar',
       installhint: '\uD83D\uDCF1 Als App installierbar',
       s1lbl: 'Was ein Unternehmer braucht', s1h: 'Ein Unternehmer braucht <em>vieles</em>',
       s1d: 'Nach dem Fragebogen erhalten Sie eine individuelle Liste.',
@@ -2101,13 +2454,13 @@
       gc4h: 'Keine Fehler', gc4: 'Risiken unter Kontrolle',
       tagline: 'Ein Unternehmen sollte mit <strong>Klarheit</strong> beginnen.',
       svlbl: 'Fragebogen', svtitle: 'Unternehmensgr\u00fcndung in Deutschland',
-      svdesc: 'Beantworten Sie die Fragen und erhalten Sie Ihren pers\u00f6nlichen Bericht.',
-      saved: 'Gespeichert', back: 'Zur\u00fcck', next: 'Weiter \u2192', finish: 'Bericht erhalten \u2192',
+      svdesc: 'In 2\u20133 Minuten beantworten \u2014 danach sehen Sie Ihren Plan mit Empfehlung und n\u00e4chsten Schritten. Keine Registrierung n\u00f6tig.',
+      saved: 'Gespeichert', back: 'Zur\u00fcck', next: 'Weiter \u2192', finish: 'Plan anzeigen \u2192',
       disct: 'Wichtig:', discd: 'Diese Kalkulation ist informativ und keine Rechtsberatung.',
       rplbl: 'Ihr pers\u00f6nlicher Bericht', tab1: 'Anmeldungen', tab2: 'Finanzen', tab3: 'Kalender', tab4: 'Versicherungen',
-      calt: 'Pflichtkalender', cals: 'Typische Fristen', recalc: '\u270f\ufe0f Antworten \u00e4ndern', pdf: 'Berechnung speichern und PDF',
+      calt: 'Pflichtkalender', cals: 'Typische Fristen', recalc: '\u270f\ufe0f Angaben anpassen', pdf: 'PDF herunterladen',
       gllbl: 'Glossar', glh: 'Business in Deutschland', gld: 'Alle wichtigen Begriffe.',
-      login: 'Anmelden', logd: 'Um den Bericht zu speichern', pw: 'Passwort', guest: 'Gastmodus',
+      login: 'Anmelden', logd: 'Ein Konto sichert Ihr Ergebnis: Speicherung, PDF und Spezialisten-Katalog \u2014 jederzeit im Dashboard.', pw: 'Passwort', guest: 'Gastmodus',
       ititle: 'BusinessKlar installieren', isub: 'Als App auf dem Telefon',
       qstep: 'Schritt', qof: 'von', fmo: 'Monatlich', fqu: 'Quartalsweise', fye: 'J\u00e4hrlich',
       tmust: 'Pflicht', trec: 'Empfohlen', profb: 'Gewinn vor Steuern', proa: 'Nettogewinn',
@@ -2122,15 +2475,85 @@
       fte: 'Vollzeit-Mitarbeiter', mini: 'Minijob-Mitarbeiter',
       ex_ec: 'E-Commerce / Online-Shop', ex_eu: 'Kunden in anderen EU-L\u00e4ndern',
       ex_nu: 'Kunden au\u00dferhalb EU', ex_pd: 'Personenbezogene Daten',
-      ex_fr: 'Risiko eines Verm\u00f6gensschadens', ex_el: 'Mitarbeiter sp\u00e4ter geplant', ex_no: 'Nichts davon'
+      ex_fr: 'Risiko eines Verm\u00f6gensschadens', ex_el: 'Mitarbeiter sp\u00e4ter geplant', ex_no: 'Nichts davon',
+      herok: 'Pers\u00f6nlicher Gr\u00fcndungsplan \u2014 klar & umsetzbar',
+      heromicro: '\u23f1 ca. 2\u20133 Minuten \u00b7 Keine Registrierung f\u00fcr den ersten \u00dcberblick n\u00f6tig',
+      gateinfo: 'Warum ein Konto? Nur so k\u00f6nnen wir Ihren Plan sicher speichern, PDFs im Dashboard bereitstellen und den Spezialisten-Katalog freischalten \u2014 ohne Konto bleibt alles nur in diesem Browser.',
+      gatedecl: 'Sie haben die Cloud-Speicherung abgelehnt: PDF, Teilen und Spezialisten-Katalog sind f\u00fcr diese Sitzung eingeschr\u00e4nkt. \u00c4ndern Sie die Auswahl im Block unten oder speichern Sie Ihr Ergebnis.',
+      guest_t: 'Gastmodus',
+      guest_d: 'Ohne Login: nichts wird auf unseren Servern gespeichert. Fragebogen nur in dieser Browser-Sitzung (sessionStorage). Druck/PDF nur nach Speichern im Konto.',
+      wnext_h: 'Was Sie als N\u00e4chstes tun k\u00f6nnen',
+      wnext_lead: 'Drei schnelle Optionen \u2014 w\u00e4hlen Sie, was Ihnen jetzt hilft.',
+      wnext_save_t: 'Ergebnis speichern',
+      wnext_save_d: 'Plan im Konto ablegen \u2014 jederzeit im Dashboard, inkl. PDF und Spezialisten.',
+      wnext_pdf_t: 'PDF laden',
+      wnext_pdf_d: 'Druckfertige \u00dcbersicht f\u00fcr Berater, Bank oder Ihre Unterlagen.',
+      wnext_spec_t: 'Spezialist finden',
+      wnext_spec_d: 'Passende Experten nach Stadt und Sprache \u2014 ein Klick in den Katalog.',
+      saveben: '\u2713 Mit Speichern: dauerhafter Zugriff, PDF-Download und Katalog-Spezialisten.',
+      btn_save_result: 'Ergebnis speichern',
+      btn_pdf_dl: 'PDF herunterladen',
+      btn_find_spec: 'Spezialist finden',
+      wnext_decl: 'Ohne Cloud fortfahren',
+      flashpdf: 'Speicherung abgelehnt: PDF aus dem Konto ist f\u00fcr diese Ansicht nicht verf\u00fcgbar. Speichern Sie das Ergebnis oder heben Sie den Verzicht auf.',
+      flashspec: 'Bitte Speicherung aktivieren (oder Verzicht aufheben), um zum Spezialisten-Katalog zu gelangen.',
+      speccta: 'Spezialisten erreichen Sie \u00fcber \u00abSpezialist finden\u00bb oben \u2014 gefiltert nach Stadt und Sprache aus Ihrem Plan.',
+      authtablogin: 'Anmelden',
+      authtabreg: 'Registrieren',
+      authlogin: 'Anmelden',
+      authreg: 'Registrieren',
+      guestclose: 'Schlie\u00dfen',
+      authmbtn: 'Fortfahren',
+      flashsavefail: 'Speichern fehlgeschlagen. Bitte erneut versuchen.',
+      flashsaveretry: 'Speichern fehlgeschlagen. Bericht erneut \u00f6ffnen und erneut speichern.',
+      flashsaveafter: 'Speichern nach dem Login fehlgeschlagen.',
+      flashspecneed: 'Bitte Berechnung speichern, um den Spezialisten-Katalog zu \u00f6ffnen.',
+      q_activity_title: 'Art der T\u00e4tigkeit',
+      q_activity_hint: 'T\u00e4tigkeit eingeben \u2014 das System erkennt Kategorie und BG automatisch.',
+      q_city_title: 'Anmeldestadt',
+      q_city_hint: 'Stadt beeinflusst die Gewerbesteuer. Stadtname eingeben.',
+      q_revenue_title: 'Geplanter Umsatz',
+      q_revenue_hint: 'Umsatz = Einnahmen vor Ausgaben.',
+      q_expenses_title: 'Monatliche Ausgaben',
+      q_expenses_hint: 'Miete, Software, Telefon.',
+      q_staff_title: 'Planen Sie Mitarbeiter?',
+      q_staff_hint: 'Mitarbeiter beeinflussen Anmeldungen.',
+      q_extras_title: 'Zus\u00e4tzliche T\u00e4tigkeiten',
+      q_extras_hint: 'Alle ausw\u00e4hlen.',
+      q_notes_title: 'Weitere Infos',
+      q_notes_hint: 'Optional.',
+      q_notes_ph: 'Optional\u2026',
+      city_ph: 'z.B. D\u00fcsseldorf, M\u00fcnchen, Berlin\u2026',
+      act_ph: 'z.B.: Webentwicklung, Restaurant, Beratung\u2026',
+      act_detected: 'Erkannt:',
+      act_freiberuf: 'Freiberufler m\u00f6glich',
+      act_cat_lbl: 'Kategorie: ',
+      act_fb_lbl: 'Freiberufler m\u00f6glich',
+      visitcnt: 'Besuche gesamt',
+      guest_print_denied: 'Drucken ist im Gastmodus nicht verf\u00fcgbar. Legen Sie Ihr Ergebnis in einem Konto ab, um PDF-Downloads zu nutzen.',
+      guest_d2: 'Ohne Login: nichts wird auf unseren Servern gespeichert. Fragebogen nur in dieser Browser-Sitzung (sessionStorage).',
+      email_not_configured: 'E-Mail-Versand ist auf dem Server nicht konfiguriert. Bitte kontaktieren Sie den Betreiber oder nutzen Sie die Anmeldung, falls die Registrierung bereits aktiv ist.',
+      auth_confirmed: 'E-Mail best\u00e4tigt. Sie sind angemeldet.',
+      pdf_gen_fail: 'PDF konnte nicht erstellt oder hochgeladen werden. Pr\u00fcfen Sie Storage-Bucket case_pdfs in Supabase.',
+      nav_logout: 'Abmelden',
+      auth_forgot_link: 'Passwort vergessen?',
+      auth_back_login: 'Zur\u00fcck zum Login',
+      auth_forgot_mode: 'Link senden',
+      auth_forgot_hint: 'Wir senden einen Link an Ihre E-Mail (falls ein Konto existiert).',
+      pw_reset_sent: 'Link zum Zur\u00fccksetzen wurde gesendet. Bitte Posteingang und Spam pr\u00fcfen.',
+      pw_reset_err: 'E-Mail konnte nicht gesendet werden. Pr\u00fcfen Sie die Adresse und die Supabase-E-Mail-Konfiguration.',
+      city_fallback_de: 'Stadt nicht in der Liste: Es wird der bundesweit \u00fcbliche durchschnittliche Hebesatz 400 % f\u00fcr die Gewerbesteuer-Sch\u00e4tzung verwendet. Bitte pr\u00fcfen Sie die Zahl mit einem Steuerberater.',
+      legal_disclaimer_de: 'Hinweis: Die dargestellten Berechnungen und Informationen sind unverbindlich und dienen ausschlie\u00dflich der ersten Orientierung. Es handelt sich nicht um Rechts-, Steuer- oder Unternehmensberatung; verbindliche Ausk\u00fcnfte erteilen nur Steuerberater, Rechtsanw\u00e4lte oder andere qualifizierte Berater.',
+      auth_email_required: 'Bitte E-Mail angeben.',
+      signup_confirm_de: 'Konto angelegt. Bitte best\u00e4tigen Sie die E-Mail \u00fcber den Link. Danach hier anmelden \u2014 der Speichern-Vorgang wird dann automatisch fortgesetzt. Daten vor\u00fcbergehend im Browser (localStorage).'
     };
 
     TX.ru = {
-      home: '\u0413\u043b\u0430\u0432\u043d\u0430\u044f', glos: '\u0421\u043b\u043e\u0432\u0430\u0440\u044c', surv: '\u0410\u043d\u043a\u0435\u0442\u0430 \u25ba',
+      home: '\u0413\u043b\u0430\u0432\u043d\u0430\u044f', glos: '\u0421\u043b\u043e\u0432\u0430\u0440\u044c', surv: '\u041a \u043f\u043b\u0430\u043d\u0443 (2\u20133 \u043c\u0438\u043d.) \u25ba',
       badge: '\uD83C\uDDE9\uD83C\uDDEA \u0413\u0435\u0440\u043c\u0430\u043d\u0438\u044f \u00b7 D\u00fcsseldorf / NRW',
       h1: '\u041f\u043e\u043b\u043d\u044b\u0439 \u0446\u0438\u0444\u0440\u043e\u0432\u043e\u0439 \u043d\u0430\u0432\u0438\u0433\u0430\u0442\u043e\u0440 <em>\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438</em> \u0438 \u0440\u0430\u0441\u0447\u0451\u0442\u0430<strong> \u0432\u0430\u0448\u0435\u0433\u043e \u0431\u0438\u0437\u043d\u0435\u0441\u0430 \u0432 \u0413\u0435\u0440\u043c\u0430\u043d\u0438\u0438</strong>',
-      sub: '\u0412\u0441\u0451, \u0447\u0442\u043e \u0432\u0430\u043c \u043d\u0443\u0436\u043d\u043e \u0434\u043b\u044f <strong>\u043f\u0440\u0430\u0432\u0438\u043b\u044c\u043d\u043e\u0433\u043e</strong> \u0441\u0442\u0430\u0440\u0442\u0430 \u0431\u0438\u0437\u043d\u0435\u0441\u0430.',
-      cta: '\u041f\u0440\u043e\u0439\u0442\u0438 \u0430\u043d\u043a\u0435\u0442\u0443 \u2192 \u043f\u043e\u043b\u0443\u0447\u0438\u0442\u044c \u043e\u0442\u0447\u0451\u0442',
+      sub: '\u0412\u044b \u043f\u043e\u043b\u0443\u0447\u0438\u0442\u0435 <strong>\u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u0439 \u043f\u043b\u0430\u043d</strong>: \u043f\u043e\u0434\u0445\u043e\u0434\u044f\u0449\u0443\u044e \u0444\u043e\u0440\u043c\u0443, \u0448\u0430\u0433\u0438 \u0438 \u0446\u0438\u0444\u0440\u044b \u2014 \u043f\u043e \u0432\u0430\u0448\u0438\u043c \u0434\u0430\u043d\u043d\u044b\u043c.',
+      cta: '\u041f\u043e\u043b\u0443\u0447\u0438\u0442\u044c \u043f\u043b\u0430\u043d \u2192',
       glosbtn: '\uD83D\uDCD6 \u0421\u043b\u043e\u0432\u0430\u0440\u044c', installhint: '\uD83D\uDCF1 \u0423\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u043a\u0430\u043a \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435',
       s1lbl: '\u0427\u0442\u043e \u043f\u043e\u0442\u0440\u0435\u0431\u0443\u0435\u0442\u0441\u044f \u043f\u0440\u0435\u0434\u043f\u0440\u0438\u043d\u0438\u043c\u0430\u0442\u0435\u043b\u044e',
       s1h: '\u041f\u0440\u0435\u0434\u043f\u0440\u0438\u043d\u0438\u043c\u0430\u0442\u0435\u043b\u044e \u043c\u043e\u0436\u0435\u0442 \u043f\u043e\u043d\u0430\u0434\u043e\u0431\u0438\u0442\u044c\u0441\u044f <em>\u043c\u043d\u043e\u0433\u043e\u0435</em>',
@@ -2151,15 +2574,15 @@
       gc4h: '\u041d\u0435 \u0434\u043e\u043f\u0443\u0441\u043a\u0430\u043b\u0438 \u043e\u0448\u0438\u0431\u043e\u043a', gc4: '\u0420\u0438\u0441\u043a\u0438 \u043f\u043e\u0434 \u043a\u043e\u043d\u0442\u0440\u043e\u043b\u0435\u043c',
       tagline: '\u0411\u0438\u0437\u043d\u0435\u0441 \u0434\u043e\u043b\u0436\u0435\u043d \u043d\u0430\u0447\u0438\u043d\u0430\u0442\u044c\u0441\u044f \u0441 <strong>\u044f\u0441\u043d\u043e\u0441\u0442\u044c\u044e.</strong>',
       svlbl: '\u0410\u043d\u043a\u0435\u0442\u0430', svtitle: '\u041e\u0442\u043a\u0440\u044b\u0442\u0438\u0435 \u0431\u0438\u0437\u043d\u0435\u0441\u0430 \u0432 \u0413\u0435\u0440\u043c\u0430\u043d\u0438\u0438',
-      svdesc: '\u041e\u0442\u0432\u0435\u0442\u044c\u0442\u0435 \u043d\u0430 \u0432\u043e\u043f\u0440\u043e\u0441\u044b \u0438 \u043f\u043e\u043b\u0443\u0447\u0438\u0442\u0435 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u0439 \u043e\u0442\u0447\u0451\u0442.',
-      saved: '\u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u043e', back: '\u041d\u0430\u0437\u0430\u0434', next: '\u0414\u0430\u043b\u0435\u0435 \u2192', finish: '\u041f\u043e\u043b\u0443\u0447\u0438\u0442\u044c \u043e\u0442\u0447\u0451\u0442 \u2192',
+      svdesc: '2\u20133 \u043c\u0438\u043d\u0443\u0442\u044b \u2014 \u0437\u0430\u0442\u0435\u043c \u0432\u044b \u0432\u0438\u0434\u0438\u0442\u0435 \u043f\u043b\u0430\u043d \u0441 \u0440\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0430\u0446\u0438\u0435\u0439 \u0438 \u0448\u0430\u0433\u0430\u043c\u0438. \u0411\u0435\u0437 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438 \u0434\u043b\u044f \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u043f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0430.',
+      saved: '\u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u043e', back: '\u041d\u0430\u0437\u0430\u0434', next: '\u0414\u0430\u043b\u0435\u0435 \u2192', finish: '\u041f\u043e\u043b\u0443\u0447\u0438\u0442\u044c \u043f\u043b\u0430\u043d \u2192',
       disct: '\u0412\u0430\u0436\u043d\u043e:', discd: '\u0414\u0430\u043d\u043d\u044b\u0439 \u0440\u0430\u0441\u0447\u0451\u0442 \u043d\u043e\u0441\u0438\u0442 \u043e\u0440\u0438\u0435\u043d\u0442\u0438\u0440\u043e\u0432\u043e\u0447\u043d\u044b\u0439 \u0445\u0430\u0440\u0430\u043a\u0442\u0435\u0440.',
       rplbl: '\u0412\u0430\u0448 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u0439 \u043e\u0442\u0447\u0451\u0442',
       tab1: '\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438', tab2: '\u0424\u0438\u043d\u0430\u043d\u0441\u044b', tab3: '\u041a\u0430\u043b\u0435\u043d\u0434\u0430\u0440\u044c', tab4: '\u0421\u0442\u0440\u0430\u0445\u043e\u0432\u043a\u0438',
       calt: '\u041a\u0430\u043b\u0435\u043d\u0434\u0430\u0440\u044c \u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u0441\u0442\u0432', cals: '\u0422\u0438\u043f\u043e\u0432\u044b\u0435 \u0441\u0440\u043e\u043a\u0438',
-      recalc: '\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u043e\u0442\u0432\u0435\u0442\u044b', pdf: '\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u0440\u0430\u0441\u0447\u0451\u0442 \u0438 \u0441\u043a\u0430\u0447\u0430\u0442\u044c PDF',
+      recalc: '\u0418\u0437\u043c\u0435\u043d\u0438\u0442\u044c \u043e\u0442\u0432\u0435\u0442\u044b', pdf: '\u0421\u043a\u0430\u0447\u0430\u0442\u044c PDF',
       gllbl: '\u0421\u043b\u043e\u0432\u0430\u0440\u044c', glh: '\u0411\u0438\u0437\u043d\u0435\u0441 \u0432 \u0413\u0435\u0440\u043c\u0430\u043d\u0438\u0438', gld: '\u0412\u0441\u0435 \u043a\u043b\u044e\u0447\u0435\u0432\u044b\u0435 \u0442\u0435\u0440\u043c\u0438\u043d\u044b.',
-      login: '\u0412\u043e\u0439\u0442\u0438', logd: '\u0427\u0442\u043e\u0431\u044b \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043e\u0442\u0447\u0451\u0442', pw: '\u041f\u0430\u0440\u043e\u043b\u044c', guest: '\u0413\u043e\u0441\u0442\u0435\u0432\u043e\u0439 \u0440\u0435\u0436\u0438\u043c',
+      login: '\u0412\u043e\u0439\u0442\u0438', logd: '\u0410\u043a\u043a\u0430\u0443\u043d\u0442 \u0445\u0440\u0430\u043d\u0438\u0442 \u0432\u0430\u0448 \u043f\u043b\u0430\u043d: \u0434\u043e\u0441\u0442\u0443\u043f, PDF \u0438 \u043a\u0430\u0442\u0430\u043b\u043e\u0433 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u043e\u0432 \u2014 \u0432 \u043a\u0430\u0431\u0438\u043d\u0435\u0442\u0435 \u0432 \u043b\u044e\u0431\u043e\u0439 \u043c\u043e\u043c\u0435\u043d\u0442.', pw: '\u041f\u0430\u0440\u043e\u043b\u044c', guest: '\u0413\u043e\u0441\u0442\u0435\u0432\u043e\u0439 \u0440\u0435\u0436\u0438\u043c',
       ititle: '\u0423\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c BusinessKlar', isub: '\u041a\u0430\u043a \u043f\u0440\u0438\u043b\u043e\u0436\u0435\u043d\u0438\u0435',
       qstep: '\u0428\u0430\u0433', qof: '\u0438\u0437', fmo: '\u0415\u0436\u0435\u043c\u0435\u0441\u044f\u0447\u043d\u043e', fqu: '\u0415\u0436\u0435\u043a\u0432\u0430\u0440\u0442\u0430\u043b\u044c\u043d\u043e', fye: '\u0415\u0436\u0435\u0433\u043e\u0434\u043d\u043e',
       tmust: '\u041e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e', trec: '\u0420\u0435\u043a\u043e\u043c\u0435\u043d\u0434\u0443\u0435\u0442\u0441\u044f',
@@ -2174,15 +2597,69 @@
       fte: '\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u0438 \u043f\u043e\u043b\u043d\u044b\u0439 \u0434\u0435\u043d\u044c', mini: 'Minijob-\u0441\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u0438',
       ex_ec: 'E-Commerce', ex_eu: '\u041a\u043b\u0438\u0435\u043d\u0442\u044b \u0432 \u0434\u0440\u0443\u0433\u0438\u0445 \u0441\u0442\u0440\u0430\u043d\u0430\u0445 \u0415\u0421',
       ex_nu: '\u041a\u043b\u0438\u0435\u043d\u0442\u044b \u0437\u0430 \u043f\u0440\u0435\u0434\u0435\u043b\u0430\u043c\u0438 \u0415\u0421', ex_pd: '\u041f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u0435 \u0434\u0430\u043d\u043d\u044b\u0435',
-      ex_fr: '\u0420\u0438\u0441\u043a \u0444\u0438\u043d\u0430\u043d\u0441\u043e\u0432\u043e\u0433\u043e \u0443\u0449\u0435\u0440\u0431\u0430', ex_el: '\u041f\u043b\u0430\u043d\u0438\u0440\u0443\u044e \u043d\u0430\u043d\u044f\u0442\u044c \u043f\u043e\u0437\u0436\u0435', ex_no: '\u041d\u0438\u0447\u0435\u0433\u043e'
+      ex_fr: '\u0420\u0438\u0441\u043a \u0444\u0438\u043d\u0430\u043d\u0441\u043e\u0432\u043e\u0433\u043e \u0443\u0449\u0435\u0440\u0431\u0430', ex_el: '\u041f\u043b\u0430\u043d\u0438\u0440\u0443\u044e \u043d\u0430\u043d\u044f\u0442\u044c \u043f\u043e\u0437\u0436\u0435', ex_no: '\u041d\u0438\u0447\u0435\u0433\u043e',
+      herok: '\u041f\u0435\u0440\u0441\u043e\u043d\u0430\u043b\u044c\u043d\u044b\u0439 \u043f\u043b\u0430\u043d \u0437\u0430\u043f\u0443\u0441\u043a\u0430',
+      heromicro: '\u23f1 2\u20133 \u043c\u0438\u043d\u0443\u0442\u044b \u00b7 \u0411\u0435\u0437 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438 \u0434\u043b\u044f \u043f\u0435\u0440\u0432\u043e\u0433\u043e \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442\u0430',
+      gateinfo: '\u0417\u0430\u0447\u0435\u043c \u0432\u0445\u043e\u0434? \u0422\u0430\u043a \u043c\u044b \u0441\u043e\u0445\u0440\u0430\u043d\u044f\u0435\u043c \u043f\u043b\u0430\u043d \u0432 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435, \u0434\u0430\u0451\u043c PDF \u0432 \u043a\u0430\u0431\u0438\u043d\u0435\u0442\u0435 \u0438 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0435\u043c \u043a\u0430\u0442\u0430\u043b\u043e\u0433 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u043e\u0432. \u0411\u0435\u0437 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430 \u0434\u0430\u043d\u043d\u044b\u0435 \u043e\u0441\u0442\u0430\u044e\u0442\u0441\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u0432 \u044d\u0442\u043e\u043c \u0431\u0440\u0430\u0443\u0437\u0435\u0440\u0435.',
+      gatedecl: '\u0412\u044b \u043e\u0442\u043a\u0430\u0437\u0430\u043b\u0438\u0441\u044c \u043e\u0442 \u043e\u0431\u043b\u0430\u0447\u043d\u043e\u0433\u043e \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f: PDF, \u0448\u0430\u0440\u0438\u043d\u0433 \u0438 \u043f\u0435\u0440\u0435\u0445\u043e\u0434 \u043a \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u0430\u043c \u0434\u043b\u044f \u044d\u0442\u043e\u0433\u043e \u043f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0430 \u043e\u0433\u0440\u0430\u043d\u0438\u0447\u0435\u043d\u044b. \u0418\u0437\u043c\u0435\u043d\u0438\u0442\u0435 \u0432\u044b\u0431\u043e\u0440 \u043d\u0438\u0436\u0435 \u0438\u043b\u0438 \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442.',
+      guest_t: '\u0413\u043e\u0441\u0442\u0435\u0432\u043e\u0439 \u0440\u0435\u0436\u0438\u043c',
+      guest_d: '\u0411\u0435\u0437 \u0432\u0445\u043e\u0434\u0430 \u0434\u0430\u043d\u043d\u044b\u0435 \u043d\u0435 \u043f\u043e\u043f\u0430\u0434\u0430\u044e\u0442 \u043d\u0430 \u0441\u0435\u0440\u0432\u0435\u0440. \u0427\u0442\u043e\u0431\u044b \u0432\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f \u043a \u043f\u043b\u0430\u043d\u0443: \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 PDF \u0438\u043b\u0438 \u0441\u043e\u0437\u0434\u0430\u0439\u0442\u0435 \u0430\u043a\u043a\u0430\u0443\u043d\u0442.',
+      wnext_h: '\u0427\u0442\u043e \u0434\u0430\u043b\u044c\u0448\u0435',
+      wnext_lead: '\u0422\u0440\u0438 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u2014 \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435, \u0447\u0442\u043e \u043d\u0443\u0436\u043d\u043e \u0441\u0435\u0439\u0447\u0430\u0441.',
+      wnext_save_t: '\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442',
+      wnext_save_d: '\u041f\u043b\u0430\u043d \u0432 \u043a\u0430\u0431\u0438\u043d\u0435\u0442\u0435 \u2014 \u0432\u0441\u0435\u0433\u0434\u0430 \u043f\u043e\u0434 \u0440\u0443\u043a\u043e\u0439, \u0441 PDF \u0438 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u0430\u043c\u0438.',
+      wnext_pdf_t: '\u0421\u043a\u0430\u0447\u0430\u0442\u044c PDF',
+      wnext_pdf_d: '\u0413\u043e\u0442\u043e\u0432\u044b\u0439 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442 \u0434\u043b\u044f \u0431\u0430\u043d\u043a\u0430, \u043a\u043e\u043d\u0441\u0443\u043b\u044c\u0442\u0430\u043d\u0442\u0430 \u0438\u043b\u0438 \u0430\u0440\u0445\u0438\u0432\u0430.',
+      wnext_spec_t: '\u041d\u0430\u0439\u0442\u0438 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u0430',
+      wnext_spec_d: '\u041f\u043e\u0434\u0431\u043e\u0440 \u043f\u043e \u0433\u043e\u0440\u043e\u0434\u0443 \u0438 \u044f\u0437\u044b\u043a\u0443 \u0438\u0437 \u0432\u0430\u0448\u0435\u0439 \u0430\u043d\u043a\u0435\u0442\u044b \u2014 \u043e\u0434\u0438\u043d \u043a\u043b\u0438\u043a.',
+      saveben: '\u0421 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0435\u043c: \u043f\u043e\u0441\u0442\u043e\u044f\u043d\u043d\u044b\u0439 \u0434\u043e\u0441\u0442\u0443\u043f, PDF \u0438 \u043a\u0430\u0442\u0430\u043b\u043e\u0433 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u043e\u0432.',
+      btn_save_result: '\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442',
+      btn_pdf_dl: '\u0421\u043a\u0430\u0447\u0430\u0442\u044c PDF',
+      btn_find_spec: '\u041d\u0430\u0439\u0442\u0438 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u0430',
+      wnext_decl: '\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c \u0431\u0435\u0437 \u043e\u0431\u043b\u0430\u043a\u0430',
+      flashpdf: '\u0412\u044b \u043e\u0442\u043a\u0430\u0437\u0430\u043b\u0438\u0441\u044c \u043e\u0442 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f: PDF \u0438\u0437 \u043a\u0430\u0431\u0438\u043d\u0435\u0442\u0430 \u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u0435\u043d. \u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 \u0440\u0430\u0441\u0447\u0451\u0442 \u0438\u043b\u0438 \u0441\u043d\u0438\u043c\u0438\u0442\u0435 \u043e\u0442\u043a\u0430\u0437.',
+      flashspec: '\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 \u0440\u0430\u0441\u0447\u0451\u0442 (\u0438\u043b\u0438 \u0441\u043d\u0438\u043c\u0438\u0442\u0435 \u043e\u0442\u043a\u0430\u0437 \u043e\u0442 \u043e\u0431\u043b\u0430\u043a\u0430), \u0447\u0442\u043e\u0431\u044b \u043f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0443 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u043e\u0432.',
+      speccta: '\u0421\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u043e\u0432 \u2014 \u0447\u0435\u0440\u0435\u0437 \u00ab\u041d\u0430\u0439\u0442\u0438 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u0430\u00bb \u0432\u044b\u0448\u0435 \u0441 \u0443\u0447\u0451\u0442\u043e\u043c \u0433\u043e\u0440\u043e\u0434\u0430 \u0438 \u044f\u0437\u044b\u043a\u0430.',
+      authtablogin: '\u0412\u0445\u043e\u0434',
+      authtabreg: '\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f',
+      authlogin: '\u0412\u043e\u0439\u0442\u0438',
+      authreg: '\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u0442\u044c\u0441\u044f',
+      guestclose: '\u0417\u0430\u043a\u0440\u044b\u0442\u044c',
+      authmbtn: '\u0414\u0430\u043b\u0435\u0435',
+      flashsavefail: '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451 \u0440\u0430\u0437.',
+      flashsaveretry: '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c. \u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u043e\u0442\u0447\u0451\u0442 \u0438 \u0441\u043d\u043e\u0432\u0430 \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c.',
+      flashsaveafter: '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043f\u043e\u0441\u043b\u0435 \u0432\u0445\u043e\u0434\u0430.',
+      flashspecneed: '\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 \u0440\u0430\u0441\u0447\u0451\u0442, \u0447\u0442\u043e\u0431\u044b \u043e\u0442\u043a\u0440\u044b\u0442\u044c \u043a\u0430\u0442\u0430\u043b\u043e\u0433 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u043e\u0432.',
+      q_activity_title: '\u0412\u0438\u0434 \u0434\u0435\u044f\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438',
+      q_activity_hint: '\u041d\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0432\u0438\u0434 \u0434\u0435\u044f\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438 \u2014 \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0430 \u043e\u043f\u0440\u0435\u0434\u0435\u043b\u0438\u0442 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044e \u0438 BG.',
+      q_city_title: '\u0413\u043e\u0440\u043e\u0434 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438',
+      q_city_hint: '\u0413\u043e\u0440\u043e\u0434 \u0432\u043b\u0438\u044f\u0435\u0442 \u043d\u0430 Gewerbesteuer. \u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u0432\u0432\u043e\u0434 \u043d\u0430\u0437\u0432\u0430\u043d\u0438\u044f.',
+      q_revenue_title: '\u041f\u043b\u0430\u043d\u0438\u0440\u0443\u0435\u043c\u044b\u0439 \u043e\u0431\u043e\u0440\u043e\u0442',
+      q_revenue_hint: '\u041e\u0431\u043e\u0440\u043e\u0442 = \u0434\u0435\u043d\u044c\u0433\u0438 \u043e\u0442 \u043a\u043b\u0438\u0435\u043d\u0442\u043e\u0432 \u0434\u043e \u0440\u0430\u0441\u0445\u043e\u0434\u043e\u0432.',
+      q_expenses_title: '\u0415\u0436\u0435\u043c\u0435\u0441\u044f\u0447\u043d\u044b\u0435 \u0440\u0430\u0441\u0445\u043e\u0434\u044b',
+      q_expenses_hint: '\u0410\u0440\u0435\u043d\u0434\u0430, \u043f\u043e, \u0442\u0435\u043b\u0435\u0444\u043e\u043d. \u0411\u0435\u0437 \u0444\u043e\u043d\u0434\u0430 \u0437\u0430\u0440\u043f\u043b\u0430\u0442\u044b.',
+      q_staff_title: '\u041f\u043b\u0430\u043d\u0438\u0440\u0443\u0435\u0442\u0435 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b?',
+      q_staff_hint: '\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u0438 \u0432\u043b\u0438\u044f\u044e\u0442 \u043d\u0430 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438.',
+      q_extras_title: '\u0414\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u043e',
+      q_extras_hint: '\u041e\u0442\u043c\u0435\u0442\u044c\u0442\u0435 \u0432\u0441\u0451 \u043f\u043e\u0434\u0445\u043e\u0434\u044f\u0449\u0435\u0435.',
+      q_notes_title: '\u0414\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u043e',
+      q_notes_hint: '\u041d\u0435\u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e.',
+      q_notes_ph: '\u041d\u0435\u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e\u2026',
+      city_ph: '\u043d\u0430\u043f\u0440. D\u00fcsseldorf, M\u00fcnchen, Berlin\u2026',
+      act_ph: '\u041d\u0430\u043f\u0440.: \u0432\u0435\u0431-\u0440\u0430\u0437\u0440\u0430\u0431\u043e\u0442\u043a\u0430, \u0440\u0435\u0441\u0442\u043e\u0440\u0430\u043d, \u043a\u043e\u043d\u0441\u0430\u043b\u0442\u0438\u043d\u0433\u2026',
+      act_detected: '\u041e\u043f\u0440\u0435\u0434\u0435\u043b\u0435\u043d\u043e:',
+      act_freiberuf: '\u0412\u043e\u0437\u043c\u043e\u0436\u0435\u043d Freiberufler',
+      act_cat_lbl: '\u041a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f: ',
+      act_fb_lbl: '\u0412\u043e\u0437\u043c\u043e\u0436\u0435\u043d Freiberufler',
+      visitcnt: '\u0432\u0438\u0437\u0438\u0442\u043e\u0432 \u0432\u0441\u0435\u0433\u043e'
     };
 
     TX.en = {
-      home: 'Home', glos: 'Glossary', surv: 'Questionnaire \u25ba',
+      home: 'Home', glos: 'Glossary', surv: 'Get your plan (2\u20133 min.) \u25ba',
       badge: '\uD83C\uDDE9\uD83C\uDDEA Germany \u00b7 D\u00fcsseldorf / NRW',
       h1: 'Your complete digital guide to <em>registering</em> and calculating <strong>your business in Germany</strong>',
-      sub: 'Everything you need to start in Germany <strong>the right way.</strong>',
-      cta: 'Fill questionnaire \u2192 get report', glosbtn: '\uD83D\uDCD6 Glossary', installhint: '\uD83D\uDCF1 Installable as app',
+      sub: 'You get a <strong>personal plan</strong>: fitting legal form, clear next steps and solid numbers \u2014 based on your inputs.',
+      cta: 'Get your plan \u2192', glosbtn: '\uD83D\uDCD6 Glossary', installhint: '\uD83D\uDCF1 Installable as app',
       s1lbl: 'What an entrepreneur needs', s1h: 'An entrepreneur may need <em>many things</em>',
       s1d: 'After the questionnaire you will receive a personalised list.',
       g1: 'Business registration in city', g2: 'Tax office registration', g3: 'Health insurance (mandatory)',
@@ -2196,13 +2673,13 @@
       gc4h: 'Avoid mistakes', gc4: 'Critical risks under control',
       tagline: 'Business should start with <strong>clarity.</strong>',
       svlbl: 'Questionnaire', svtitle: 'Starting a Business in Germany',
-      svdesc: 'Answer the questions and receive your personalised report.',
-      saved: 'Saved', back: 'Back', next: 'Next \u2192', finish: 'Get Report \u2192',
+      svdesc: 'Takes about 2\u20133 minutes \u2014 then you see your plan with recommendations and next steps. No sign-up needed for the first view.',
+      saved: 'Saved', back: 'Back', next: 'Next \u2192', finish: 'See your plan \u2192',
       disct: 'Important:', discd: 'This calculation is informational, not legal advice.',
       rplbl: 'Your Personal Report', tab1: 'Registrations', tab2: 'Finances', tab3: 'Calendar', tab4: 'Insurance',
-      calt: 'Obligation Calendar', cals: 'Typical deadlines', recalc: 'Change answers', pdf: 'Save report and download PDF',
+      calt: 'Obligation Calendar', cals: 'Typical deadlines', recalc: 'Update answers', pdf: 'Download PDF',
       gllbl: 'Glossary', glh: 'Business in Germany', gld: 'All key terms explained.',
-      login: 'Sign In', logd: 'To save your report', pw: 'Password', guest: 'Guest mode',
+      login: 'Sign In', logd: 'An account keeps your result safe: saved plan, PDF download and specialists directory \u2014 always in your dashboard.', pw: 'Password', guest: 'Guest mode',
       ititle: 'Install BusinessKlar', isub: 'As an app on your phone',
       qstep: 'Step', qof: 'of', fmo: 'Monthly', fqu: 'Quarterly', fye: 'Annually',
       tmust: 'Required', trec: 'Recommended', profb: 'Profit before taxes', proa: 'Net profit',
@@ -2214,18 +2691,93 @@
       city_d: 'D\u00fcsseldorf', city_k: 'K\u00f6ln', city_m: 'M\u00fcnchen', city_b: 'Berlin', city_h: 'Hamburg', city_o: 'Other city',
       yr1: 'Year 1 (EUR/year)', yr2: 'Year 2 (EUR/year)', fte: 'Full-time employees', mini: 'Minijob employees',
       ex_ec: 'E-Commerce', ex_eu: 'Clients in other EU countries', ex_nu: 'Clients outside EU',
-      ex_pd: 'Personal data', ex_fr: 'Financial damage risk', ex_el: 'Plan to hire later', ex_no: 'None'
+      ex_pd: 'Personal data', ex_fr: 'Financial damage risk', ex_el: 'Plan to hire later', ex_no: 'None',
+      herok: 'Your personal launch plan',
+      heromicro: '\u23f1 About 2\u20133 minutes \u00b7 No registration required for the first overview',
+      gateinfo: 'Why sign in? So we can store your plan securely, unlock PDF in your dashboard and the specialists catalogue \u2014 without an account, everything stays only in this browser.',
+      gatedecl: 'You declined cloud save: PDF, sharing and specialists are limited for this session. Change your choice below or save your result.',
+      guest_t: 'Guest mode',
+      guest_d: 'Without login, nothing is sent to our servers. To come back: download PDF or create an account.',
+      wnext_h: 'What you can do next',
+      wnext_lead: 'Three quick options \u2014 pick what helps you now.',
+      wnext_save_t: 'Save your result',
+      wnext_save_d: 'Keep the plan in your account \u2014 always there, with PDF and specialists.',
+      wnext_pdf_t: 'Download PDF',
+      wnext_pdf_d: 'Print-ready summary for your bank, advisor or files.',
+      wnext_spec_t: 'Find a specialist',
+      wnext_spec_d: 'Matched by city and language from your questionnaire \u2014 one click.',
+      saveben: '\u2713 With save: permanent access, PDF download and the specialists catalogue.',
+      btn_save_result: 'Save your result',
+      btn_pdf_dl: 'Download PDF',
+      btn_find_spec: 'Find a specialist',
+      wnext_decl: 'Continue without cloud save',
+      flashpdf: 'You declined saving: PDF from the dashboard isn\u2019t available for this view. Save your result or undo the decline.',
+      flashspec: 'Please enable saving (or undo the decline) to open the specialists catalogue.',
+      speccta: 'Use \u201cFind a specialist\u201d above \u2014 filtered by city and language from your plan.',
+      authtablogin: 'Sign in',
+      authtabreg: 'Register',
+      authlogin: 'Sign in',
+      authreg: 'Create account',
+      guestclose: 'Close',
+      authmbtn: 'Continue',
+      flashsavefail: 'Could not save. Please try again.',
+      flashsaveretry: 'Could not save. Open the report and tap save again.',
+      flashsaveafter: 'Could not save after sign-in.',
+      flashspecneed: 'Save your calculation to open the specialists catalogue.',
+      q_activity_title: 'Type of activity',
+      q_activity_hint: 'Type your activity — the system will detect the category and Berufsgenossenschaft.',
+      q_city_title: 'Registration city',
+      q_city_hint: 'City affects Gewerbesteuer. Start typing the city name.',
+      q_revenue_title: 'Planned revenue',
+      q_revenue_hint: 'Revenue before expenses.',
+      q_expenses_title: 'Monthly expenses',
+      q_expenses_hint: 'Rent, software, phone. Without salaries.',
+      q_staff_title: 'Planning to hire staff?',
+      q_staff_hint: 'Staff affects registrations and costs.',
+      q_extras_title: 'Additional activities',
+      q_extras_hint: 'Check all that apply.',
+      q_notes_title: 'Anything else?',
+      q_notes_hint: 'Optional.',
+      q_notes_ph: 'Optional\u2026',
+      city_ph: 'e.g. D\u00fcsseldorf, Munich, Berlin\u2026',
+      act_ph: 'e.g.: web development, restaurant, consulting\u2026',
+      act_detected: 'Detected:',
+      act_freiberuf: 'Freiberufler possible',
+      act_cat_lbl: 'Category: ',
+      act_fb_lbl: 'Freiberufler possible',
+      visitcnt: 'visits total',
+      guest_print_denied: 'Printing is not available in guest mode. Save your result to an account to use PDF downloads.',
+      guest_d2: 'Without login: nothing is stored on our servers. Questionnaire data is kept only for this browser session (sessionStorage).',
+      email_not_configured: 'Email sending is not configured on the server. Contact the operator or sign in if your account is already active.',
+      auth_confirmed: 'Email confirmed. You are signed in.',
+      pdf_gen_fail: 'Could not create or upload PDF. Check the case_pdfs storage bucket in Supabase.',
+      nav_logout: 'Log out',
+      auth_forgot_link: 'Forgot password?',
+      auth_back_login: 'Back to login',
+      auth_forgot_mode: 'Send link',
+      auth_forgot_hint: 'We will send a link to your email (if an account exists).',
+      pw_reset_sent: 'Reset link sent. Check inbox and spam.',
+      pw_reset_err: 'Could not send email. Check the address and Supabase email settings.',
+      city_fallback_de: 'City not in list: the nationwide average trade-tax multiplier 400% is used for this estimate. Please verify with a tax advisor.',
+      legal_disclaimer_de: 'Note: The calculations and information shown are non-binding and for initial orientation only. This is not legal, tax, or business advice; only qualified advisors can provide binding guidance.',
+      auth_email_required: 'Please enter your email.',
+      signup_confirm_de: 'Account created. Confirm your email via the link, then sign in here — save will resume automatically. Data temporarily in browser (localStorage).'
     };
 
-    // Build all other languages from German with key overrides
+    // Per-locale overrides (merged onto EN-first TX[c] below)
     var OVERRIDES = {
-      uk: { h1: 'Повний цифровий навігатор <em>реєстрації</em> та розрахунку<strong> вашого бізнесу в Німеччині</strong>', sub: 'Все, що потрібно для <strong>правильного</strong> старту бізнесу в Німеччині.', cta: 'Пройти анкету → отримати звіт', glosbtn: '\ud83d\udcd6 Словник', badge: '\ud83c\udde9\ud83c\uddea Німеччина · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Встановлюється як додаток', s1lbl: 'Що потрібно підприємцю', s1h: 'Підприємцю може знадобитися <em>багато чого</em>', s1d: 'Після анкети — індивідуальний список.', promise: 'Ми не просто даємо розрахунок — ви побачите <strong>чому ця форма вам підходить.</strong>', s2lbl: 'Наша мета', s2h: 'Щоб ви відчували <em>впевненість</em>', tagline: 'Бізнес повинен починатися з <strong>ясності.</strong>', svtitle: 'Відкриття бізнесу в Німеччині', svdesc: 'Відповідьте на запитання і отримайте особистий звіт.', gld: 'Усі ключові терміни розтлумачені.', discd: 'Цей розрахунок носить орієнтовний характер і не є юридичною консультацією.', gc1h: "Знати обов'язки", gc1: 'Повний список', gc2h: 'Знати права', gc2: 'Що вам палає за законом', gc3h: 'Не переплачувати', gc3: 'Оптимальна структура', gc4h: 'Не допускати помилок', gc4: 'Ризики під контролем', home: 'Головна', glos: 'Словник', surv: 'Анкета ►', saved: 'Збережено', back: 'Назад', next: 'Далі →', finish: 'Отримати звіт', qstep: 'Крок', qof: 'з', fmo: 'Щомісяця', fqu: 'Щоквартально', fye: 'Щороку', tmust: 'Обов’язково', trec: 'Рекомендується', svlbl: 'Анкета', rplbl: 'Ваш особистий звіт', tab1: 'Реєстрації', tab2: 'Фінанси', tab3: 'Календар', tab4: 'Страхування', disct: 'Важливо:' },
-      tr: { h1: "Almanya'da işletmenizi <em>tescil</em> etmek ve hesaplamak için <strong>tam dijital rehberiniz</strong>", sub: "Almanya'da işinizi <strong>doğru biçimde</strong> başlatmak için ihtiyacınız olan her şey.", cta: 'Anketi doldurun → raporu alın', glosbtn: '\ud83d\udcd6 Sözlük', badge: '\ud83c\udde9\ud83c\uddea Almanya · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Uygulama olarak yüklenebilir', s1lbl: 'Bir girişimcinin ihtiyacı olanlar', s1h: "Almanya'da bir girişimcinin <em>pek çok</em> ihtiyacı olabilir", s1d: 'Anketi doldurduktan sonra kişisel listenizi alacaksınız.', promise: 'Sadece hesaplama vermiyoruz — <strong>bu formun neden size uyduğunu</strong> göreceksiniz.', s2lbl: 'Hedefimiz', s2h: '<em>Güvenli</em> hissetmeniz için', tagline: 'Bir iş, <strong>netlikle</strong> başlamalıdır.', svtitle: "Almanya'da iş kurma", svdesc: 'Soruları cevaplayın ve kişisel raporunuzu alın.', gld: 'Tüm anahtar terimler açıklandı.', discd: 'Bu hesaplama bilgi amaçlıdır ve hukuki tavsiye değildir.', gc1h: 'Yükümlülükleri bilin', gc1: 'Tam liste', gc2h: 'Haklarınızı bilin', gc2: 'Size ne hakkı var', gc3h: 'Fazla ödemeyin', gc3: 'Optimal yapı', gc4h: 'Hata yapmayın', gc4: 'Riskler kontrol altında', home: 'Ana Sayfa', glos: 'Sözlük', surv: 'Anket ►', saved: 'Kaydedildi', back: 'Geri', next: 'İleri →', finish: 'Raporu Al', qstep: 'Adım', qof: '/', fmo: 'Aylık', fqu: 'Üç Aylık', fye: 'Yıllık', tmust: 'Zorunlu', trec: 'Önerilen', svlbl: 'Anket', rplbl: 'Kişisel Raporunuz', tab1: 'Kayıtlar', tab2: 'Finans', tab3: 'Takvim', tab4: 'Sigorta', disct: 'Önemli:' },
+      uk: { h1: 'Повний цифровий навігатор <em>реєстрації</em> та розрахунку<strong> вашого бізнесу в Німеччині</strong>', sub: 'Все, що потрібно для <strong>правильного</strong> старту бізнесу в Німеччині.', cta: 'Пройти анкету → отримати звіт', glosbtn: '\ud83d\udcd6 Словник', badge: '\ud83c\udde9\ud83c\uddea Німеччина · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Встановлюється як додаток', s1lbl: 'Що потрібно підприємцю', s1h: 'Підприємцю може знадобитися <em>багато чого</em>', s1d: 'Після анкети — індивідуальний список.', promise: 'Ми не просто даємо розрахунок — ви побачите <strong>чому ця форма вам підходить.</strong>', s2lbl: 'Наша мета', s2h: 'Щоб ви відчували <em>впевненість</em>', tagline: 'Бізнес повинен починатися з <strong>ясності.</strong>', svtitle: 'Відкриття бізнесу в Німеччині', svdesc: 'Відповідьте на запитання і отримайте особистий звіт.', gld: 'Усі ключові терміни розтлумачені.', discd: 'Цей розрахунок носить орієнтовний характер і не є юридичною консультацією.', gc1h: "Знати обов'язки", gc1: 'Повний список', gc2h: 'Знати права', gc2: 'Що вам палає за законом', gc3h: 'Не переплачувати', gc3: 'Оптимальна структура', gc4h: 'Не допускати помилок', gc4: 'Ризики під контролем', home: 'Головна', glos: 'Словник', surv: 'Анкета ►', saved: 'Збережено', back: 'Назад', next: 'Далі →', finish: 'Отримати звіт', qstep: 'Крок', qof: 'з', fmo: 'Щомісяця', fqu: 'Щоквартально', fye: 'Щороку', tmust: 'Обов’язково', trec: 'Рекомендується', svlbl: 'Анкета', rplbl: 'Ваш особистий звіт', tab1: 'Реєстрації', tab2: 'Фінанси', tab3: 'Календар', tab4: 'Страхування', disct: 'Важливо:',
+        q_activity_title: 'Вид діяльності', q_activity_hint: 'Опишіть діяльність — система визначить категорію та BG.', q_city_title: 'Місто реєстрації', q_city_hint: 'Місто впливає на Gewerbesteuer. Почніть вводити назву.', q_revenue_title: 'Планований оборот', q_revenue_hint: 'Оборот = дохід від клієнтів до витрат.', q_expenses_title: 'Щомісячні витрати', q_expenses_hint: 'Оренда, софт, телефон. Без зарплат.', q_staff_title: 'Плануєте найм?', q_staff_hint: 'Персонал впливає на реєстрації та витрати.', q_extras_title: 'Додатково', q_extras_hint: 'Позначте все, що підходить.', q_notes_title: 'Додатково', q_notes_hint: 'Необов’язково.', q_notes_ph: 'Необов’язково…', city_ph: 'напр. Düsseldorf, München, Berlin…', act_ph: 'напр.: веб, ресторан, консалтинг…', act_detected: 'Визначено:', act_freiberuf: 'Можливий Freiberufler', act_cat_lbl: 'Категорія: ', act_fb_lbl: 'Можливий Freiberufler' },
+      tr: { h1: "Almanya'da işletmenizi <em>tescil</em> etmek ve hesaplamak için <strong>tam dijital rehberiniz</strong>", sub: "Almanya'da işinizi <strong>doğru biçimde</strong> başlatmak için ihtiyacınız olan her şey.", cta: 'Anketi doldurun → raporu alın', glosbtn: '\ud83d\udcd6 Sözlük', badge: '\ud83c\udde9\ud83c\uddea Almanya · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Uygulama olarak yüklenebilir', s1lbl: 'Bir girişimcinin ihtiyacı olanlar', s1h: "Almanya'da bir girişimcinin <em>pek çok</em> ihtiyacı olabilir", s1d: 'Anketi doldurduktan sonra kişisel listenizi alacaksınız.', promise: 'Sadece hesaplama vermiyoruz — <strong>bu formun neden size uyduğunu</strong> göreceksiniz.', s2lbl: 'Hedefimiz', s2h: '<em>Güvenli</em> hissetmeniz için', tagline: 'Bir iş, <strong>netlikle</strong> başlamalıdır.', svtitle: "Almanya'da iş kurma", svdesc: 'Soruları cevaplayın ve kişisel raporunuzu alın.', gld: 'Tüm anahtar terimler açıklandı.', discd: 'Bu hesaplama bilgi amaçlıdır ve hukuki tavsiye değildir.', gc1h: 'Yükümlülükleri bilin', gc1: 'Tam liste', gc2h: 'Haklarınızı bilin', gc2: 'Size ne hakkı var', gc3h: 'Fazla ödemeyin', gc3: 'Optimal yapı', gc4h: 'Hata yapmayın', gc4: 'Riskler kontrol altında', home: 'Ana Sayfa', glos: 'Sözlük', surv: 'Anket ►', saved: 'Kaydedildi', back: 'Geri', next: 'İleri →', finish: 'Raporu Al', qstep: 'Adım', qof: '/', fmo: 'Aylık', fqu: 'Üç Aylık', fye: 'Yıllık', tmust: 'Zorunlu', trec: 'Önerilen', svlbl: 'Anket', rplbl: 'Kişisel Raporunuz', tab1: 'Kayıtlar', tab2: 'Finans', tab3: 'Takvim', tab4: 'Sigorta', disct: 'Önemli:',
+        q_activity_title: 'Faaliyet türü', q_activity_hint: 'Faaliyeti yazın — sistem kategori ve BG’yi tespit eder.', q_city_title: 'Kayıt şehri', q_city_hint: 'Şehir Gewerbesteuer’ı etkiler. Adı yazmaya başlayın.', q_revenue_title: 'Planlanan ciro', q_revenue_hint: 'Ciro = gider öncesi gelir.', q_expenses_title: 'Aylık giderler', q_expenses_hint: 'Kira, yazılım, telefon. Maaş hariç.', q_staff_title: 'Personel planlıyor musunuz?', q_staff_hint: 'Personel kayıt ve maliyetleri etkiler.', q_extras_title: 'Ek', q_extras_hint: 'Uygun olanların tümünü işaretleyin.', q_notes_title: 'Notlar', q_notes_hint: 'İsteğe bağlı.', q_notes_ph: 'İsteğe bağlı…', city_ph: 'örn. Düsseldorf, München, Berlin…', act_ph: 'örn.: web, restoran, danışmanlık…', act_detected: 'Tespit:', act_freiberuf: 'Freiberufler mümkün', act_cat_lbl: 'Kategori: ', act_fb_lbl: 'Freiberufler mümkün' },
       ar: { h1: 'دليلك الرقمي الكامل لتسجيل عملك <em>وحساباته</em> <strong>في ألمانيا</strong>', sub: 'كل ما تحتاجه لبدء عملك في ألمانيا <strong>بشكل صحيح.</strong>', cta: 'أكمل الاستبيان ← احصل على تقرير', glosbtn: '\ud83d\udcd6 المسرد', badge: '\ud83c\udde9\ud83c\uddea ألمانيا · دوسلدورف', installhint: '\ud83d\udcf1 متاح كتطبيق', s1lbl: 'ما يحتاجه رجل الأعمال', s1h: 'رجل الأعمال في ألمانيا <em>يحتاج كثيراً</em>', s1d: 'بعد الاستبيان ستحصل على قائمة شخصية.', promise: 'نحن لا نعطيك حسابات فقط — <strong>سترى لماذا هذا الشكل مناسب لك.</strong>', s2lbl: 'هدفنا', s2h: 'حتى تشعر <em>بالثقة</em>', tagline: 'يجب أن يبدأ العمل <strong>بوضوح.</strong>', svtitle: 'بدء عمل في ألمانيا', svdesc: 'أجب على الأسئلة واحصل على تقريرك الشخصي.', gld: 'جميع المصطلحات الرئيسية مشروحة.', discd: 'هذا الحساب للمعلومات فقط وليس استشارة قانونية.', gc1h: 'اعرف التزاماتك', gc1: 'قائمة كاملة', gc2h: 'اعرف حقوقك', gc2: 'ما يحق لك', gc3h: 'لا تدفع أكثر مما يجب', gc3: 'هيكل مثالي', gc4h: 'تجنب الأخطاء', gc4: 'المخاطر تحت السيطرة', home: 'الرئيسية', glos: 'المسرد', surv: 'الاستبيان ►', saved: 'محفوظ', back: 'رجوع', next: 'التالي ←', finish: 'احصل على التقرير', qstep: 'خطوة', qof: 'من', fmo: 'شهرياً', fqu: 'ربع سنوي', fye: 'سنوياً', tmust: 'إلزامي', trec: 'موصى به', svlbl: 'الاستبيان', rplbl: 'تقريرك الشخصي', tab1: 'التسجيلات', tab2: 'المالية', tab3: 'التقويم', tab4: 'التأمين', disct: 'مهم:' },
-      pl: { h1: 'Twój kompletny cyfrowy przewodnik po <em>rejestracji</em> i kalkulacji <strong>Twojej firmy w Niemczech</strong>', sub: 'Wszystko, czego potrzebujesz, aby <strong>poprawnie</strong> założyć firmę w Niemczech.', cta: 'Wypełnij ankietę → otrzymaj raport', glosbtn: '\ud83d\udcd6 Słownik', badge: '\ud83c\udde9\ud83c\uddea Niemcy · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Można zainstalować jako aplikację', s1lbl: 'Czego potrzebuje przedsiębiorca', s1h: 'Przedsiębiorca w Niemczech może potrzebować <em>wielu rzeczy</em>', s1d: 'Po wypełnieniu ankiety otrzymasz spersonalizowaną listę.', promise: 'Nie dajemy tylko kalkulacji — zobaczysz <strong>dlaczego ta forma biznesu jest dla Ciebie.</strong>', s2lbl: 'Nasz cel', s2h: 'Abyś czuł się <em>pewnie</em> przed rejestracją', tagline: 'Biznes powinien zaczynać się od <strong>jasności.</strong>', svtitle: 'Zakładanie firmy w Niemczech', svdesc: 'Odpowiedz na pytania i otrzymaj swój raport.', gld: 'Wszystkie kluczowe terminy wyjaśnione.', discd: 'Ta kalkulacja ma charakter informacyjny i nie stanowi porady prawnej.', gc1h: 'Znaj swoje obowiązki', gc1: 'Pełna lista', gc2h: 'Znaj swoje prawa', gc2: 'Co ci się należy', gc3h: 'Nie przepłacaj', gc3: 'Optymalna struktura', gc4h: 'Unikaj błędów', gc4: 'Ryzyka pod kontrolą', home: 'Strona główna', glos: 'Słownik', surv: 'Ankieta ►', saved: 'Zapisano', back: 'Wstecz', next: 'Dalej →', finish: 'Otrzymaj raport', qstep: 'Krok', qof: 'z', fmo: 'Miesięcznie', fqu: 'Kwartalnie', fye: 'Rocznie', tmust: 'Wymagane', trec: 'Zalecane', svlbl: 'Ankieta', rplbl: 'Twój raport', tab1: 'Rejestracje', tab2: 'Finanse', tab3: 'Kalendarz', tab4: 'Ubezpieczenia', disct: 'Ważne:' },
+      pl: { h1: 'Twój kompletny cyfrowy przewodnik po <em>rejestracji</em> i kalkulacji <strong>Twojej firmy w Niemczech</strong>', sub: 'Wszystko, czego potrzebujesz, aby <strong>poprawnie</strong> założyć firmę w Niemczech.', cta: 'Wypełnij ankietę → otrzymaj raport', glosbtn: '\ud83d\udcd6 Słownik', badge: '\ud83c\udde9\ud83c\uddea Niemcy · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Można zainstalować jako aplikację', s1lbl: 'Czego potrzebuje przedsiębiorca', s1h: 'Przedsiębiorca w Niemczech może potrzebować <em>wielu rzeczy</em>', s1d: 'Po wypełnieniu ankiety otrzymasz spersonalizowaną listę.', promise: 'Nie dajemy tylko kalkulacji — zobaczysz <strong>dlaczego ta forma biznesu jest dla Ciebie.</strong>', s2lbl: 'Nasz cel', s2h: 'Abyś czuł się <em>pewnie</em> przed rejestracją', tagline: 'Biznes powinien zaczynać się od <strong>jasności.</strong>', svtitle: 'Zakładanie firmy w Niemczech', svdesc: 'Odpowiedz na pytania i otrzymaj swój raport.', gld: 'Wszystkie kluczowe terminy wyjaśnione.', discd: 'Ta kalkulacja ma charakter informacyjny i nie stanowi porady prawnej.', gc1h: 'Znaj swoje obowiązki', gc1: 'Pełna lista', gc2h: 'Znaj swoje prawa', gc2: 'Co ci się należy', gc3h: 'Nie przepłacaj', gc3: 'Optymalna struktura', gc4h: 'Unikaj błędów', gc4: 'Ryzyka pod kontrolą', home: 'Strona główna', glos: 'Słownik', surv: 'Ankieta ►', saved: 'Zapisano', back: 'Wstecz', next: 'Dalej →', finish: 'Otrzymaj raport', qstep: 'Krok', qof: 'z', fmo: 'Miesięcznie', fqu: 'Kwartalnie', fye: 'Rocznie', tmust: 'Wymagane', trec: 'Zalecane', svlbl: 'Ankieta', rplbl: 'Twój raport', tab1: 'Rejestracje', tab2: 'Finanse', tab3: 'Kalendarz', tab4: 'Ubezpieczenia', disct: 'Ważne:',
+        q_activity_title: 'Rodzaj działalności', q_activity_hint: 'Opisz działalność — system wykryje kategorię i BG.', q_city_title: 'Miasto rejestracji', q_city_hint: 'Miasto wpływa na Gewerbesteuer. Zacznij wpisywać nazwę.', q_revenue_title: 'Planowany obrót', q_revenue_hint: 'Obrót = przychody przed kosztami.', q_expenses_title: 'Miesięczne koszty', q_expenses_hint: 'Czynsz, oprogramowanie, telefon. Bez wynagrodzeń.', q_staff_title: 'Planujesz zatrudnienie?', q_staff_hint: 'Pracownicy wpływają na rejestracje i koszty.', q_extras_title: 'Dodatkowo', q_extras_hint: 'Zaznacz wszystko, co pasuje.', q_notes_title: 'Uwagi', q_notes_hint: 'Opcjonalnie.', q_notes_ph: 'Opcjonalnie…', city_ph: 'np. Düsseldorf, Monachium, Berlin…', act_ph: 'np.: web, restauracja, konsulting…', act_detected: 'Wykryto:', act_freiberuf: 'Możliwy Freiberufler', act_cat_lbl: 'Kategoria: ', act_fb_lbl: 'Możliwy Freiberufler' },
       fr: { h1: 'Votre guide numérique complet pour <em>l’immatriculation</em> et le calcul de <strong>votre entreprise en Allemagne</strong>', sub: 'Tout ce dont vous avez besoin pour démarrer <strong>correctement</strong> en Allemagne.', cta: 'Remplir le questionnaire → obtenir le rapport', glosbtn: '\ud83d\udcd6 Glossaire', badge: '\ud83c\udde9\ud83c\uddea Allemagne · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Installable comme application', s1lbl: 'Ce dont un entrepreneur a besoin', s1h: 'Un entrepreneur en Allemagne peut avoir besoin de <em>nombreuses choses</em>', s1d: 'Après le questionnaire, vous recevrez une liste personnalisée.', promise: 'Nous ne fournissons pas seulement un calcul — vous verrez <strong>pourquoi cette forme d’entreprise vous convient.</strong>', s2lbl: 'Notre objectif', s2h: 'Pour que vous vous sentiez <em>en confiance</em> avant l’immatriculation', tagline: 'Une entreprise doit commencer avec <strong>clarté.</strong>', svtitle: 'Création d’entreprise en Allemagne', svdesc: 'Répondez aux questions et recevez votre rapport personnalisé.', gld: 'Tous les termes clés expliqués.', discd: 'Ce calcul est informatif et ne constitue pas un conseil juridique.', gc1h: 'Connaître ses obligations', gc1: 'Liste complète', gc2h: 'Connaître ses droits', gc2: 'Ce à quoi vous avez droit', gc3h: 'Ne pas surpayer', gc3: 'Structure optimale', gc4h: 'Éviter les erreurs', gc4: 'Risques sous contrôle', home: 'Accueil', glos: 'Glossaire', surv: 'Questionnaire ►', saved: 'Enregistré', back: 'Retour', next: 'Suivant →', finish: 'Obtenir le rapport', qstep: 'Étape', qof: 'sur', fmo: 'Mensuel', fqu: 'Trimestriel', fye: 'Annuel', tmust: 'Obligatoire', trec: 'Recommandé', svlbl: 'Questionnaire', rplbl: 'Votre rapport personnel', tab1: 'Immatriculations', tab2: 'Finances', tab3: 'Calendrier', tab4: 'Assurances', disct: 'Important\xa0:' },
-      es: { h1: 'Tu guía digital completa para el <em>registro</em> y cálculo de <strong>tu negocio en Alemania</strong>', sub: 'Todo lo que necesitas para iniciar tu negocio en Alemania <strong>correctamente.</strong>', cta: 'Completar cuestionario → obtener informe', glosbtn: '\ud83d\udcd6 Glosario', badge: '\ud83c\udde9\ud83c\uddea Alemania · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Instalable como aplicación', s1lbl: 'Lo que necesita un emprendedor', s1h: 'Un emprendedor en Alemania puede necesitar <em>muchas cosas</em>', s1d: 'Después del cuestionario recibirás una lista personalizada.', promise: 'No solo damos un cálculo — verás <strong>por qué esta forma de negocio te conviene.</strong>', s2lbl: 'Nuestro objetivo', s2h: 'Para que te sientas <em>seguro</em> antes del registro', tagline: 'Un negocio debe comenzar con <strong>claridad.</strong>', svtitle: 'Constitución de empresa en Alemania', svdesc: 'Responde las preguntas y recibe tu informe personalizado.', gld: 'Todos los términos clave explicados.', discd: 'Este cálculo es informativo y no constituye asesoramiento legal.', gc1h: 'Conocer las obligaciones', gc1: 'Lista completa', gc2h: 'Conocer tus derechos', gc2: 'A qué tienes derecho', gc3h: 'No pagar de más', gc3: 'Estructura óptima', gc4h: 'Evitar errores', gc4: 'Riesgos bajo control', home: 'Inicio', glos: 'Glosario', surv: 'Cuestionario ►', saved: 'Guardado', back: 'Atrás', next: 'Siguiente →', finish: 'Obtener informe', qstep: 'Paso', qof: 'de', fmo: 'Mensual', fqu: 'Trimestral', fye: 'Anual', tmust: 'Obligatorio', trec: 'Recomendado', svlbl: 'Cuestionario', rplbl: 'Tu informe personal', tab1: 'Registros', tab2: 'Finanzas', tab3: 'Calendario', tab4: 'Seguros', disct: 'Importante:' },
-      ro: { h1: 'Ghidul tău digital complet pentru <em>înregistrarea</em> şi calculul <strong>afacerii tale în Germania</strong>', sub: 'Tot ce ai nevoie pentru a-ți începe afacerea în Germania <strong>corect.</strong>', cta: 'Completează chestionarul → primeşte raportul', glosbtn: '\ud83d\udcd6 Glosar', badge: '\ud83c\udde9\ud83c\uddea Germania · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Poate fi instalat ca aplicație', s1lbl: 'Ce are nevoie un antreprenor', s1h: 'Un antreprenor în Germania poate avea nevoie de <em>multe lucruri</em>', s1d: 'După chestionar veți primi o listă personalizată.', promise: 'Nu dăm doar un calcul — veți vedea <strong>de ce această formă vi se potriveşte.</strong>', s2lbl: 'Scopul nostru', s2h: 'Ca să vă simțiți <em>în siguranță</em>', tagline: 'O afacere trebuie să înceapă cu <strong>claritate.</strong>', svtitle: 'Înființarea unei afaceri în Germania', svdesc: 'Răspundeți la întrebări şi primiți raportul personalizat.', gld: 'Toți termenii cheie explicați.', discd: 'Această calculare este informativă şi nu constituie consultanță juridică.', gc1h: 'Cunoaşte obligațiile', gc1: 'Listă completă', gc2h: 'Cunoaşte drepturile', gc2: 'Ce vi se cuvine', gc3h: 'Nu plătiți prea mult', gc3: 'Structură optimă', gc4h: 'Evitați greşelile', gc4: 'Riscuri sub control', home: 'Acasă', glos: 'Glosar', surv: 'Chestionar ►', saved: 'Salvat', back: 'Înapoi', next: 'Înainte →', finish: 'Primeşte raportul', qstep: 'Pas', qof: 'din', fmo: 'Lunar', fqu: 'Trimestrial', fye: 'Anual', tmust: 'Obligatoriu', trec: 'Recomandat', svlbl: 'Chestionar', rplbl: 'Raportul tău', tab1: 'Înregistrări', tab2: 'Finanțe', tab3: 'Calendar', tab4: 'Asigurări', disct: 'Important:' },
+      es: { h1: 'Tu guía digital completa para el <em>registro</em> y cálculo de <strong>tu negocio en Alemania</strong>', sub: 'Todo lo que necesitas para iniciar tu negocio en Alemania <strong>correctamente.</strong>', cta: 'Completar cuestionario → obtener informe', glosbtn: '\ud83d\udcd6 Glosario', badge: '\ud83c\udde9\ud83c\uddea Alemania · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Instalable como aplicación', s1lbl: 'Lo que necesita un emprendedor', s1h: 'Un emprendedor en Alemania puede necesitar <em>muchas cosas</em>', s1d: 'Después del cuestionario recibirás una lista personalizada.', promise: 'No solo damos un cálculo — verás <strong>por qué esta forma de negocio te conviene.</strong>', s2lbl: 'Nuestro objetivo', s2h: 'Para que te sientas <em>seguro</em> antes del registro', tagline: 'Un negocio debe comenzar con <strong>claridad.</strong>', svtitle: 'Constitución de empresa en Alemania', svdesc: 'Responde las preguntas y recibe tu informe personalizado.', gld: 'Todos los términos clave explicados.', discd: 'Este cálculo es informativo y no constituye asesoramiento legal.', gc1h: 'Conocer las obligaciones', gc1: 'Lista completa', gc2h: 'Conocer tus derechos', gc2: 'A qué tienes derecho', gc3h: 'No pagar de más', gc3: 'Estructura óptima', gc4h: 'Evitar errores', gc4: 'Riesgos bajo control', home: 'Inicio', glos: 'Glosario', surv: 'Cuestionario ►', saved: 'Guardado', back: 'Atrás', next: 'Siguiente →', finish: 'Obtener informe', qstep: 'Paso', qof: 'de', fmo: 'Mensual', fqu: 'Trimestral', fye: 'Anual', tmust: 'Obligatorio', trec: 'Recomendado', svlbl: 'Cuestionario', rplbl: 'Tu informe personal', tab1: 'Registros', tab2: 'Finanzas', tab3: 'Calendario', tab4: 'Seguros', disct: 'Importante:',
+        q_activity_title: 'Tipo de actividad', q_activity_hint: 'Describe la actividad — el sistema detecta la categoría y BG.', q_city_title: 'Ciudad de registro', q_city_hint: 'La ciudad afecta a Gewerbesteuer. Escribe el nombre.', q_revenue_title: 'Facturación prevista', q_revenue_hint: 'Facturación = ingresos antes de gastos.', q_expenses_title: 'Gastos mensuales', q_expenses_hint: 'Alquiler, software, teléfono. Sin salarios.', q_staff_title: '¿Personal previsto?', q_staff_hint: 'El personal afecta registros y costes.', q_extras_title: 'Adicional', q_extras_hint: 'Marca todo lo que aplique.', q_notes_title: 'Notas', q_notes_hint: 'Opcional.', q_notes_ph: 'Opcional…', city_ph: 'p. ej. Düsseldorf, Múnich, Berlín…', act_ph: 'p. ej.: web, restaurante, consultoría…', act_detected: 'Detectado:', act_freiberuf: 'Posible Freiberufler', act_cat_lbl: 'Categoría: ', act_fb_lbl: 'Posible Freiberufler' },
+      ro: { h1: 'Ghidul tău digital complet pentru <em>înregistrarea</em> şi calculul <strong>afacerii tale în Germania</strong>', sub: 'Tot ce ai nevoie pentru a-ți începe afacerea în Germania <strong>corect.</strong>', cta: 'Completează chestionarul → primeşte raportul', glosbtn: '\ud83d\udcd6 Glosar', badge: '\ud83c\udde9\ud83c\uddea Germania · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Poate fi instalat ca aplicație', s1lbl: 'Ce are nevoie un antreprenor', s1h: 'Un antreprenor în Germania poate avea nevoie de <em>multe lucruri</em>', s1d: 'După chestionar veți primi o listă personalizată.', promise: 'Nu dăm doar un calcul — veți vedea <strong>de ce această formă vi se potriveşte.</strong>', s2lbl: 'Scopul nostru', s2h: 'Ca să vă simțiți <em>în siguranță</em>', tagline: 'O afacere trebuie să înceapă cu <strong>claritate.</strong>', svtitle: 'Înființarea unei afaceri în Germania', svdesc: 'Răspundeți la întrebări şi primiți raportul personalizat.', gld: 'Toți termenii cheie explicați.', discd: 'Această calculare este informativă şi nu constituie consultanță juridică.', gc1h: 'Cunoaşte obligațiile', gc1: 'Listă completă', gc2h: 'Cunoaşte drepturile', gc2: 'Ce vi se cuvine', gc3h: 'Nu plătiți prea mult', gc3: 'Structură optimă', gc4h: 'Evitați greşelile', gc4: 'Riscuri sub control', home: 'Acasă', glos: 'Glosar', surv: 'Chestionar ►', saved: 'Salvat', back: 'Înapoi', next: 'Înainte →', finish: 'Primeşte raportul', qstep: 'Pas', qof: 'din', fmo: 'Lunar', fqu: 'Trimestrial', fye: 'Anual', tmust: 'Obligatoriu', trec: 'Recomandat', svlbl: 'Chestionar', rplbl: 'Raportul tău', tab1: 'Înregistrări', tab2: 'Finanțe', tab3: 'Calendar', tab4: 'Asigurări', disct: 'Important:',
+        q_activity_title: 'Tip activitate', q_activity_hint: 'Descrieți activitatea — sistemul detectează categoria și BG.', q_city_title: 'Oraș înregistrare', q_city_hint: 'Orașul influențează Gewerbesteuer. Tastați numele.', q_revenue_title: 'Cifră afaceri planificată', q_revenue_hint: 'Cifra = venituri înainte de cheltuieli.', q_expenses_title: 'Cheltuieli lunare', q_expenses_hint: 'Chirie, software, telefon. Fără salarii.', q_staff_title: 'Planificați angajați?', q_staff_hint: 'Personalul influențează înregistrările.', q_extras_title: 'Suplimentar', q_extras_hint: 'Bifați tot ce se aplică.', q_notes_title: 'Note', q_notes_hint: 'Opțional.', q_notes_ph: 'Opțional…', city_ph: 'ex. Düsseldorf, München, Berlin…', act_ph: 'ex.: web, restaurant, consultanță…', act_detected: 'Detectat:', act_freiberuf: 'Posibil Freiberufler', act_cat_lbl: 'Categorie: ', act_fb_lbl: 'Posibil Freiberufler' },
       it: { h1: 'La tua guida digitale completa per la <em>registrazione</em> e il calcolo della <strong>tua impresa in Germania</strong>', sub: 'Tutto ciò di cui hai bisogno per avviare la tua attività in Germania <strong>nel modo giusto.</strong>', cta: 'Compila il questionario → ottieni il rapporto', glosbtn: '\ud83d\udcd6 Glossario', badge: '\ud83c\udde9\ud83c\uddea Germania · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Installabile come app', s1lbl: 'Di cosa ha bisogno un imprenditore', s1h: 'Un imprenditore in Germania può aver bisogno di <em>molte cose</em>', s1d: 'Dopo il questionario riceverai un elenco personalizzato.', promise: 'Non forniamo solo un calcolo — vedrai <strong>perché questa forma aziendale fa per te.</strong>', s2lbl: 'Il nostro obiettivo', s2h: 'Per farti sentire <em>sicuro</em> prima della registrazione', tagline: "Un'impresa deve iniziare con <strong>chiarezza.</strong>", svtitle: "Avvio di un'impresa in Germania", svdesc: 'Rispondi alle domande e ricevi il tuo rapporto personalizzato.', gld: 'Tutti i termini chiave spiegati.', discd: 'Questo calcolo è informativo e non costituisce consulenza legale.', gc1h: 'Conosci gli obblighi', gc1: 'Elenco completo', gc2h: 'Conosci i tuoi diritti', gc2: 'Cosa ti spetta', gc3h: 'Non pagare troppo', gc3: 'Struttura ottimale', gc4h: 'Evita gli errori', gc4: 'Rischi sotto controllo', home: 'Home', glos: 'Glossario', surv: 'Questionario ►', saved: 'Salvato', back: 'Indietro', next: 'Avanti →', finish: 'Ottieni rapporto', qstep: 'Passo', qof: 'di', fmo: 'Mensile', fqu: 'Trimestrale', fye: 'Annuale', tmust: 'Obbligatorio', trec: 'Consigliato', svlbl: 'Questionario', rplbl: 'Il tuo rapporto', tab1: 'Registrazioni', tab2: 'Finanze', tab3: 'Calendario', tab4: 'Assicurazioni', disct: 'Importante:' },
       pt: { h1: 'O seu guia digital completo para o <em>registo</em> e cálculo do <strong>seu negócio na Alemanha</strong>', sub: 'Tudo o que precisa para iniciar o seu negócio na Alemanha <strong>da forma correta.</strong>', cta: 'Preencher questionário → obter relatório', glosbtn: '\ud83d\udcd6 Glossário', badge: '\ud83c\udde9\ud83c\uddea Alemanha · Düsseldorf / NRW', installhint: '\ud83d\udcf1 Instálavel como app', s1lbl: 'O que um empreendedor precisa', s1h: 'Um empreendedor na Alemanha pode precisar de <em>muitas coisas</em>', s1d: 'Após o questionário receberá uma lista personalizada.', promise: 'Não damos apenas um cálculo — verá <strong>por que esta forma empresarial é para si.</strong>', s2lbl: 'O nosso objetivo', s2h: 'Para se sentir <em>seguro</em> antes do registo', tagline: 'Um negócio deve começar com <strong>clareza.</strong>', svtitle: 'Criação de empresa na Alemanha', svdesc: 'Responda às perguntas e receba o seu relatório personalizado.', gld: 'Todos os termos-chave explicados.', discd: 'Este cálculo é informativo e não constitui aconselhamento jurídico.', gc1h: 'Conheça as obrigações', gc1: 'Lista completa', gc2h: 'Conheça os seus direitos', gc2: 'A que tem direito', gc3h: 'Não pague demais', gc3: 'Estrutura ótima', gc4h: 'Evite erros', gc4: 'Riscos sob controlo', home: 'Início', glos: 'Glossário', surv: 'Questionário ►', saved: 'Guardado', back: 'Voltar', next: 'Próximo →', finish: 'Obter relatório', qstep: 'Passo', qof: 'de', fmo: 'Mensal', fqu: 'Trimestral', fye: 'Anual', tmust: 'Obrigatório', trec: 'Recomendado', svlbl: 'Questionário', rplbl: 'O seu relatório', tab1: 'Registos', tab2: 'Finanças', tab3: 'Calendário', tab4: 'Seguros', disct: 'Importante:' },
       bg: {},
@@ -2239,12 +2791,17 @@
       zh: { h1: '您在德国创业的<em>注册</em>与计算<strong>全面数字指南</strong>', sub: '在德国<strong>正确开始</strong>业务所需的一切。', cta: '填写问卷 → 获取报告', glosbtn: '\ud83d\udcd6 术语表', badge: '\ud83c\udde9\ud83c\uddea 德国 · 杜塞尔多夫', installhint: '\ud83d\udcf1 可安装为应用', s1lbl: '创业者需要什么', s1h: '在德国的创业者可能需要<em>很多东西</em>', s1d: '填写问卷后，您将收到个性化列表。', promise: '我们不仅提供计算 — 您将看到<strong>为何这种业务形式适合您。</strong>', s2lbl: '我们的目标', s2h: '让您在注册前感到<em>自信</em>', tagline: '业务应该以<strong>清晰</strong>开始。', svtitle: '在德国创办业务', svdesc: '回答问题并获取您的个性化报告。', gld: '所有关键术语均已解释。', discd: '此计算仅供参考，不构成法律建议。', gc1h: '了解义务', gc1: '完整列表', gc2h: '了解权利', gc2: '您应得的权益', gc3h: '不要多付', gc3: '最优结构', gc4h: '避免错误', gc4: '风险处于控制之下', home: '首页', glos: '术语表', surv: '问卷 ►', saved: '已保存', back: '返回', next: '下一步 →', finish: '获取报告', qstep: '步骤', qof: '/', fmo: '每月', fqu: '每季度', fye: '每年', tmust: '必须', trec: '推荐', svlbl: '问卷', rplbl: '您的个人报告', tab1: '登记', tab2: '财务', tab3: '日历', tab4: '保险', disct: '重要：' },
     };
 
-    // Build fallback langs
+    // Build fallback langs — EN-first base so uk/pl/ro/tr/es never inherit stray DE from TX.de when OVERRIDES omit keys (prevents DE+EN mixing on one screen).
     var fallbackLangs = ['uk', 'tr', 'ar', 'pl', 'fr', 'es', 'ro', 'it', 'pt', 'bg', 'sr', 'hr', 'cs', 'sk', 'hu', 'fa', 'vi', 'zh'];
     fallbackLangs.forEach(function (c) {
       TX[c] = {};
       var keys = Object.keys(TX.de);
-      keys.forEach(function (k) { TX[c][k] = TX.de[k]; });
+      var baseEn = TX.en;
+      keys.forEach(function (k) {
+        var v = baseEn[k];
+        if (v === undefined || v === '') v = TX.de[k];
+        TX[c][k] = v;
+      });
       if (OVERRIDES[c]) {
         var ok = Object.keys(OVERRIDES[c]);
         ok.forEach(function (k) { TX[c][k] = OVERRIDES[c][k]; });
@@ -2256,15 +2813,29 @@
     // ============================================================
     var currentLang = 'de';
 
+    function normalizeUiLang(code) {
+      var c = (code == null ? '' : String(code)).toLowerCase().substring(0, 2);
+      if (SUPPORTED_UI_LANGS.indexOf(c) >= 0) return c;
+      return 'en';
+    }
+
     function detectLang() {
-      try { var s = localStorage.getItem('bk_lang'); if (s && TX[s]) return s; } catch (e) { }
+      try {
+        var s = localStorage.getItem('bk_lang');
+        if (s) return normalizeUiLang(s);
+      } catch (e) { }
       var bl = (navigator.language || 'de').substring(0, 2).toLowerCase();
-      return TX[bl] ? bl : 'de';
+      return normalizeUiLang(bl);
     }
 
     function t(k) {
       var d = TX[currentLang];
-      return (d && d[k] !== undefined) ? d[k] : (TX.de[k] || k);
+      var en = TX.en;
+      var de = TX.de;
+      if (d && d[k] !== undefined && d[k] !== '') return d[k];
+      if (en && en[k] !== undefined && en[k] !== '') return en[k];
+      if (de && de[k] !== undefined && de[k] !== '') return de[k];
+      return k;
     }
 
     function buildLangMenu() {
@@ -2284,7 +2855,7 @@
     }
 
     function setLang(code) {
-      currentLang = code;
+      currentLang = normalizeUiLang(code);
       try { localStorage.setItem('bk_lang', code); } catch (e) { }
       var menu = document.getElementById('lang-menu');
       if (menu) menu.classList.remove('open');
@@ -2313,7 +2884,7 @@
     function applyTranslations() {
       var map = {
         'nb-home': 'home', 'nb-glos': 'glos', 'nb-surv': 'surv',
-        'el-badge': 'badge', 'el-h1': 'h1', 'el-sub': 'sub',
+        'el-badge': 'badge', 'el-h1': 'h1', 'el-sub': 'sub', 'el-herok': 'herok', 'el-heromicro': 'heromicro',
         'el-cta': 'cta', 'el-cta2': 'cta', 'el-glosbtn': 'glosbtn', 'el-installhint': 'installhint',
         'el-s1lbl': 's1lbl', 'el-s1h': 's1h', 'el-s1d': 's1d',
         'el-g1': 'g1', 'el-g2': 'g2', 'el-g3': 'g3', 'el-g4': 'g4',
@@ -2328,12 +2899,36 @@
         'el-calt': 'calt', 'el-cals': 'cals', 'el-recalc': 'recalc',
         'el-gllbl': 'gllbl', 'el-glh': 'glh', 'el-gld': 'gld',
         'el-pw': 'pw',
-        'el-ititle': 'ititle', 'el-isub': 'isub'
+        'el-ititle': 'ititle', 'el-isub': 'isub',
+        'el-login': 'login', 'el-logd': 'logd'
       };
       Object.keys(map).forEach(function (id) {
         var el = document.getElementById(id);
         if (el) el.innerHTML = t(map[id]);
       });
+      var gi = document.getElementById('r-pdf-gate-info');
+      if (gi) {
+        var gtxt = t('gateinfo');
+        gi.textContent = gtxt;
+        gi.setAttribute('data-bk-default', gtxt);
+      }
+      var atl = document.getElementById('auth-tab-login');
+      var atr = document.getElementById('auth-tab-reg');
+      if (atl) atl.textContent = t('authtablogin');
+      if (atr) atr.textContent = t('authtabreg');
+      var nfl = document.getElementById('nb-logout');
+      if (nfl) nfl.textContent = t('nav_logout');
+      var afl = document.getElementById('auth-forgot-link');
+      if (afl) afl.textContent = t('auth_forgot_link');
+      var abl = document.getElementById('auth-back-login');
+      if (abl) abl.textContent = t('auth_back_login');
+      var gcls = document.getElementById('el-guest');
+      if (gcls) gcls.textContent = t('guestclose');
+      if (typeof updateGuestNotice === 'function') updateGuestNotice();
+      if (typeof setAuthMode === 'function') setAuthMode(window._bkAuthMode || 'login');
+      var rpg = document.getElementById('page-report');
+      if (rpg && rpg.classList.contains('active') && typeof renderNextStepHero === 'function') renderNextStepHero();
+      if (typeof window.updateReportAuthUI === 'function') window.updateReportAuthUI();
       // Next button text
       var steps = getSteps();
       var btnNext = document.getElementById('btn-next');
@@ -2347,7 +2942,11 @@
     // ============================================================
     var currentStep = 0;
     var surveyData = {};
-    try { var sd = localStorage.getItem('bk_draft'); if (sd) surveyData = JSON.parse(sd); } catch (e) { }
+    try {
+      try { localStorage.removeItem('bk_draft'); } catch (e0) {}
+      var sd = sessionStorage.getItem('bk_survey_sess');
+      if (sd) surveyData = JSON.parse(sd);
+    } catch (e) { }
 
     function escapeHtml(s) {
       if (s == null) return '';
@@ -2360,39 +2959,39 @@
     }
 
     function autosave() {
-      try { localStorage.setItem('bk_draft', JSON.stringify(surveyData)); } catch (e) { }
+      try { sessionStorage.setItem('bk_survey_sess', JSON.stringify(surveyData)); } catch (e) { }
     }
 
     function getSteps() {
       return [
         {
-          id: 'activity', title: currentLang === 'ru' ? '\u0412\u0438\u0434 \u0434\u0435\u044f\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438' : currentLang === 'en' ? 'Type of activity' : 'Art der T\u00e4tigkeit',
-          hint: currentLang === 'ru' ? '\u041d\u0430\u043f\u0438\u0448\u0438\u0442\u0435 \u0432\u0430\u0448 \u0432\u0438\u0434 \u0434\u0435\u044f\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438 \u2014 \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u0430 \u043f\u043e\u0434\u0441\u043a\u0430\u0436\u0435\u0442 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044e \u0438 BG.' : currentLang === 'en' ? 'Type your activity — the system will detect the category and Berufsgenossenschaft.' : 'Tätigkeit eingeben — das System erkennt Kategorie und BG automatisch.',
+          id: 'activity', title: t('q_activity_title'),
+          hint: t('q_activity_hint'),
           type: 'activity_ac'
         },
         {
-          id: 'city', title: currentLang === 'ru' ? '\u0413\u043e\u0440\u043e\u0434 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438' : currentLang === 'en' ? 'Registration city' : 'Anmeldestadt',
-          hint: currentLang === 'ru' ? '\u0413\u043e\u0440\u043e\u0434 \u0432\u043b\u0438\u044f\u0435\u0442 \u043d\u0430 Gewerbesteuer. \u041d\u0430\u0447\u043d\u0438\u0442\u0435 \u043f\u0435\u0447\u0430\u0442\u044c \u043d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0433\u043e\u0440\u043e\u0434\u0430.' : currentLang === 'en' ? 'City affects Gewerbesteuer. Start typing city name.' : 'Stadt beeinflusst die Gewerbesteuer. Stadtname eingeben.',
+          id: 'city', title: t('q_city_title'),
+          hint: t('q_city_hint'),
           type: 'city_ac'
         },
         {
-          id: 'revenue', title: currentLang === 'ru' ? '\u041f\u043b\u0430\u043d\u0438\u0440\u0443\u0435\u043c\u044b\u0439 \u043e\u0431\u043e\u0440\u043e\u0442' : currentLang === 'en' ? 'Planned revenue' : 'Geplanter Umsatz',
-          hint: currentLang === 'ru' ? '\u041e\u0431\u043e\u0440\u043e\u0442 = \u0434\u0435\u043d\u044c\u0433\u0438 \u043e\u0442 \u043a\u043b\u0438\u0435\u043d\u0442\u043e\u0432.' : currentLang === 'en' ? 'Revenue before expenses.' : 'Umsatz = Einnahmen vor Ausgaben.',
+          id: 'revenue', title: t('q_revenue_title'),
+          hint: t('q_revenue_hint'),
           type: 'dual', l1: t('yr1'), l2: t('yr2'), p1: '60000', p2: '90000', k1: 'revenue_y1', k2: 'revenue_y2'
         },
         {
-          id: 'expenses', title: currentLang === 'ru' ? '\u0415\u0436\u0435\u043c\u0435\u0441\u044f\u0447\u043d\u044b\u0435 \u0440\u0430\u0441\u0445\u043e\u0434\u044b' : currentLang === 'en' ? 'Monthly expenses' : 'Monatliche Ausgaben',
-          hint: currentLang === 'ru' ? '\u0410\u0440\u0435\u043d\u0434\u0430, \u043f\u0440\u043e\u0433\u0440\u0430\u043c\u043c\u044b, \u0442\u0435\u043b\u0435\u0444\u043e\u043d. \u0411\u0435\u0437 \u0437\u0430\u0440\u043f\u043b\u0430\u0442.' : currentLang === 'en' ? 'Rent, software, phone. Without salaries.' : 'Miete, Software, Telefon.',
+          id: 'expenses', title: t('q_expenses_title'),
+          hint: t('q_expenses_hint'),
           type: 'number', p: '1500 EUR', k: 'expenses_monthly'
         },
         {
-          id: 'staff', title: currentLang === 'ru' ? '\u041f\u043b\u0430\u043d\u0438\u0440\u0443\u0435\u0442\u0435 \u043f\u0435\u0440\u0441\u043e\u043d\u0430\u043b?' : currentLang === 'en' ? 'Planning to hire staff?' : 'Planen Sie Mitarbeiter?',
-          hint: currentLang === 'ru' ? '\u0421\u043e\u0442\u0440\u0443\u0434\u043d\u0438\u043a\u0438 \u0432\u043b\u0438\u044f\u044e\u0442 \u043d\u0430 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438 \u0438 \u0440\u0430\u0441\u0445\u043e\u0434\u044b.' : currentLang === 'en' ? 'Staff affects registrations and costs.' : 'Mitarbeiter beeinflussen Anmeldungen.',
+          id: 'staff', title: t('q_staff_title'),
+          hint: t('q_staff_hint'),
           type: 'dual', l1: t('fte'), l2: t('mini'), p1: '0', p2: '0', k1: 'staff_fulltime', k2: 'staff_minijob'
         },
         {
-          id: 'extras', title: currentLang === 'ru' ? '\u0414\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u043e' : currentLang === 'en' ? 'Additional activities' : 'Zus\u00e4tzliche T\u00e4tigkeiten',
-          hint: currentLang === 'ru' ? '\u041e\u0442\u043c\u0435\u0442\u044c\u0442\u0435 \u0432\u0441\u0435 \u043f\u043e\u0434\u0445\u043e\u0434\u044f\u0449\u0435\u0435.' : currentLang === 'en' ? 'Check all that apply.' : 'Alle ausw\u00e4hlen.',
+          id: 'extras', title: t('q_extras_title'),
+          hint: t('q_extras_hint'),
           type: 'check', opts: [
             { v: 'ecommerce', l: t('ex_ec') }, { v: 'eu_clients', l: t('ex_eu') }, { v: 'non_eu', l: t('ex_nu') },
             { v: 'personal_data', l: t('ex_pd') }, { v: 'financial_risk', l: t('ex_fr') },
@@ -2400,9 +2999,9 @@
           ]
         },
         {
-          id: 'notes', title: currentLang === 'ru' ? '\u0414\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u043e' : currentLang === 'en' ? 'Anything else?' : 'Weitere Infos',
-          hint: currentLang === 'ru' ? '\u041d\u0435\u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e.' : currentLang === 'en' ? 'Optional.' : 'Optional.',
-          type: 'textarea', p: currentLang === 'ru' ? '\u041d\u0435\u043e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u043e\u2026' : currentLang === 'en' ? 'Optional\u2026' : 'Optional\u2026', k: 'notes'
+          id: 'notes', title: t('q_notes_title'),
+          hint: t('q_notes_hint'),
+          type: 'textarea', p: t('q_notes_ph'), k: 'notes'
         }
       ];
     }
@@ -2451,25 +3050,34 @@
         html += '<textarea class="input-field" rows="4" placeholder="' + escapeHtml(step.p) + '" id="inp-' + step.k + '" style="resize:vertical">' + escapeHtml(surveyData[step.k] || '') + '</textarea>';
       } else if (step.type === 'city_ac') {
         var cityVal = surveyData['city_name'] || '';
-        var hbVal = (surveyData['city_name'] || surveyData['city']) ? getCityHb(cityVal) : '';
-        html += '<div class="ac-wrap"><input class="input-field" type="text" id="inp-city-ac" autocomplete="off" placeholder="z.B. Düsseldorf, München, Berlin..." value="' + escapeHtml(cityVal) + '" oninput="onCityInput(this.value)">';
-        html += '<div class="ac-list" id="city-ac-list" style="display:none"></div></div>';
-        if (cityVal && hbVal) html += '<div class="detected-act">&#10003; ' + escapeHtml(cityVal) + ' &mdash; Hebesatz ' + escapeHtml(hbVal) + '%</div>';
+        var hbVal = surveyData['city_name'] ? getCityHb(cityVal) : '';
+        html += '<div class="ac-wrap"><input class="input-field" type="text" id="inp-city-ac" role="combobox" aria-autocomplete="list" aria-expanded="false" aria-controls="city-ac-list" autocomplete="off" placeholder="' + escapeHtml(t('city_ph')) + '" value="' + escapeHtml(cityVal) + '" oninput="onCityInput(this.value)">';
+        html += '<div class="ac-list" id="city-ac-list" role="listbox" style="display:none"></div></div>';
+        html += '<div id="city-fallback-msg" class="city-fallback-hint" style="display:' + (surveyData.city_match_source === 'fallback_bundesavg' ? 'block' : 'none') + '">' +
+          (surveyData.city_match_source === 'fallback_bundesavg' ? escapeHtml(t('city_fallback_de')) : '') + '</div>';
+        if (cityVal && hbVal && (surveyData.city_match_source === 'list_exact' || surveyData.city_match_source === 'list_pick')) {
+          html += '<div class="detected-act">&#10003; ' + escapeHtml(cityVal) + ' &mdash; Hebesatz ' + escapeHtml(hbVal) + '%</div>';
+        }
       } else if (step.type === 'activity_ac') {
         var actVal = surveyData['activity_text'] || '';
         var detAct = actVal ? detectActivity(actVal) : null;
-        var acPH = currentLang === 'ru' ? 'Напр.: веб-разработка, ресторан, консалтинг...' : currentLang === 'en' ? 'e.g.: web development, restaurant, consulting...' : 'z.B.: Webentwicklung, Restaurant, Beratung...';
-        html += '<div class="ac-wrap"><input class="input-field" type="text" id="inp-act-ac" autocomplete="off" placeholder="' + escapeHtml(acPH) + '" value="' + escapeHtml(actVal) + '" oninput="onActInput(this.value)">';
+        html += '<div class="ac-wrap"><input class="input-field" type="text" id="inp-act-ac" autocomplete="off" placeholder="' + escapeHtml(t('act_ph')) + '" value="' + escapeHtml(actVal) + '" oninput="onActInput(this.value)">';
         html += '<div class="ac-list" id="act-ac-list" style="display:none"></div></div>';
         if (detAct) {
           var bgNames = { 'VBG': 'VBG', 'BG BAU': 'BG BAU', 'BGHW': 'BGHW', 'BGN': 'BGN', 'BGW': 'BGW', 'BG Verkehr': 'BG Verkehr', 'SVLFG': 'SVLFG', 'BG ETEM': 'BG ETEM', 'BG (DGUV)': 'BG (DGUV)' };
-          html += '<div class="detected-act">&#10003; ' + (currentLang === 'ru' ? 'Определено: ' : 'Erkannt: ') + '<strong>' + detAct.k + '</strong> &mdash; BG: <strong>' + detAct.bg + '</strong>' + (detAct.fb ? ' &mdash; ' + (currentLang === 'ru' ? 'Возможен Freiberufler' : 'Freiberufler möglich') : '') + '</div>';
+          html += '<div class="detected-act">&#10003; ' + escapeHtml(t('act_detected')) + ' <strong>' + detAct.k + '</strong> &mdash; BG: <strong>' + detAct.bg + '</strong>' + (detAct.fb ? ' &mdash; ' + escapeHtml(t('act_freiberuf')) : '') + '</div>';
         }
       }
       html += '</div>';
 
       var sc = document.getElementById('survey-content');
       if (sc) sc.innerHTML = html;
+
+      if (step.type === 'city_ac') {
+        setTimeout(function () {
+          if (typeof window.bindCityAcKeyboard === 'function') window.bindCityAcKeyboard();
+        }, 0);
+      }
 
       // Bind radio clicks
       document.querySelectorAll('.r-opt').forEach(function (el) {
@@ -2521,8 +3129,14 @@
 
     function nextStep() {
       var steps = getSteps();
-      if (currentStep < steps.length - 1) { currentStep++; renderSurveyStep(); window.scrollTo(0, 0); }
-      else {
+      if (currentStep < steps.length - 1) {
+        if (steps[currentStep].id === 'city' && typeof window.applyCityFallbackFromInput === 'function') {
+          window.applyCityFallbackFromInput();
+        }
+        currentStep++;
+        renderSurveyStep();
+        window.scrollTo(0, 0);
+      } else {
         generateReport();
         showPage('report');
       }
@@ -2542,22 +3156,28 @@
 
       function generateReport() {
         window._bkDeclineSave = false;
-        if (!window._bkLoadingCaseFromUrl) {
-          if (!window._bkCaseLockedFromCabinet) {
-            try { localStorage.removeItem('bk_case_id'); } catch (e) {}
-          }
+        if (!window._bkLoadingCaseFromCabinet) {
+          window._bkActiveCaseId = null;
         }
-        window._bkLoadingCaseFromUrl = false;
+        window._bkLoadingCaseFromCabinet = false;
         var d = surveyData;
         var ry1 = parseFloat(d.revenue_y1) || 0, ry2 = parseFloat(d.revenue_y2) || 0;
         var em = parseFloat(d.expenses_monthly) || 0, ey = em * 12;
         var sf = parseInt(d.staff_fulltime) || 0, sm = parseInt(d.staff_minijob) || 0;
         var hs = sf > 0 || sm > 0;
-        var act = d.activity || 'other', city = d.city || 'duesseldorf', ext = d.extras || [];
+        var act = d.activity || 'other', ext = d.extras || [];
 
-        var ru = ['ru', 'uk', 'bg', 'sr'].indexOf(currentLang) > -1;
-        var en = currentLang === 'en';
-        function lbl(r, e, de) { return ru ? r : (en ? e : de); }
+        function L8(m) {
+          var order = (currentLang === 'de') ? ['de', 'en'] : [currentLang, 'en'];
+          for (var li = 0; li < order.length; li++) {
+            var k = order[li];
+            if (m[k] != null && m[k] !== '') return m[k];
+          }
+          return '';
+        }
+        function lbl(r, e, de) {
+          return L8({ ru: r, en: e, de: de, uk: e, pl: e, ro: e, tr: e, es: e });
+        }
 
         // ── Form recommendation ──────────────────────────────
         var lf, lfDE;
@@ -2567,17 +3187,10 @@
 
         var isFB = lf === 'freib', isUG = lf === 'ug', isK = ry1 < 22000 && !isUG;
 
-        // City: use autocomplete value if available, fallback to old map
-        var hb, cityLbl;
-        if (d.city_hb && d.city_name) {
-          hb = parseInt(d.city_hb);
-          cityLbl = d.city_name;
-        } else {
-          var hbMap = { duesseldorf: 440, koeln: 475, muenchen: 490, berlin: 410, hamburg: 470, other_city: 400 };
-          hb = hbMap[city] || 400;
-          var cNames = { duesseldorf: 'Düsseldorf', koeln: 'Köln', muenchen: 'München', berlin: 'Berlin', hamburg: 'Hamburg' };
-          cityLbl = cNames[city] || city || 'Stadt';
-        }
+        // City: autocomplete model only (Hebesatz + display name)
+        var cityLbl = (d.city_name && String(d.city_name).trim()) ? String(d.city_name).trim() : '\u2014';
+        var hb = (d.city_hb != null && d.city_hb !== '') ? parseInt(d.city_hb, 10) : 400;
+        if (isNaN(hb)) hb = 400;
 
         var sfc = sf * 3200 * 1.23 * 12, smc = sm * 538 * 1.30 * 12, te = ey + sfc + smc, pr = ry1 - te;
 
@@ -2680,10 +3293,16 @@
           return '<div class="top5-li"><div class="top5-num">' + (i + 1) + '</div><div class="top5-txt"><strong>' + s.n + '</strong>' + s.d + (s.l ? '<br><a href="' + s.l + '" target="_blank" rel="noopener">→ ' + t('offlink') + '</a>' : '') + '</div></div>';
         }).join('');
 
-        document.getElementById('r-top5').innerHTML =
+        var compBlock = (typeof renderComplianceSection === 'function')
+          ? renderComplianceSection({ surveyData: d, activityKey: act, cityLabel: cityLbl, currentLang: currentLang })
+          : '';
+        var top5Main =
           '<div class="rpt-sec-h">🎯 ' + lbl('Рекомендация: ', 'Recommendation: ', 'Empfehlung: ') + lfDE + '</div>' +
           '<div class="r-card"><h3>' + lbl('Что сделать в первую очередь', 'What to do first', 'Was zuerst zu tun ist') + '</h3>' +
           '<div class="r-card-sub">' + lbl('Порядок действий', 'Order of steps', 'Reihenfolge der Schritte') + '</div>' + stepsHtml + '</div>';
+        document.getElementById('r-top5').innerHTML = compBlock
+          ? ('<div class="r-top5-split"><div class="r-top5-main">' + top5Main + '</div><div class="r-top5-compliance">' + compBlock + '</div></div>')
+          : top5Main;
 
         document.getElementById('r-oq').innerHTML =
           '<div class="r-card"><h3>' + lbl('Открытые вопросы', 'Open questions', 'Offene Fragen') + '</h3>' +
@@ -2791,10 +3410,15 @@
           cal.map(function (c_) { return '<div class="cal-item"><div class="cal-freq ' + c_.f + '">' + fm[c_.f] + '</div><div class="cal-txt"><strong>' + c_.n + '</strong><span>' + c_.d + '</span></div></div>'; }).join('') +
           '</div>';
 
+        var rdEl = document.getElementById('r-disclaimer');
+        if (rdEl) {
+          rdEl.textContent = (typeof TX !== 'undefined' && TX.de && TX.de.legal_disclaimer_de) ? TX.de.legal_disclaimer_de : '';
+        }
+
         // ── SECTIONS 6-9 ─────────────────────────────────────
         renderFines(act);
         renderClosing();
-        renderSavePrompt();
+        renderNextStepHero();
         var _sw = document.getElementById('r-share-wrap');
         if (_sw) { _sw.innerHTML = ''; _sw.removeAttribute('data-rendered'); }
         initVisitCounter();
@@ -2810,9 +3434,17 @@
       // GLOSSARY
       // ============================================================
       function renderGlossary() {
-        var ru = ['ru', 'uk', 'bg', 'sr'].indexOf(currentLang) > -1;
-        var en = currentLang === 'en';
-        function lbl(r, e, de) { return ru ? r : (en ? e : de); }
+        function L8g(m) {
+          var order = (currentLang === 'de') ? ['de', 'en'] : [currentLang, 'en'];
+          for (var gi = 0; gi < order.length; gi++) {
+            var k = order[gi];
+            if (m[k] != null && m[k] !== '') return m[k];
+          }
+          return '';
+        }
+        function lbl(r, e, de) {
+          return L8g({ ru: r, en: e, de: de, uk: e, pl: e, ro: e, tr: e, es: e });
+        }
 
         var allCats = [
           {
@@ -2929,15 +3561,15 @@
         var pg = document.getElementById('page-' + n);
         if (pg) pg.classList.add('active');
         window.scrollTo(0, 0);
+        if (typeof window.syncGuestPrintMode === 'function') window.syncGuestPrintMode();
       }
 
       function startSurvey(fromHome) {
         if (fromHome === true) {
           window._bkCaseLockedFromCabinet = false;
-          try {
-            localStorage.removeItem('bk_case_id');
-            localStorage.removeItem('bk_view_case_id');
-          } catch (e) {}
+          window._bkActiveCaseId = null;
+          window._bkLastSavedCaseId = null;
+          try { sessionStorage.removeItem('bk_open_case_id'); } catch (e) {}
         }
         renderSurveyStep();
         showPage('survey');
@@ -2969,78 +3601,63 @@
           var v = parseInt(localStorage.getItem(k) || String(base)) + 1;
           localStorage.setItem(k, v);
           var el = document.getElementById('v-cnt');
-          if (el) el.textContent = v.toLocaleString() + ' Besuche gesamt';
+          if (el) el.textContent = v.toLocaleString() + ' ' + (typeof t === 'function' ? t('visitcnt') : 'visits total');
         } catch (e) { }
       }
 
       // ── GUEST NOTICE ─────────────────────────────────────
       function updateGuestNotice() {
-        var ru = ['ru', 'uk', 'bg', 'sr'].indexOf(currentLang) > -1;
         var t_ = document.getElementById('gn-t');
         var d_ = document.getElementById('gn-d');
-        if (t_) t_.textContent = ru ? 'Гостевой режим' : 'Gastmodus';
-        if (d_) d_.textContent = ru ?
-          'Мы не сохраняем ваши данные. Если хотите вернуться — сохраните PDF.' :
-          'Wir speichern keine Daten. Wenn Sie zurückkehren möchten — speichern Sie den Bericht als PDF.';
+        if (t_) t_.textContent = t('guest_t');
+        if (d_) d_.textContent = t('guest_d');
       }
 
-      // ── SAVE PROMPT ──────────────────────────────────────
-      function renderSavePrompt() {
-        var el = document.getElementById('r-save'); if (!el) return;
-        var ru = ['ru', 'uk', 'bg', 'sr'].indexOf(currentLang) > -1;
+      // ── NEXT STEP HERO (save / PDF / specialists) ───────
+      function renderNextStepHero() {
+        var el = document.getElementById('r-next-step');
+        if (!el) return;
+        var esc = escapeHtml;
         el.innerHTML =
-          '<div class="save-cta-hero no-print">' +
-          '<h4>' + (ru ? '💾 Сохранить расчёт?' : '💾 Berechnung speichern?') + '</h4>' +
-          '<p class="save-sub">' + (ru ?
-            'Один шаг — и расчёт окажется в личном кабинете: PDF, ссылка «поделиться» и каталог специалистов.' :
-            'Ein Schritt — Ihre Berechnung landet im Konto: PDF, Teilen-Link und Spezialisten.') + '</p>' +
-          '<div class="save-cta-btns">' +
-          '<button type="button" class="btn-save-yes" id="bk-save-yes">' +
-          (ru ? 'Да, создать аккаунт и сохранить' : 'Ja, Konto erstellen und speichern') + '</button>' +
-          '<button type="button" class="btn-save-no" id="bk-save-no">' +
-          (ru ? 'Нет, продолжить без сохранения' : 'Nein, ohne Speicherung fortfahren') + '</button>' +
+          '<div class="bk-next-hero no-print">' +
+          '<h3>' + esc(t('wnext_h')) + '</h3>' +
+          '<p class="bk-next-lead">' + esc(t('wnext_lead')) + '</p>' +
+          '<div class="wnext-grid">' +
+          '<div class="wnext-item"><strong>' + esc(t('wnext_save_t')) + '</strong><span>' + esc(t('wnext_save_d')) + '</span></div>' +
+          '<div class="wnext-item"><strong>' + esc(t('wnext_pdf_t')) + '</strong><span>' + esc(t('wnext_pdf_d')) + '</span></div>' +
+          '<div class="wnext-item"><strong>' + esc(t('wnext_spec_t')) + '</strong><span>' + esc(t('wnext_spec_d')) + '</span></div>' +
           '</div>' +
-          '<p class="save-cta-note">' + (ru ?
-            'Без сохранения мы не отправляем данные в облако: нет PDF из кабинета, шаринга и каталога специалистов для этого просмотра.' :
-            'Ohne Speicherung: kein Cloud-Speicher — kein PDF aus dem Konto, kein Teilen, kein Spezialisten-Katalog für diese Ansicht.') +
-          '</p></div>';
+          '<div class="save-benefit-strip">' + esc(t('saveben')) + '</div>' +
+          '<div class="bk-next-btns">' +
+          '<button type="button" class="btn-next-primary" id="bk-next-save">' + esc(t('btn_save_result')) + '</button>' +
+          '<button type="button" class="btn-next-sec" id="bk-next-pdf">' + esc(t('btn_pdf_dl')) + '</button>' +
+          '<button type="button" class="btn-next-sec" id="bk-next-spec">' + esc(t('btn_find_spec')) + '</button>' +
+          '</div>' +
+          '<p class="bk-next-decline"><button type="button" id="bk-next-decline">' + esc(t('wnext_decl')) + '</button></p>' +
+          '</div>';
         setTimeout(function () {
-          var y = document.getElementById('bk-save-yes');
-          var n = document.getElementById('bk-save-no');
-          if (y) {
-            y.onclick = function () {
-              if (window.bkOnSaveYes) window.bkOnSaveYes();
-            };
-          }
-          if (n) {
-            n.onclick = function () {
-              if (window.bkOnSaveNo) window.bkOnSaveNo();
-            };
-          }
+          var s = document.getElementById('bk-next-save');
+          var p = document.getElementById('bk-next-pdf');
+          var sp = document.getElementById('bk-next-spec');
+          var d = document.getElementById('bk-next-decline');
+          if (s) s.onclick = function () { if (window.bkHandleNextSave) window.bkHandleNextSave(); };
+          if (p) p.onclick = function () { if (window.bkHandleNextPdf) window.bkHandleNextPdf(); };
+          if (sp) sp.onclick = function () { if (window.bkHandleNextSpec) window.bkHandleNextSpec(); };
+          if (d) d.onclick = function () { if (window.bkOnSaveNo) window.bkOnSaveNo(); };
         }, 0);
       }
 
       // ── ШТРАФЫ / FINES ────────────────────────────────────
       function renderFines(act) {
         var el = document.getElementById('r-fines'); if (!el) return;
-        var ru = ['ru', 'uk', 'bg', 'sr'].indexOf(currentLang) > -1;
-        var en = currentLang === 'en';
-        var title = ru ? 'За что чаще всего штрафуют' : (en ? 'Common fines to avoid' : 'Wofür am häufigsten Bußgelder');
-        var fines = [
-          { n: ru ? 'Нет Impressum на сайте' : 'Kein Impressum (Website)', a: '300–1.500 €', d: ru ? 'Обязательно для любого бизнеса онлайн' : 'Pflicht für jeden Gewerbetreibenden online' },
-          { n: ru ? 'Нарушение Datenschutz / Cookie' : 'Datenschutz / Cookie-Fehler', a: '500–10.000 €', d: ru ? 'Google Analytics без согласия, нет Datenschutzerklärung' : 'Google Analytics ohne Einwilligung' },
-          { n: ru ? 'Фото без лицензии (Getty)' : 'Fotos ohne Lizenz (Getty etc.)', a: '600–2.500 €', d: ru ? 'за каждое фото' : 'pro Foto' },
-          { n: ru ? 'Касса без TSE' : 'Kasse ohne TSE (Kassensicherungsverordnung)', a: 'bis 25.000 €', d: ru ? 'Проверка Finanzamt' : 'Kassendaten nicht ordnungsgemäß gespeichert' },
-          { n: ru ? 'Нелегальная работа сотрудников (Zoll)' : 'Schwarzarbeit (Zoll-Kontrolle)', a: 'bis 500.000 €', d: ru ? 'Рестораны, салоны, стройки' : 'Restaurants, Salons, Bau' },
-          { n: ru ? 'Переработка (Arbeitszeitgesetz)' : 'Arbeitszeitverstoß (über 8h)', a: 'bis 15.000 €', d: ru ? 'Макс. 8 часов в день' : 'Max. 8h/Tag' },
-          { n: ru ? 'Ошибки НДС (7% вместо 19%)' : 'USt-Fehler (7% statt 19%)', a: ru ? 'Доначисление + проценты' : 'Nachzahlung + Zinsen', d: ru ? 'Ресторан: еда 19%, навынос 7%' : 'Restaurant: drinnen 19%, Takeaway 7%' },
-        ];
-        if (act === 'gastro') fines.unshift(
-          { n: 'GEMA — Musik ohne Lizenz', a: '500–5.000 €', d: ru ? 'Spotify не подходит для бизнеса' : 'Spotify gilt nur für Privatnutzung' }
-        );
+        var pack = (window.BK_REPORT_I18N && window.BK_REPORT_I18N.finesFor)
+          ? window.BK_REPORT_I18N.finesFor(currentLang)
+          : { title: 'Fines', sub: '', rows: [] };
+        var fines = pack.rows ? pack.rows.slice() : [];
+        if (act === 'gastro' && pack.gastroExtra) fines.unshift(pack.gastroExtra);
         var html = '<div class="r-card" style="border-color:rgba(232,85,85,.3)">' +
-          '<h3 style="color:var(--red)">⚠️ ' + title + '</h3>' +
-          '<div class="r-card-sub">' + (ru ? 'Типичные штрафы предпринимателей в Германии' : 'Häufige Fehler mit Konsequenzen') + '</div>';
+          '<h3 style="color:var(--red)">⚠️ ' + pack.title + '</h3>' +
+          '<div class="r-card-sub">' + pack.sub + '</div>';
         fines.forEach(function (f) {
           html += '<div class="fine-row"><div style="flex:1"><div style="font-size:14px;font-weight:600">' + f.n + '</div>' +
             '<div style="font-size:12px;color:var(--text-muted);margin-top:2px">' + f.d + '</div></div>' +
@@ -3055,28 +3672,19 @@
         var cl = document.getElementById('r-closing');
         var ul = document.getElementById('r-upsell');
         if (!cl) return;
-        var ru = ['ru', 'uk', 'bg', 'sr'].indexOf(currentLang) > -1;
+        var C = (window.BK_REPORT_I18N && window.BK_REPORT_I18N.closingFor)
+          ? window.BK_REPORT_I18N.closingFor(currentLang)
+          : { quote: '', disc: '', upsell_h: '', upsell_p: '' };
         cl.innerHTML =
           '<div class="closing-box">' +
-          '<blockquote>' +
-          (ru ?
-            'Теперь ты понимаешь, что тебя ждёт. Ты можешь идти дальше — или не идти. Но ты больше не идёшь вслепую.' :
-            'Jetzt verstehen Sie, was auf Sie zukommt. Sie können weitergehen — oder nicht. Aber Sie gehen nicht mehr blind.') +
-          '</blockquote>' +
-          '<div class="disc">' +
-          (ru ?
-            'Данная оценка носит информационный характер и не является юридической или налоговой консультацией.' :
-            'Diese Berechnung ist informativ und keine Rechts- oder Steuerberatung.') +
-          '</div></div>';
-        if (ul)
+          '<blockquote>' + C.quote + '</blockquote>' +
+          '<div class="disc">' + C.disc + '</div></div>';
+        if (ul) {
           ul.innerHTML =
             '<div class="upsell-box no-print">' +
-            '<h3>' + (ru ? 'Вы увидели только базовую оценку.' : 'Sie haben nur die Basisauswertung gesehen.') + '</h3>' +
-            '<p>' + (ru ?
-              'Чтобы получить точные расчёты и избежать ошибок — активируйте Business.' :
-              'Für genaue Berechnungen und um Fehler zu vermeiden — aktivieren Sie Business.') + '</p>' +
-            '<button class="btn-primary" onclick="document.getElementById(\'auth-modal\').classList.remove(\'hidden\')">' +
-            (ru ? 'Активировать Business →' : 'Business aktivieren →') + '</button></div>';
+            '<h3>' + C.upsell_h + '</h3>' +
+            '<p>' + C.upsell_p + '</p></div>';
+        }
       }
 
       // ── HELPER ────────────────────────────────────────────
@@ -3238,22 +3846,104 @@
       }
 
       // ── CITY AUTOCOMPLETE ─────────────────────────────────
+      window._cityAcResults = [];
+      window._cityAcHighlight = -1;
+
       function onCityInput(val) {
         var list = document.getElementById('city-ac-list');
+        var inp = document.getElementById('inp-city-ac');
         if (!list) return;
         var results = citySearch(val);
-        if (!results.length || val.length < 2) { list.style.display = 'none'; return; }
-        list.innerHTML = results.map(function (city) {
-          return '<div class="ac-item" onclick="selectCity(' + JSON.stringify(city.n) + ',' + city.hb + ')">' +
+        window._cityAcResults = results;
+        window._cityAcHighlight = -1;
+        if (inp) inp.setAttribute('aria-expanded', results.length && val.length >= 2 ? 'true' : 'false');
+        if (!results.length || val.length < 2) { list.style.display = 'none'; list.innerHTML = ''; return; }
+        list.innerHTML = results.map(function (city, idx) {
+          return '<div class="ac-item" role="option" id="city-ac-opt-' + idx + '" data-idx="' + idx + '" data-name="' + encodeURIComponent(city.n) + '" data-hb="' + city.hb + '">' +
             '<span>' + escapeHtml(city.n) + '</span><span class="ac-badge">' + escapeHtml(city.hb) + '%</span></div>';
         }).join('');
+        list.querySelectorAll('.ac-item').forEach(function (el) {
+          el.addEventListener('mousedown', function (e) {
+            e.preventDefault();
+          });
+          el.addEventListener('click', function () {
+            var nm = decodeURIComponent(el.getAttribute('data-name') || '');
+            var hb = parseInt(el.getAttribute('data-hb'), 10);
+            selectCity(nm, hb);
+          });
+        });
         list.style.display = 'block';
+        if (typeof window.bindCityAcKeyboard === 'function') window.bindCityAcKeyboard();
       }
+
+      function cityAcSetHighlight(idx) {
+        var list = document.getElementById('city-ac-list');
+        if (!list || list.style.display === 'none') return;
+        var items = list.querySelectorAll('.ac-item');
+        window._cityAcHighlight = Math.max(-1, Math.min(idx, items.length - 1));
+        items.forEach(function (it, i) {
+          it.classList.toggle('focused', i === window._cityAcHighlight);
+        });
+      }
+
+      window.bindCityAcKeyboard = function () {
+        var inp = document.getElementById('inp-city-ac');
+        if (!inp || inp.getAttribute('data-bk-kb') === '1') return;
+        inp.setAttribute('data-bk-kb', '1');
+        inp.addEventListener('keydown', function (e) {
+          var list = document.getElementById('city-ac-list');
+          if (!list || list.style.display === 'none') return;
+          var items = list.querySelectorAll('.ac-item');
+          if (!items.length) return;
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            cityAcSetHighlight(window._cityAcHighlight < 0 ? 0 : window._cityAcHighlight + 1);
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            cityAcSetHighlight(window._cityAcHighlight <= 0 ? -1 : window._cityAcHighlight - 1);
+          } else if (e.key === 'Enter') {
+            if (window._cityAcHighlight >= 0 && items[window._cityAcHighlight]) {
+              e.preventDefault();
+              items[window._cityAcHighlight].click();
+            }
+          } else if (e.key === 'Escape') {
+            list.style.display = 'none';
+            window._cityAcHighlight = -1;
+          }
+        });
+      };
+
+      window.applyCityFallbackFromInput = function () {
+        var inp = document.getElementById('inp-city-ac');
+        if (!inp) return;
+        var raw = inp.value.trim();
+        if (!raw) return;
+        var found = CITIES.find(function (c) { return c.n === raw; });
+        if (found) {
+          surveyData.city_name = found.n;
+          surveyData.city_hb = found.hb;
+          surveyData.city_match_source = 'list_exact';
+          delete surveyData.city_fallback_note;
+          var fb = document.getElementById('city-fallback-msg');
+          if (fb) { fb.style.display = 'none'; fb.textContent = ''; }
+          return;
+        }
+        surveyData.city_name = raw;
+        surveyData.city_hb = 400;
+        surveyData.city_match_source = 'fallback_bundesavg';
+        surveyData.city_fallback_note = t('city_fallback_de');
+        autosave();
+        var fb2 = document.getElementById('city-fallback-msg');
+        if (fb2) {
+          fb2.style.display = 'block';
+          fb2.textContent = t('city_fallback_de');
+        }
+      };
 
       function selectCity(name, hb) {
         surveyData['city_name'] = name;
-        surveyData['city'] = name;
         surveyData['city_hb'] = hb;
+        surveyData.city_match_source = 'list_pick';
         autosave();
         var inp = document.getElementById('inp-city-ac');
         if (inp) inp.value = name;
@@ -3298,8 +3988,9 @@
       function updateDetectedAct(act) {
         var el = document.querySelector('.detected-act');
         if (!act) { if (el) el.remove(); return; }
-        var ru = ['ru', 'uk', 'bg', 'sr'].indexOf(currentLang) > -1;
-        var msg = '&#10003; ' + (ru ? 'Категория: ' : 'Kategorie: ') + '<strong>' + act.k + '</strong> &mdash; BG: <strong>' + act.bg + '</strong>' + (act.fb ? ' &mdash; ' + (ru ? 'Возможен Freiberufler' : 'Freiberufler möglich') : '');
+        var catLab = t('act_cat_lbl');
+        var fbLab = t('act_fb_lbl');
+        var msg = '&#10003; ' + catLab + '<strong>' + act.k + '</strong> &mdash; BG: <strong>' + act.bg + '</strong>' + (act.fb ? ' &mdash; ' + fbLab : '');
         if (el) { el.innerHTML = msg; }
         else {
           var wrap = document.querySelector('.ac-wrap');
@@ -3321,7 +4012,6 @@
         if (inp) inp.value = term;
         var list = document.getElementById('act-ac-list');
         if (list) list.style.display = 'none';
-        var ru = ['ru', 'uk', 'bg', 'sr'].indexOf(currentLang) > -1;
         updateDetectedAct({ k: key, bg: bg, fb: fb });
       }
 
@@ -3337,9 +4027,17 @@
       function renderFehler() {
         var el = document.getElementById('fehler-content');
         if (!el || el.innerHTML) return; // render once
-        var ru = ['ru', 'uk', 'bg', 'sr'].indexOf(currentLang) > -1;
-        var en = currentLang === 'en';
-        function lbl(r, e, de) { return ru ? r : (en ? e : de); }
+        function L8f(m) {
+          var order = (currentLang === 'de') ? ['de', 'en'] : [currentLang, 'en'];
+          for (var fi = 0; fi < order.length; fi++) {
+            var k = order[fi];
+            if (m[k] != null && m[k] !== '') return m[k];
+          }
+          return '';
+        }
+        function lbl(r, e, de) {
+          return L8f({ ru: r, en: e, de: de, uk: e, pl: e, ro: e, tr: e, es: e });
+        }
 
         var busse = [
           {
@@ -3484,12 +4182,61 @@
   const SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
   const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
 
-  const supabaseClient = window.supabase.createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY
-  );
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      detectSessionInUrl: true,
+      persistSession: true,
+      autoRefreshToken: true
+    }
+  });
 
   window.supabaseClient = supabaseClient;
+
+  window.updateNavAuth = async function () {
+    var btn = document.getElementById('nb-logout');
+    if (!btn) return;
+    try {
+      var u = (await supabaseClient.auth.getUser()).data.user;
+      btn.style.display = u ? 'inline-flex' : 'none';
+    } catch (e) {
+      btn.style.display = 'none';
+    }
+  };
+
+  window.bkLogout = async function () {
+    try {
+      await supabaseClient.auth.signOut({ scope: 'global' });
+    } catch (e) {}
+    if (typeof window.updateNavAuth === 'function') await window.updateNavAuth();
+    if (typeof syncGuestPrintMode === 'function') syncGuestPrintMode();
+    if (typeof window.updateReportAuthUI === 'function') await window.updateReportAuthUI();
+    try {
+      window.location.href = 'index.html' + (localStorage.getItem('bk_lang') ? ('?lang=' + encodeURIComponent(localStorage.getItem('bk_lang'))) : '');
+    } catch (e2) {
+      window.location.href = 'index.html';
+    }
+  };
+
+  function tx(k) {
+    try {
+      if (typeof t === 'function') return t(k);
+    } catch (e) { }
+    return k;
+  }
+
+  function syncGuestPrintMode() {
+    var o = document.getElementById('bk-guest-print-overlay');
+    if (o && typeof t === 'function') o.textContent = t('guest_print_denied');
+    var rep = document.getElementById('page-report');
+    var onReport = rep && rep.classList.contains('active');
+    supabaseClient.auth.getUser().then(function (res) {
+      var u = res.data && res.data.user;
+      document.documentElement.classList.toggle('bk-report-print-guest', !!onReport && !u);
+    }).catch(function () {
+      document.documentElement.classList.toggle('bk-report-print-guest', !!onReport);
+    });
+  }
+  window.syncGuestPrintMode = syncGuestPrintMode;
 
   window.updateReportAuthUI = async function () {
     var info = document.getElementById('r-pdf-gate-info');
@@ -3502,64 +4249,70 @@
     try {
       var u = (await supabaseClient.auth.getUser()).data.user;
       if (window._bkDeclineSave) {
-        info.textContent = 'Вы отказались от сохранения: для этого просмотра недоступны PDF из кабинета, ссылка «поделиться» и переход к каталогу специалистов.';
+        info.textContent = tx('gatedecl');
         info.style.display = 'block';
+        syncGuestPrintMode();
         return;
       }
       info.textContent = def;
       info.style.display = u ? 'none' : 'block';
+      var bp = document.getElementById('bk-next-pdf');
+      var bs = document.getElementById('bk-next-spec');
+      if (bp) bp.style.display = u ? '' : 'none';
+      if (bs) bs.style.display = u ? '' : 'none';
+      syncGuestPrintMode();
     } catch (e) {}
   };
 
   window.renderReportSpecLinks = function () {
     var el = document.getElementById('r-spec-cta');
     if (!el) return;
+    el.innerHTML =
+      '<div class="r-card" style="margin-bottom:16px;padding:14px 16px;font-size:13px;color:var(--text-muted)">' +
+      tx('speccta') +
+      '</div>';
+    el.onclick = null;
+  };
+
+  function buildSpecialistsUrl() {
     var city = '';
-    var lang = '';
+    var lang = 'ru';
     try {
       if (typeof surveyData !== 'undefined') {
-        city = String(surveyData.city_name || surveyData.city || '').trim();
+        city = String(surveyData.city_name || '').trim();
       }
       if (typeof currentLang !== 'undefined') lang = currentLang;
     } catch (e) {}
-    function href(cat) {
-      var p = new URLSearchParams();
-      p.set('category', cat);
-      if (city) p.set('city', city);
-      if (lang) p.set('lang', lang);
-      return 'specialists.html?' + p.toString();
+    var p = new URLSearchParams();
+    p.set('category', 'tax');
+    if (city) p.set('city', city);
+    p.set('lang', lang);
+    return 'specialists.html?' + p.toString();
+  }
+  window.buildSpecialistsUrl = buildSpecialistsUrl;
+
+  window.bkHandleNextSave = async function () {
+    if (window.bkOnSaveYes) await window.bkOnSaveYes();
+  };
+
+  window.bkHandleNextPdf = async function () {
+    var u = (await supabaseClient.auth.getUser()).data.user;
+    if (!u) return;
+    if (window._bkDeclineSave) {
+      flashPdfGate(tx('flashpdf'));
+      return;
     }
-    var rows = [
-      { k: 'tax', t: 'Налоговый консультант' },
-      { k: 'accounting', t: 'Бухгалтер' },
-      { k: 'insurance', t: 'Страховой агент' },
-      { k: 'legal', t: 'Юридическая консультация' }
-    ];
-    el.innerHTML =
-      '<div class="r-card" style="margin-bottom:16px">' +
-      '<h3 style="font-size:16px;color:var(--gold);margin-bottom:12px">Нужен специалист в вашем городе?</h3>' +
-      '<div class="spec-cta-btns">' +
-      rows.map(function (r) {
-        return '<a href="#" class="spec-cta-link" data-spec-href="' + encodeURIComponent(href(r.k)) + '">' + r.t + '</a>';
-      }).join('') +
-      '</div></div>';
-    el.onclick = function (ev) {
-      var a = ev.target.closest('a.spec-cta-link');
-      if (!a) return;
-      ev.preventDefault();
-      if (window._bkDeclineSave) {
-        flashPdfGate('Сначала сохраните расчёт (кнопка «Да, создать аккаунт…» выше), чтобы открыть каталог специалистов.');
-        return;
-      }
-      supabaseClient.auth.getUser().then(function (res) {
-        if (!res.data || !res.data.user) {
-          flashPdfGate('Войдите или зарегистрируйтесь и сохраните расчёт — затем станет доступен каталог специалистов.');
-          return;
-        }
-        var u = decodeURIComponent(a.getAttribute('data-spec-href') || '');
-        if (u) window.location.href = u;
-      });
-    };
+    await window.bkHandleAuthenticatedPdf();
+  };
+
+  window.bkHandleNextSpec = async function () {
+    var u = (await supabaseClient.auth.getUser()).data.user;
+    if (!u) return;
+    if (window._bkDeclineSave) {
+      flashPdfGate(tx('flashspec'));
+      return;
+    }
+    window.location.href = buildSpecialistsUrl();
   };
 
   function flashPdfGate(msg) {
@@ -3577,11 +4330,18 @@
     if (u) {
       var saveRes = await saveBusinessCase();
       if (!saveRes) {
-        flashPdfGate('Не удалось сохранить расчёт. Попробуйте ещё раз.');
+        flashPdfGate(tx('flashsavefail'));
         return;
       }
+      var sid = saveRes[0] && saveRes[0].id;
+      if (sid) bkEnsurePdfArtifact(sid).catch(function () {});
       await createLead();
-      window.location.href = 'dashboard.html';
+      try {
+        var lg2 = localStorage.getItem('bk_lang');
+        window.location.href = lg2 ? ('dashboard.html?lang=' + encodeURIComponent(lg2)) : 'dashboard.html';
+      } catch (e) {
+        window.location.href = 'dashboard.html';
+      }
       return;
     }
     window._bkOpenAuthForSave = true;
@@ -3597,10 +4357,8 @@
   window.bkOnSaveNo = function () {
     window._bkDeclineSave = true;
     window._bkCaseLockedFromCabinet = false;
-    try {
-      localStorage.removeItem('bk_case_id');
-      localStorage.removeItem('bk_view_case_id');
-    } catch (e) {}
+    window._bkActiveCaseId = null;
+    try { sessionStorage.removeItem('bk_open_case_id'); } catch (e) {}
     var sw = document.getElementById('r-share-wrap');
     if (sw) {
       sw.innerHTML = '';
@@ -3613,19 +4371,39 @@
     window._bkAuthMode = mode;
     var tLogin = document.getElementById('auth-tab-login');
     var tReg = document.getElementById('auth-tab-reg');
+    var tabs = document.querySelector('#auth-modal .auth-tabs');
     var btn = document.getElementById('el-mbtn');
     var err = document.getElementById('auth-err');
+    var pwWrap = document.getElementById('auth-pw-wrap');
+    var forgotWrap = document.getElementById('auth-forgot-wrap');
+    var forgotLink = document.getElementById('auth-forgot-link');
+    var backLogin = document.getElementById('auth-back-login');
+    var forgotHint = document.getElementById('auth-forgot-hint');
     if (err) {
       err.textContent = '';
       err.style.color = '';
     }
-    if (tLogin && tReg) {
+    var forgotMsg = document.getElementById('auth-forgot-msg');
+    if (forgotMsg) forgotMsg.textContent = '';
+    var isForgot = mode === 'forgot';
+    if (tabs) tabs.style.display = isForgot ? 'none' : '';
+    if (pwWrap) pwWrap.style.display = isForgot ? 'none' : '';
+    if (forgotLink) forgotLink.style.display = isForgot ? 'none' : '';
+    if (backLogin) backLogin.style.display = isForgot ? 'inline' : 'none';
+    if (forgotHint) {
+      forgotHint.style.display = isForgot ? 'block' : 'none';
+      forgotHint.textContent = isForgot ? tx('auth_forgot_hint') : '';
+    }
+    if (tLogin && tReg && !isForgot) {
       tLogin.classList.toggle('active', mode === 'login');
       tReg.classList.toggle('active', mode === 'register');
       tLogin.setAttribute('aria-selected', mode === 'login' ? 'true' : 'false');
       tReg.setAttribute('aria-selected', mode === 'register' ? 'true' : 'false');
     }
-    if (btn) btn.textContent = mode === 'login' ? 'Войти' : 'Зарегистрироваться';
+    if (btn) {
+      if (isForgot) btn.textContent = tx('auth_forgot_mode');
+      else btn.textContent = mode === 'login' ? tx('authlogin') : tx('authreg');
+    }
   }
 
   var _bkResumeInFlight = false;
@@ -3648,10 +4426,17 @@
       generateReport();
       var saveRes = await saveBusinessCase();
       if (saveRes) {
+        var nid = saveRes[0] && saveRes[0].id;
+        if (nid) bkEnsurePdfArtifact(nid).catch(function () {});
         await createLead();
-        window.location.href = 'dashboard.html';
+        try {
+          var lg = localStorage.getItem('bk_lang');
+          window.location.href = lg ? ('dashboard.html?lang=' + encodeURIComponent(lg)) : 'dashboard.html';
+        } catch (e) {
+          window.location.href = 'dashboard.html';
+        }
       } else {
-        flashPdfGate('Не удалось сохранить расчёт. Откройте отчёт и снова нажмите «Да, создать аккаунт…».');
+        flashPdfGate(tx('flashsaveretry'));
       }
     } finally {
       _bkResumeInFlight = false;
@@ -3671,6 +4456,22 @@
       tReg.setAttribute('data-bk-bound', '1');
       tReg.addEventListener('click', function () { setAuthMode('register'); });
     }
+    var forgotLinkEl = document.getElementById('auth-forgot-link');
+    if (forgotLinkEl && !forgotLinkEl.getAttribute('data-bk-bound')) {
+      forgotLinkEl.setAttribute('data-bk-bound', '1');
+      forgotLinkEl.addEventListener('click', function (e) {
+        e.preventDefault();
+        setAuthMode('forgot');
+      });
+    }
+    var backLoginEl = document.getElementById('auth-back-login');
+    if (backLoginEl && !backLoginEl.getAttribute('data-bk-bound')) {
+      backLoginEl.setAttribute('data-bk-bound', '1');
+      backLoginEl.addEventListener('click', function (e) {
+        e.preventDefault();
+        setAuthMode('login');
+      });
+    }
     if (mbtn && !mbtn.getAttribute('data-bk-bound')) {
       mbtn.setAttribute('data-bk-bound', '1');
       mbtn.addEventListener('click', async function (e) {
@@ -3680,12 +4481,33 @@
         var pwEl = document.getElementById('auth-password');
         var email = emEl ? emEl.value.trim() : '';
         var password = pwEl ? pwEl.value : '';
-        if (!email || !password) {
-          if (err) err.textContent = 'Укажите email и пароль';
-          return;
-        }
         if (err) err.textContent = '';
         var mode = window._bkAuthMode || 'login';
+        if (mode === 'forgot') {
+          var forgotMsg = document.getElementById('auth-forgot-msg');
+          if (!email) {
+            if (err) err.textContent = tx('auth_email_required');
+            return;
+          }
+          var rt = new URL('index.html', window.location.href).href.split('#')[0];
+          var rpe = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: rt });
+          if (rpe.error) {
+            if (forgotMsg) {
+              forgotMsg.style.color = 'var(--red)';
+              forgotMsg.textContent = tx('pw_reset_err') + ' (' + (rpe.error.message || '') + ')';
+            }
+            return;
+          }
+          if (forgotMsg) {
+            forgotMsg.style.color = 'var(--text-muted)';
+            forgotMsg.textContent = tx('pw_reset_sent');
+          }
+          return;
+        }
+        if (!email || !password) {
+          if (err) err.textContent = tx('auth_email_required');
+          return;
+        }
         if (mode === 'login') {
           var loginRes = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
           if (loginRes.error) {
@@ -3693,9 +4515,19 @@
             return;
           }
         } else {
-          var signUpRes = await supabaseClient.auth.signUp({ email: email, password: password });
+          var redirectTo = new URL('index.html', window.location.href).href.split('#')[0];
+          var signUpRes = await supabaseClient.auth.signUp({
+            email: email,
+            password: password,
+            options: { emailRedirectTo: redirectTo }
+          });
           if (signUpRes.error) {
-            if (err) err.textContent = signUpRes.error.message || 'Ошибка регистрации';
+            var emg = String(signUpRes.error.message || '');
+            if (/smtp|sending confirmation email|email address.*invalid|email not confirmed/i.test(emg) || /500/.test(emg)) {
+              if (err) err.textContent = tx('email_not_configured');
+            } else {
+              if (err) err.textContent = emg || 'Ошибка регистрации';
+            }
             return;
           }
           if (!signUpRes.data.session) {
@@ -3705,7 +4537,7 @@
             } catch (ex) {}
             if (err) {
               err.style.color = 'var(--text-muted)';
-              err.textContent = 'Аккаунт создан. Подтвердите email по ссылке из письма, затем войдите здесь — расчёт сохранится автоматически. Анкета временно сохранена в браузере.';
+              err.textContent = tx('signup_confirm_de');
             }
             return;
           }
@@ -3715,10 +4547,24 @@
           if (err) err.textContent = 'Сессия не получена. Попробуйте войти после подтверждения email.';
           return;
         }
+        var nextIntent = window._bkNextIntent;
+        window._bkNextIntent = null;
         var hadPending = localStorage.getItem('bk_pending_save') === '1';
         document.getElementById('auth-modal').classList.add('hidden');
         if (hadPending) {
           await tryResumePendingSave();
+          return;
+        }
+        if (nextIntent === 'pdf') {
+          await window.bkHandleAuthenticatedPdf();
+          return;
+        }
+        if (nextIntent === 'spec') {
+          if (window._bkDeclineSave) {
+            flashPdfGate(tx('flashspecneed'));
+          } else {
+            window.location.href = buildSpecialistsUrl();
+          }
           return;
         }
         try {
@@ -3730,11 +4576,18 @@
           window._bkDeclineSave = false;
           var saveRes = await saveBusinessCase();
           if (!saveRes) {
-            flashPdfGate('Не удалось сохранить расчёт после входа.');
+            flashPdfGate(tx('flashsaveafter'));
             return;
           }
+          var newId = saveRes[0] && saveRes[0].id;
+          if (newId) bkEnsurePdfArtifact(newId).catch(function () {});
           await createLead();
-          window.location.href = 'dashboard.html';
+          try {
+            var lg3 = localStorage.getItem('bk_lang');
+            window.location.href = lg3 ? ('dashboard.html?lang=' + encodeURIComponent(lg3)) : 'dashboard.html';
+          } catch (e2) {
+            window.location.href = 'dashboard.html';
+          }
         }
       });
     }
@@ -3742,6 +4595,7 @@
       guest.setAttribute('data-bk-bound', '1');
       guest.addEventListener('click', function () {
         window._bkOpenAuthForSave = false;
+        window._bkNextIntent = null;
         document.getElementById('auth-modal').classList.add('hidden');
       });
     }
@@ -3750,15 +4604,40 @@
 
   window.addEventListener('load', function () {
     bindAuthModal();
+    if (typeof syncGuestPrintMode === 'function') syncGuestPrintMode();
     supabaseClient.auth.onAuthStateChange(function (event, sess) {
       try {
+        if (typeof window.updateNavAuth === 'function') window.updateNavAuth();
+        if (typeof syncGuestPrintMode === 'function') syncGuestPrintMode();
         if (event === 'SIGNED_IN' && sess && localStorage.getItem('bk_pending_save') === '1') {
-          setTimeout(function () { tryResumePendingSave(); }, 100);
+          setTimeout(function () { tryResumePendingSave(); }, 150);
         }
       } catch (e) {}
     });
-    var params = new URLSearchParams(window.location.search);
-    var cid = params.get('case');
+    (async function bkBootstrapAuthAndPendingSave() {
+      await supabaseClient.auth.getSession();
+      if (typeof window.updateNavAuth === 'function') await window.updateNavAuth();
+      var u = (await supabaseClient.auth.getUser()).data.user;
+      if (u && localStorage.getItem('bk_pending_save') === '1') {
+        setTimeout(function () { tryResumePendingSave(); }, 250);
+      }
+    })();
+    var qp = new URLSearchParams(window.location.search);
+    if (qp.get('auth') === 'confirmed') {
+      try {
+        flashPdfGate(tx('auth_confirmed'));
+        var lg = localStorage.getItem('bk_lang');
+        history.replaceState({}, '', lg ? ('index.html?lang=' + encodeURIComponent(lg)) : 'index.html');
+      } catch (e) {}
+    }
+    var cid = null;
+    var wantPdf = false;
+    try {
+      cid = sessionStorage.getItem('bk_open_case_id');
+      wantPdf = sessionStorage.getItem('bk_pdf_request') === '1';
+      sessionStorage.removeItem('bk_pdf_request');
+      if (cid) sessionStorage.removeItem('bk_open_case_id');
+    } catch (e) {}
     if (!cid) return;
     (async function () {
       var u = (await supabaseClient.auth.getUser()).data.user;
@@ -3766,29 +4645,24 @@
       var q = await supabaseClient.from('business_cases').select('*').eq('id', cid).eq('profile_id', u.id).maybeSingle();
       if (q.error || !q.data) return;
       window._bkDeclineSave = false;
-      window._bkLoadingCaseFromUrl = true;
       window._bkCaseLockedFromCabinet = true;
-      try {
-        localStorage.setItem('bk_view_case_id', cid);
-      } catch (e) {}
+      window._bkLoadingCaseFromCabinet = true;
+      window._bkActiveCaseId = cid;
       if (q.data.raw_data && typeof q.data.raw_data === 'object') {
         surveyData = q.data.raw_data;
       }
       if (q.data.result_data && q.data.result_data.source_lang) {
         currentLang = q.data.result_data.source_lang;
       }
-      localStorage.setItem('bk_case_id', cid);
       generateReport();
       showPage('report');
-      if (params.get('print') === '1') {
-        document.documentElement.classList.add('bk-print-pdf');
-        setTimeout(function () {
-          window.print();
-          document.documentElement.classList.remove('bk-print-pdf');
-        }, 700);
-      }
-      history.replaceState({}, '', 'index.html');
+      try {
+        var lg2 = localStorage.getItem('bk_lang');
+        history.replaceState({}, '', lg2 ? ('index.html?lang=' + encodeURIComponent(lg2)) : 'index.html');
+      } catch (e2) {}
+      if (wantPdf) await window.bkHandleAuthenticatedPdf();
     })();
+    if (typeof window.updateNavAuth === 'function') window.updateNavAuth();
   });
   </script>
 
@@ -3802,6 +4676,103 @@
   async function loginUser(email, password) {
     return supabaseClient.auth.signInWithPassword({ email: email, password: password });
   }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+
+  <script>
+    function bkBuildReportPdfBlob() {
+      var J = window.jspdf && window.jspdf.jsPDF;
+      if (!J) return null;
+      var doc = new J({ unit: 'pt', format: 'a4' });
+      var y = 48;
+      var line = function (t, size, bold) {
+        doc.setFont('helvetica', bold ? 'bold' : 'normal');
+        if (size) doc.setFontSize(size);
+        var lines = doc.splitTextToSize(String(t || ''), 500);
+        doc.text(lines, 48, y);
+        y += Math.max(18, lines.length * 14);
+      };
+      doc.setFontSize(16);
+      line('BusinessKlar', 16, true);
+      doc.setFontSize(11);
+      var rn = document.getElementById('r-name');
+      var lf = document.getElementById('r-lf');
+      var meta = document.getElementById('r-meta');
+      line(rn ? rn.textContent : '', 11, false);
+      line(lf ? lf.textContent : '', 11, false);
+      line(meta ? meta.textContent : '', 10, false);
+      y += 8;
+      var d = typeof surveyData !== 'undefined' ? surveyData : {};
+      line('Umsatz J1: ' + (d.revenue_y1 || '—') + ' EUR', 10, false);
+      line('Monatliche Kosten: ' + (d.expenses_monthly || '—') + ' EUR', 10, false);
+      line('Stadt: ' + (d.city_name || '—') + ' · Hebesatz: ' + (d.city_hb || '—') + '%', 10, false);
+      var discEl = document.getElementById('r-disclaimer');
+      var discTxt = discEl && discEl.textContent ? discEl.textContent.trim() : '';
+      if (discTxt) {
+        y += 10;
+        line(discTxt, 8, false);
+      }
+      return doc.output('blob');
+    }
+
+    async function bkUploadPdfArtifact(caseId, blob) {
+      var ures = await supabaseClient.auth.getUser();
+      var user = ures.data && ures.data.user;
+      if (!user || !blob) return false;
+      var path = user.id + '/' + caseId + '.pdf';
+      var up = await supabaseClient.storage.from('case_pdfs').upload(path, blob, {
+        upsert: true,
+        contentType: 'application/pdf'
+      });
+      if (up.error) {
+        console.warn('bkUploadPdfArtifact', up.error);
+        return false;
+      }
+      var pu = await supabaseClient
+        .from('business_cases')
+        .update({ pdf_storage_path: path })
+        .eq('id', caseId)
+        .eq('profile_id', user.id);
+      return !pu.error;
+    }
+
+    async function bkDownloadStoredPdf(caseId) {
+      var ures = await supabaseClient.auth.getUser();
+      var user = ures.data && ures.data.user;
+      if (!user) return false;
+      var q = await supabaseClient
+        .from('business_cases')
+        .select('pdf_storage_path, profile_id')
+        .eq('id', caseId)
+        .eq('profile_id', user.id)
+        .maybeSingle();
+      if (q.error || !q.data || !q.data.pdf_storage_path) return false;
+      var signed = await supabaseClient.storage
+        .from('case_pdfs')
+        .createSignedUrl(q.data.pdf_storage_path, 3600);
+      if (signed.error || !signed.data || !signed.data.signedUrl) return false;
+      window.open(signed.data.signedUrl, '_blank', 'noopener,noreferrer');
+      return true;
+    }
+
+    async function bkEnsurePdfArtifact(caseId) {
+      var blob = bkBuildReportPdfBlob();
+      if (!blob) return false;
+      return bkUploadPdfArtifact(caseId, blob);
+    }
+
+    window.bkHandleAuthenticatedPdf = async function () {
+      var cid = window._bkActiveCaseId || window._bkLastSavedCaseId;
+      if (!cid) {
+        if (typeof flashPdfGate === 'function') flashPdfGate(typeof tx === 'function' ? tx('flashsavefail') : '');
+        return;
+      }
+      if (await bkDownloadStoredPdf(cid)) return;
+      var ok = await bkEnsurePdfArtifact(cid);
+      if (ok) await bkDownloadStoredPdf(cid);
+      else if (typeof flashPdfGate === 'function') flashPdfGate(typeof tx === 'function' ? tx('pdf_gen_fail') : 'PDF konnte nicht erstellt werden.');
+    };
   </script>
 
   <script>
@@ -3840,7 +4811,7 @@
           activity_text: surveyData?.activity_text || null,
           activity_bg: surveyData?.activity_bg || null,
 
-          city_name: surveyData?.city_name || surveyData?.city || null,
+          city_name: surveyData?.city_name || null,
           city_hb: surveyData?.city_hb ? parseInt(surveyData.city_hb, 10) : null,
 
           revenue_y1: surveyData?.revenue_y1 ? parseFloat(surveyData.revenue_y1) : null,
@@ -3863,24 +4834,6 @@
           status: 'completed'
         };
 
-        const existingCaseId = localStorage.getItem('bk_case_id');
-
-        if (existingCaseId) {
-          const { data, error } = await supabaseClient
-            .from('business_cases')
-            .update(payload)
-            .eq('id', existingCaseId)
-            .eq('profile_id', user.id)
-            .select();
-
-          if (error) {
-            localStorage.removeItem('bk_case_id');
-            return null;
-          }
-
-          return data;
-        }
-
         const { data, error } = await supabaseClient
           .from('business_cases')
           .insert([payload])
@@ -3891,7 +4844,8 @@
         }
 
         if (data && data[0] && data[0].id) {
-          localStorage.setItem('bk_case_id', data[0].id);
+          window._bkLastSavedCaseId = data[0].id;
+          window._bkActiveCaseId = data[0].id;
         }
 
         return data;
@@ -3916,7 +4870,7 @@
         profile_id: user.id,
         email: user.email || null,
         source: 'report_save_cta',
-        case_id: localStorage.getItem('bk_case_id') || null
+        case_id: window._bkLastSavedCaseId || window._bkActiveCaseId || null
       };
       var res = await supabaseClient.from('leads').insert([row]).select();
       return { data: res.data, error: res.error };
@@ -3929,7 +4883,7 @@
     var ures = await supabaseClient.auth.getUser();
     if (ures.error || !ures.data || !ures.data.user) return null;
     var user = ures.data.user;
-    var caseId = caseIdOpt || localStorage.getItem('bk_case_id');
+    var caseId = caseIdOpt || window._bkActiveCaseId || window._bkLastSavedCaseId;
     if (!caseId) return null;
     var q = await supabaseClient
       .from('business_cases')

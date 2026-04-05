@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0A1628">
-  <title>Расчёт BusinessKlar</title>
+  <title>BusinessKlar</title>
   <style>
     :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201, 168, 76, 0.2); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -21,53 +21,56 @@
 </head>
 <body>
   <div class="wrap">
-    <h1>Расчёт BusinessKlar</h1>
-    <div id="content">Загрузка…</div>
+    <h1 id="h1">—</h1>
+    <div id="content">—</div>
   </div>
 
+  <script src="satellite-i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+  window.BK_SAT.init();
+  var T = window.BK_SAT.t.bind(window.BK_SAT);
   var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
   var supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  document.getElementById('h1').textContent = T('share_title');
+  document.title = T('share_title') + ' — BusinessKlar';
+  document.getElementById('content').textContent = T('share_loading');
+
+  function esc(s) {
+    if (s == null || s === '') return '—';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
 
   async function run() {
     var el = document.getElementById('content');
     var params = new URLSearchParams(window.location.search);
     var token = params.get('token');
+    if (params.get('lang')) try { localStorage.setItem('bk_lang', window.BK_SAT.norm(params.get('lang'))); } catch (e) {}
     if (!token) {
-      el.innerHTML = '<p class="err">Ссылка неверна или устарела.</p>';
+      el.innerHTML = '<p class="err">' + esc(T('share_err_token')) + '</p>';
       return;
     }
-    var q = await supabase
-      .from('business_cases')
-      .select('*')
-      .eq('share_token', token)
-      .eq('is_shared', true)
-      .limit(1)
-      .maybeSingle();
+    var q = await supabase.rpc('get_shared_case_by_token', { p_token: token });
     if (q.error || !q.data) {
-      el.innerHTML = '<p class="err">Расчёт не найден или доступ отключён.</p>';
+      el.innerHTML = '<p class="err">' + esc(T('share_err_load')) + '</p>';
       return;
     }
     var d = q.data;
-    var esc = function (s) {
-      if (s == null || s === '') return '—';
-      return String(s)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-    };
+    var ctaHref = window.BK_SAT.withLang('index.html');
     el.innerHTML =
       '<div class="card">' +
-      '<div class="row"><strong>Правовая форма</strong>' + esc(d.legal_form) + '</div>' +
-      '<div class="row"><strong>Вид деятельности</strong>' + esc(d.activity_text) + '</div>' +
-      '<div class="row"><strong>Город</strong>' + esc(d.city_name) + '</div>' +
-      '<div class="row"><strong>Оборот (год 1)</strong>' + esc(d.revenue_y1) + '</div>' +
-      '<div class="row"><strong>Расходы в месяц</strong>' + esc(d.expenses_monthly) + '</div>' +
+      '<div class="row"><strong>' + esc(T('share_lf')) + '</strong>' + esc(d.legal_form) + '</div>' +
+      '<div class="row"><strong>' + esc(T('share_act')) + '</strong>' + esc(d.activity_text) + '</div>' +
+      '<div class="row"><strong>' + esc(T('share_city')) + '</strong>' + esc(d.city_name) + '</div>' +
+      '<div class="row"><strong>' + esc(T('share_r1')) + '</strong>' + esc(d.revenue_y1) + '</div>' +
+      '<div class="row"><strong>' + esc(T('share_exp')) + '</strong>' + esc(d.expenses_monthly) + '</div>' +
       '</div>' +
-      '<a class="cta" href="index.html">Сделать свой расчёт в BusinessKlar</a>';
+      '<a class="cta" href="' + String(ctaHref).replace(/"/g, '&quot;') + '">' + esc(T('share_cta')) + '</a>';
   }
   run();
   </script>

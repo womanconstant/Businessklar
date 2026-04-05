@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0A1628">
-  <title>Контакт — BusinessKlar</title>
+  <title>BusinessKlar</title>
   <style>
     :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,35 +32,64 @@
   <header class="sat-nav">
     <a class="logo" href="index.html">Business<span>Klar</span></a>
     <div class="links">
-      <a class="nav-btn" href="index.html">Главная</a>
-      <a class="nav-btn" href="specialists-home.html">Специалисты</a>
-      <a class="nav-btn active" href="contact.html">Контакт</a>
-      <a class="nav-btn" href="dashboard.html">Кабинет</a>
+      <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+      <a class="nav-btn" id="nav-spec" href="specialists-home.html">Specialists</a>
+      <a class="nav-btn active" id="nav-contact" href="contact.html">Contact</a>
+      <a class="nav-btn" id="nav-dash" href="dashboard.html">Account</a>
     </div>
   </header>
   <div class="wrap">
-    <h1>Связаться с нами</h1>
-    <p class="lead">Заполните форму — тема и текст уйдут на вашу почту через почтовый клиент (mailto). Для срочных вопросов укажите контакт в теле сообщения.</p>
+    <h1 id="page-h1">—</h1>
+    <p class="lead" id="page-lead">—</p>
     <form id="f" novalidate>
-      <label for="topic">Тема обращения</label>
+      <label for="topic" id="lbl-topic">—</label>
       <select id="topic" name="topic" required>
-        <option value="">Выберите тему</option>
-        <option value="product">Вопрос по калькулятору / опросу</option>
-        <option value="account">Аккаунт и регистрация</option>
-        <option value="specialists">Каталог специалистов</option>
-        <option value="partnership">Сотрудничество</option>
-        <option value="other">Другое</option>
+        <option value="" id="opt-0">—</option>
+        <option value="product" id="opt-calc">—</option>
+        <option value="account" id="opt-acc">—</option>
+        <option value="specialists" id="opt-spec">—</option>
+        <option value="partnership" id="opt-part">—</option>
+        <option value="other" id="opt-other">—</option>
       </select>
-      <label for="email">Ваш email</label>
+      <label for="email" id="lbl-email">—</label>
       <input type="email" id="email" name="email" required placeholder="you@example.com" autocomplete="email">
-      <label for="body">Сообщение</label>
-      <textarea id="body" name="body" required placeholder="Кратко опишите запрос"></textarea>
-      <button type="submit">Открыть письмо</button>
+      <label for="body" id="lbl-body">—</label>
+      <textarea id="body" name="body" required placeholder=""></textarea>
+      <button type="submit" id="btn-submit">—</button>
     </form>
     <p id="msg"></p>
-    <p class="note">Отправка идёт через ваш почтовый клиент. Адрес получателя задайте в настройках продукта или замените в коде страницы на нужный support-email.</p>
+    <p class="note" id="page-note">—</p>
   </div>
+  <script src="satellite-i18n.js"></script>
   <script>
+  window.BK_SAT.init();
+  var T = window.BK_SAT.t.bind(window.BK_SAT);
+  function esc(s) { return String(s || '').replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  document.getElementById('nav-home').href = window.BK_SAT.withLang('index.html');
+  document.getElementById('nav-spec').href = window.BK_SAT.withLang('specialists-home.html');
+  document.getElementById('nav-contact').href = window.BK_SAT.withLang('contact.html');
+  document.getElementById('nav-dash').href = window.BK_SAT.withLang('dashboard.html');
+  document.getElementById('nav-home').textContent = T('nav_home');
+  document.getElementById('nav-spec').textContent = T('nav_specialists');
+  document.getElementById('nav-contact').textContent = T('nav_contact');
+  document.getElementById('nav-dash').textContent = T('nav_dashboard');
+  document.title = T('contact_title') + ' — BusinessKlar';
+  document.documentElement.lang = window.BK_SAT.getLang();
+  document.getElementById('page-h1').textContent = T('contact_title');
+  document.getElementById('page-lead').textContent = T('contact_lead');
+  document.getElementById('lbl-topic').textContent = T('contact_topic');
+  document.getElementById('opt-0').textContent = T('contact_topic_0');
+  document.getElementById('opt-calc').textContent = T('contact_calc');
+  document.getElementById('opt-acc').textContent = T('contact_account');
+  document.getElementById('opt-spec').textContent = T('contact_spec');
+  document.getElementById('opt-part').textContent = T('contact_partner');
+  document.getElementById('opt-other').textContent = T('contact_other');
+  document.getElementById('lbl-email').textContent = T('contact_your_email');
+  document.getElementById('lbl-body').textContent = T('contact_message');
+  document.getElementById('body').placeholder = T('contact_body_ph');
+  document.getElementById('btn-submit').textContent = T('contact_submit');
+  document.getElementById('page-note').textContent = T('contact_note');
+
   var SUPPORT = 'support@businessklar.example';
   document.getElementById('f').addEventListener('submit', function (e) {
     e.preventDefault();
@@ -71,11 +100,11 @@
       var m = document.getElementById('msg');
       m.style.display = 'block';
       m.style.color = '#e88';
-      m.textContent = 'Заполните все поля.';
+      m.textContent = T('contact_fill');
       return;
     }
     var subj = '[BusinessKlar] ' + document.querySelector('#topic option:checked').textContent;
-    var text = 'От: ' + email + '\n\n' + body;
+    var text = 'From: ' + email + '\n\n' + body;
     var href = 'mailto:' + SUPPORT + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(text);
     window.location.href = href;
   });
