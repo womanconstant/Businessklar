@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A1628">
+  <title>BusinessKlar</title>
+  <style>
+    :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
+    .sat-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; min-height: 56px; border-bottom: 1px solid var(--border); background: rgba(10,22,40,.95); flex-wrap: wrap; gap: 8px; }
+    .sat-nav .logo { font-family: Georgia, serif; font-size: 18px; font-weight: 700; color: var(--gold); text-decoration: none; }
+    .sat-nav .logo span { color: var(--text); font-weight: 300; }
+    .sat-nav .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .sat-nav a.nav-btn { font-size: 12px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); text-decoration: none; }
+    .sat-nav a.nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .sat-nav a.active { border-color: var(--gold); color: var(--gold); }
+    .wrap { max-width: 720px; margin: 0 auto; padding: 28px 18px 48px; }
+    h1 { font-size: 1.45rem; color: var(--gold); margin-bottom: 8px; }
+    .sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .panel { border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 14px; background: rgba(18,32,64,.5); }
+    .panel h2 { font-size: 15px; color: var(--gold); margin-bottom: 8px; }
+    .panel p { font-size: 13px; color: var(--muted); line-height: 1.45; }
+    .panel a { color: var(--gold); }
+    #gate { text-align: center; padding: 40px 20px; border: 1px solid var(--border); border-radius: 16px; }
+    #gate a { display: inline-block; margin-top: 16px; padding: 12px 20px; background: var(--gold); color: var(--navy); font-weight: 600; border-radius: 12px; text-decoration: none; }
+    .cta-big { display: inline-block; margin-top: 12px; padding: 14px 22px; background: var(--gold); color: var(--navy); font-weight: 600; border-radius: 12px; text-decoration: none; font-size: 15px; }
+  </style>
+</head>
+<body>
+  <header class="sat-nav">
+    <a class="logo" id="logo" href="index.html">Business<span>Klar</span></a>
+    <div class="links">
+      <a class="nav-btn" id="nav-home" href="index.html">—</a>
+      <a class="nav-btn" id="nav-for" href="become-specialist.html">—</a>
+      <a class="nav-btn" id="nav-inbox" href="inbox.html">—</a>
+      <a class="nav-btn active" id="nav-sd" href="specialist-dashboard.html">—</a>
+    </div>
+  </header>
+  <div class="wrap">
+    <div id="gate" style="display:none">
+      <p id="gate-title" style="font-size:1.1rem;color:var(--gold);margin-bottom:12px"></p>
+      <p id="gate-text" style="color:var(--muted);font-size:14px"></p>
+      <a id="gate-link" href="index.html">—</a>
+    </div>
+    <div id="no-profile" style="display:none">
+      <h1 id="np-title">—</h1>
+      <p class="sub" id="np-sub"></p>
+      <a class="cta-big" id="np-cta" href="become-specialist.html">—</a>
+    </div>
+    <div id="main" style="display:none">
+      <h1 id="wel">—</h1>
+      <p class="sub" id="wel-sub"></p>
+      <div class="panel">
+        <h2 id="h-prof">—</h2>
+        <p id="prof-snippet">—</p>
+        <p style="margin-top:8px"><a id="lnk-edit" href="become-specialist.html">—</a> <span id="edit-note" style="color:var(--muted)"></span></p>
+      </div>
+      <div class="panel">
+        <h2 id="h-leads">—</h2>
+        <p id="p-leads"></p>
+      </div>
+      <div class="panel">
+        <h2 id="h-chat">—</h2>
+        <p id="p-chat-desc"></p>
+        <p style="margin-top:10px"><a id="lnk-inbox" href="inbox.html">—</a></p>
+      </div>
+      <div class="panel">
+        <h2 id="h-status">—</h2>
+        <p id="status-line">—</p>
+      </div>
+    </div>
+  </div>
+  <script src="satellite-i18n.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  window.BK_SAT.init();
+  var T = window.BK_SAT.t.bind(window.BK_SAT);
+  var WL = window.BK_SAT.withLang.bind(window.BK_SAT);
+
+  var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function applyChrome() {
+    document.title = T('sd_welcome') + ' — BusinessKlar';
+    document.getElementById('logo').href = WL('index.html');
+    document.getElementById('nav-home').href = WL('index.html');
+    document.getElementById('nav-for').href = WL('become-specialist.html');
+    document.getElementById('nav-inbox').href = WL('inbox.html');
+    document.getElementById('nav-sd').href = WL('specialist-dashboard.html');
+    document.getElementById('nav-home').textContent = T('nav_home');
+    document.getElementById('nav-for').textContent = T('nav_for_spec');
+    document.getElementById('nav-inbox').textContent = T('nav_inbox');
+    document.getElementById('nav-sd').textContent = T('nav_spec_dash');
+    document.getElementById('gate-title').textContent = T('sd_gate_title');
+    document.getElementById('gate-text').textContent = T('sd_gate_text');
+    var ga = document.getElementById('gate-link');
+    ga.href = WL('index.html');
+    ga.textContent = T('dash_gate_link');
+    document.getElementById('np-title').textContent = T('sd_no_title');
+    document.getElementById('np-sub').textContent = T('sd_no_sub');
+    var ncta = document.getElementById('np-cta');
+    ncta.href = WL('become-specialist.html');
+    ncta.textContent = T('sd_cta');
+    document.getElementById('wel').textContent = T('sd_welcome');
+    document.getElementById('h-prof').textContent = T('sd_panel_p');
+    document.getElementById('lnk-edit').href = WL('become-specialist.html');
+    document.getElementById('lnk-edit').textContent = T('sd_edit');
+    document.getElementById('edit-note').textContent = T('sd_edit_note');
+    document.getElementById('h-leads').textContent = T('sd_leads');
+    document.getElementById('p-leads').textContent = T('sd_stub_leads');
+    document.getElementById('h-chat').textContent = T('sd_chat');
+    document.getElementById('p-chat-desc').textContent = T('sd_chat_desc');
+    var li = document.getElementById('lnk-inbox');
+    li.href = WL('inbox.html');
+    li.textContent = T('sd_open_inbox');
+    document.getElementById('h-status').textContent = T('sd_status');
+  }
+  applyChrome();
+
+  (async function () {
+    var u = (await sb.auth.getUser()).data.user;
+    var gate = document.getElementById('gate');
+    var noP = document.getElementById('no-profile');
+    var main = document.getElementById('main');
+    if (!u) {
+      gate.style.display = 'block';
+      return;
+    }
+    gate.style.display = 'none';
+    var q = await sb.from('consultants').select('*').eq('profile_id', u.id).maybeSingle();
+    if (q.error || !q.data) {
+      noP.style.display = 'block';
+      return;
+    }
+    main.style.display = 'block';
+    var d = q.data;
+    document.getElementById('wel-sub').textContent = d.company_name || T('sd_profile_fallback');
+    document.getElementById('prof-snippet').textContent =
+      (d.display_name || '') + ' · ' + (d.company_name || '') + ' · ' + (Array.isArray(d.cities) ? d.cities.join(', ') : '');
+    var st = d.status || '—';
+    var pub = d.is_published ? T('sd_pub_yes') : T('sd_pub_no');
+    var ver = d.is_verified ? T('sd_verified') : '';
+    document.getElementById('status-line').textContent = T('sd_status') + ': ' + st + ' · ' + pub + ver;
+  })();
+  </script>
+</body>
+</html>
