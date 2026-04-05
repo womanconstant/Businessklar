@@ -1,0 +1,161 @@
+/**
+ * Официальные базовые URL для IHK / HWK / порталов (только проверенные шаблоны).
+ * exact: true — прямая ссылка на региональную палату/орган.
+ */
+'use strict';
+
+/** @type {Record<string, { url: string, label_de: string, exact: boolean }>} */
+const IHK = {
+  ihk_organisationfinder: {
+    url: 'https://www.ihk.de/ueber-uns/organisation/ihk-organisationfinder-3183308',
+    label_de: 'IHK-Organisationfinder (DIHK)',
+    exact: false
+  },
+  ihk_aachen: { url: 'https://www.ihk.de/aachen/', label_de: 'IHK Aachen', exact: true },
+  ihk_bergische: { url: 'https://www.ihk.de/bergische/', label_de: 'Bergische IHK (Wuppertal, Solingen, Remscheid)', exact: true },
+  ihk_bonn_rhein_sieg: { url: 'https://www.bonn.ihk.de/', label_de: 'IHK Bonn/Rhein-Sieg', exact: true },
+  ihk_duesseldorf: { url: 'https://www.ihk.de/duesseldorf/', label_de: 'IHK Düsseldorf', exact: true },
+  ihk_essen: { url: 'https://www.essen.ihk.de/', label_de: 'IHK zu Essen', exact: true },
+  ihk_mittleres_ruhr: { url: 'https://www.ihk.de/bochum/', label_de: 'IHK Mittleres Ruhrgebiet', exact: true },
+  ihk_dortmund: { url: 'https://www.ihk.de/dortmund/', label_de: 'IHK zu Dortmund', exact: true },
+  ihk_koeln: { url: 'https://www.ihk.de/koeln/', label_de: 'IHK zu Köln', exact: true },
+  ihk_mittlerer_niederrhein: {
+    url: 'https://mittlerer-niederrhein.ihk.de/',
+    label_de: 'IHK Mittlerer Niederrhein',
+    exact: true
+  },
+  ihk_niederrhein: { url: 'https://www.ihk.de/niederrhein/', label_de: 'IHK Niederrhein', exact: true },
+  ihk_nordwestfalen: { url: 'https://www.ihk.de/nordwestfalen/', label_de: 'IHK Nord Westfalen', exact: true },
+  ihk_ostwestfalen: { url: 'https://www.ihk.de/ostwestfalen/', label_de: 'IHK Ostwestfalen zu Bielefeld', exact: true },
+  ihk_siegen: { url: 'https://www.ihk.de/siegen/', label_de: 'IHK Siegen', exact: true },
+  ihk_hagen: { url: 'https://www.ihk.de/hagen/', label_de: 'SIHK zu Hagen', exact: true },
+  ihk_arnsberg: { url: 'https://www.ihk-arnsberg.de/', label_de: 'IHK Arnsberg, Hellweg-Sauerland', exact: true },
+  ihk_potsdam: { url: 'https://www.ihk.de/potsdam/', label_de: 'IHK Potsdam', exact: true },
+  ihk_cottbus: { url: 'https://www.ihk.de/cottbus/', label_de: 'IHK Südbrandenburg', exact: true },
+  ihk_berlin: { url: 'https://www.ihk.de/berlin/', label_de: 'IHK Berlin', exact: true },
+  ihk_hamburg: { url: 'https://www.handelskammer-hamburg.de/', label_de: 'Handelskammer Hamburg', exact: true },
+  ihk_bremen: { url: 'https://www.ihk.de/bremen-bremerhaven/', label_de: 'Handelskammer Bremen – IHK für Bremen und Bremerhaven', exact: true },
+  ihk_hannover: { url: 'https://www.ihk.de/hannover/', label_de: 'IHK Hannover', exact: true },
+  ihk_braunschweig: { url: 'https://www.ihk.de/braunschweig/', label_de: 'IHK Braunschweig', exact: true },
+  ihk_stuttgart: { url: 'https://www.ihk.de/stuttgart/', label_de: 'IHK Region Stuttgart', exact: true },
+  ihk_karlsruhe: { url: 'https://www.ihk.de/karlsruhe/', label_de: 'IHK Karlsruhe', exact: true },
+  ihk_heilbronn: { url: 'https://www.ihk.de/heilbronn-franken/', label_de: 'IHK Heilbronn-Franken', exact: true },
+  ihk_freiburg: { url: 'https://www.ihk.de/freiburg/', label_de: 'IHK Südlicher Oberrhein', exact: true },
+  ihk_muenchen: { url: 'https://www.muenchen.ihk.de/', label_de: 'IHK für München und Oberbayern', exact: true },
+  ihk_nuernberg: { url: 'https://www.ihk-nuernberg.de/', label_de: 'IHK Nürnberg für Mittelfranken', exact: true },
+  ihk_augsburg: { url: 'https://www.ihk.de/augsburg/', label_de: 'IHK Schwaben (Augsburg)', exact: true },
+  ihk_regensburg: { url: 'https://www.ihk.de/regensburg/', label_de: 'IHK Regensburg', exact: true },
+  ihk_frankfurt: { url: 'https://www.frankfurt-main.ihk.de/', label_de: 'IHK Frankfurt am Main', exact: true },
+  ihk_darmstadt: { url: 'https://www.darmstadt.ihk.de/', label_de: 'IHK Darmstadt (Südhessen)', exact: true },
+  ihk_kassel: { url: 'https://www.ihk.de/kassel-marburg/', label_de: 'IHK Kassel-Marburg', exact: true },
+  ihk_wiesbaden: { url: 'https://www.ihk.de/wiesbaden/', label_de: 'IHK Wiesbaden', exact: true },
+  ihk_rheinhessen: { url: 'https://www.ihk.de/rheinhessen/', label_de: 'IHK Rheinhessen (Mainz/Wiesbaden)', exact: true },
+  ihk_pfalz: { url: 'https://www.ihk.de/pfalz/', label_de: 'IHK Pfalz', exact: true },
+  ihk_rhein_neckar: { url: 'https://www.ihk.de/rhein-neckar/', label_de: 'IHK Rhein-Neckar', exact: true },
+  ihk_ulm: { url: 'https://www.ihk.de/ulm/', label_de: 'IHK Ulm', exact: true },
+  ihk_oldenburg: { url: 'https://www.ihk.de/oldenburg/', label_de: 'Oldenburgische IHK', exact: true },
+  ihk_osnabrueck: { url: 'https://www.ihk.de/osnabrueck/', label_de: 'IHK Osnabrück – Emsland – Grafschaft Bentheim', exact: true },
+  ihk_niederbayern: { url: 'https://www.ihk-niederbayern.de/', label_de: 'IHK Niederbayern', exact: true },
+  ihk_aschaffenburg: { url: 'https://www.ihk.de/aschaffenburg/', label_de: 'IHK Aschaffenburg', exact: true },
+  ihk_wuerzburg: { url: 'https://www.wuerzburg.ihk.de/', label_de: 'IHK Würzburg-Schweinfurt', exact: true },
+  ihk_giessen_friedberg: { url: 'https://www.ihk.de/giessen-friedberg/', label_de: 'IHK Gießen-Friedberg', exact: true },
+  ihk_fulda: { url: 'https://www.ihk.de/fulda/', label_de: 'IHK Fulda', exact: true },
+  ihk_limburg: { url: 'https://www.ihk.de/limburg/', label_de: 'IHK Limburg', exact: true },
+  ihk_bayreuth: { url: 'https://www.ihk.de/bayreuth/', label_de: 'IHK für Oberfranken Bayreuth', exact: true },
+  ihk_koblenz: { url: 'https://www.ihk.de/koblenz/', label_de: 'IHK Mittlerer Rhein', exact: true },
+  ihk_trier: { url: 'https://www.ihk.de/trier/', label_de: 'IHK Trier', exact: true },
+  ihk_saarland: { url: 'https://www.saarland.ihk.de/', label_de: 'IHK Saarland', exact: true },
+  ihk_dresden: { url: 'https://www.ihk.de/dresden/', label_de: 'IHK Dresden', exact: true },
+  ihk_chemnitz: { url: 'https://www.ihk.de/chemnitz/', label_de: 'IHK Chemnitz', exact: true },
+  ihk_leipzig: { url: 'https://www.ihk.de/leipzig/', label_de: 'IHK zu Leipzig', exact: true },
+  ihk_magdeburg: { url: 'https://www.ihk.de/magdeburg/', label_de: 'IHK Magdeburg', exact: true },
+  ihk_halle: { url: 'https://www.ihk.de/halle-dessau/', label_de: 'IHK Halle-Dessau', exact: true },
+  ihk_rostock: { url: 'https://www.ihk.de/rostock/', label_de: 'IHK zu Rostock', exact: true },
+  ihk_schwerin: { url: 'https://www.ihk.de/schwerin/', label_de: 'IHK Schwerin', exact: true },
+  ihk_kiel: { url: 'https://www.ihk.de/kiel/', label_de: 'IHK zu Kiel', exact: true },
+  ihk_flensburg: { url: 'https://www.ihk.de/flensburg/', label_de: 'IHK Flensburg', exact: true },
+  ihk_luebeck: { url: 'https://www.ihk.de/luebeck/', label_de: 'IHK zu Lübeck', exact: true },
+  ihk_erfurt: { url: 'https://www.ihk.de/erfurt/', label_de: 'IHK Erfurt', exact: true },
+  ihk_gera: { url: 'https://www.ihk.de/gera/', label_de: 'IHK Ostthüringen zu Gera', exact: true },
+  ihk_zwickau: { url: 'https://www.ihk.de/zwickau/', label_de: 'IHK Zwickau', exact: true },
+  ihk_reutlingen: { url: 'https://www.reutlingen.ihk.de/', label_de: 'IHK Reutlingen', exact: true },
+  ihk_ostwuerttemberg: { url: 'https://www.ihk.de/ostwuerttemberg/', label_de: 'IHK Ostwürttemberg', exact: true },
+  ihk_bodensee_oberschwaben: {
+    url: 'https://www.ihk.de/bodensee-oberschwaben/',
+    label_de: 'IHK Bodensee-Oberschwaben',
+    exact: true
+  },
+  ihk_sbh: { url: 'https://www.ihk.de/sbh/', label_de: 'IHK Schwarzwald-Baar-Heuberg', exact: true },
+  ihk_elbeweser: { url: 'https://www.ihk.de/elbeweser/', label_de: 'IHK Elbe-Weser', exact: true }
+};
+
+/** @type {Record<string, { url: string, label_de: string, exact: boolean }>} */
+const HWK = {
+  hwk_zdh: {
+    url: 'https://www.handwerk.de/',
+    label_de: 'ZDH / regionaler HWK-Finder',
+    exact: false
+  },
+  hwk_aachen: { url: 'https://www.hwk-aachen.de/', label_de: 'HWK Aachen', exact: true },
+  hwk_duesseldorf: { url: 'https://www.hwk-duesseldorf.de/', label_de: 'HWK Düsseldorf', exact: true },
+  hwk_koeln: { url: 'https://www.hwk-koeln.de/', label_de: 'HWK Köln', exact: true },
+  hwk_mittlerer_niederrhein: { url: 'https://www.hwk-mnr.de/', label_de: 'HWK Mittlerer Niederrhein', exact: true },
+  hwk_niederrhein: { url: 'https://www.hwk-niederrhein.de/', label_de: 'HWK Duisburg-Niederrhein', exact: true },
+  hwk_muenster: { url: 'https://www.hwk-muenster.de/', label_de: 'HWK Münster', exact: true },
+  hwk_ostwestfalen: { url: 'https://www.hwk-owl.de/', label_de: 'HWK Ostwestfalen-Lippe', exact: true },
+  hwk_suedwestfalen: { url: 'https://www.hwk-suedwestfalen.de/', label_de: 'HWK Südwestfalen', exact: true },
+  hwk_essen: { url: 'https://www.hwk-essen.de/', label_de: 'HWK Essen', exact: true },
+  hwk_dortmund: { url: 'https://www.hwk-do.de/', label_de: 'HWK Dortmund', exact: true },
+  hwk_hagen: { url: 'https://www.hwk-hagen.de/', label_de: 'HWK Hagen', exact: true },
+  hwk_siegen: { url: 'https://www.hwk-siegen.de/', label_de: 'HWK Siegen', exact: true },
+  hwk_wuppertal: { url: 'https://www.hwk-wuppertal.de/', label_de: 'HWK Wuppertal-Solingen-Remscheid', exact: true },
+  hwk_bonn: { url: 'https://www.hwk-bonn.de/', label_de: 'HWK Rhein-Sieg', exact: true },
+  hwk_berlin: { url: 'https://www.hwk-berlin.de/', label_de: 'HWK Berlin', exact: true },
+  hwk_hamburg: { url: 'https://www.hwk-hamburg.de/', label_de: 'HWK Hamburg', exact: true },
+  hwk_bremen: { url: 'https://www.hwk-bremen.de/', label_de: 'HWK Bremen / Oldenburg', exact: true },
+  hwk_hannover: { url: 'https://www.hwk-hannover.de/', label_de: 'HWK Hannover', exact: true },
+  hwk_potsdam: { url: 'https://www.hwk-potsdam.de/', label_de: 'HWK Potsdam (Brandenburg)', exact: true },
+  hwk_stuttgart: { url: 'https://www.hwk-stuttgart.de/', label_de: 'HWK Stuttgart', exact: true },
+  hwk_karlsruhe: { url: 'https://www.hwk-karlsruhe.de/', label_de: 'HWK Karlsruhe', exact: true },
+  hwk_heilbronn: { url: 'https://www.hwk-heilbronn.de/', label_de: 'HWK Heilbronn', exact: true },
+  hwk_freiburg: { url: 'https://www.hwk-freiburg.de/', label_de: 'HWK Südlicher Oberrhein', exact: true },
+  hwk_muenchen: { url: 'https://www.hwk-muenchen.de/', label_de: 'HWK für München und Oberbayern', exact: true },
+  hwk_mittelfranken: { url: 'https://www.hwk-mittelfranken.de/', label_de: 'HWK Mittelfranken', exact: true },
+  hwk_schwaben: { url: 'https://www.hwk-schwaben.de/', label_de: 'HWK Schwaben', exact: true },
+  hwk_frankfurt: { url: 'https://www.hwk-frankfurt.de/', label_de: 'HWK Frankfurt-Rhein-Main', exact: true },
+  hwk_kassel: { url: 'https://www.hwk-kassel.de/', label_de: 'HWK Kassel-Marburg', exact: true },
+  hwk_wiesbaden: { url: 'https://www.hwk-rhein-main.de/', label_de: 'HWK Rhein-Main', exact: true },
+  hwk_koblenz: { url: 'https://www.hwk-koblenz.de/', label_de: 'HWK Koblenz', exact: true },
+  hwk_trier: { url: 'https://www.hwk-trier.de/', label_de: 'HWK Trier', exact: true },
+  hwk_saarland: { url: 'https://www.hwk-saar.de/', label_de: 'HWK des Saarlandes', exact: true },
+  hwk_dresden: { url: 'https://www.hwk-dresden.de/', label_de: 'HWK Dresden', exact: true },
+  hwk_chemnitz: { url: 'https://www.hwk-chemnitz.de/', label_de: 'HWK Chemnitz', exact: true },
+  hwk_leipzig: { url: 'https://www.hwk-leipzig.de/', label_de: 'HWK Leipzig', exact: true },
+  hwk_magdeburg: { url: 'https://www.hwk-sachsen-anhalt.de/', label_de: 'HWK Sachsen-Anhalt', exact: true },
+  hwk_rostock: { url: 'https://www.hwk-do-schwerin.de/', label_de: 'HWK Mecklenburg-Vorpommern', exact: true },
+  hwk_kiel: { url: 'https://www.hwk-kiel.de/', label_de: 'HWK Kiel', exact: true },
+  hwk_flensburg: { url: 'https://www.hwk-flensburg.de/', label_de: 'HWK Flensburg', exact: true },
+  hwk_luebeck: { url: 'https://www.hwk-luebeck.de/', label_de: 'HWK Lübeck', exact: true },
+  hwk_erfurt: { url: 'https://www.hwk-mittelthueringen.de/', label_de: 'HWK Mittelthüringen', exact: true },
+  hwk_plauen: { url: 'https://www.hwk-zwickau-plauen.de/', label_de: 'HWK Zwickau-Plauen', exact: true }
+};
+
+const GEWERBE = {
+  service_bund: {
+    url: 'https://www.service-bund.de/Service/DE/Home/home_node.html',
+    label_de: 'service-bund.de (Bundesportal)',
+    exact: false
+  },
+  service_berlin: { url: 'https://service.berlin.de/', label_de: 'service.berlin.de', exact: true },
+  service_hamburg: { url: 'https://www.hamburg.de/verwaltung/', label_de: 'hamburg.de Verwaltung', exact: true },
+  service_muenchen: { url: 'https://www.muenchen.de/rathaus/verwaltung.html', label_de: 'muenchen.de Verwaltung', exact: true },
+  service_koeln: { url: 'https://www.stadt-koeln.de/', label_de: 'stadt-koeln.de', exact: true },
+  service_frankfurt: { url: 'https://frankfurt.de/', label_de: 'frankfurt.de', exact: true },
+  service_stuttgart: { url: 'https://www.stuttgart.de/', label_de: 'stuttgart.de', exact: true },
+  service_duesseldorf: { url: 'https://www.duesseldorf.de/', label_de: 'duesseldorf.de', exact: true },
+  service_dortmund: { url: 'https://www.dortmund.de/', label_de: 'dortmund.de', exact: true },
+  service_essen: { url: 'https://www.essen.de/', label_de: 'essen.de', exact: true },
+  service_bremen: { url: 'https://www.bremen.de/', label_de: 'bremen.de', exact: true }
+};
+
+module.exports = { IHK, HWK, GEWERBE };

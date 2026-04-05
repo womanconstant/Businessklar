@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A1628">
+  <title>BusinessKlar</title>
+  <style>
+    :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
+    .sat-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; min-height: 56px; border-bottom: 1px solid var(--border); background: rgba(10,22,40,.95); flex-wrap: wrap; gap: 8px; }
+    .sat-nav .logo { font-family: Georgia, serif; font-size: 18px; font-weight: 700; color: var(--gold); text-decoration: none; }
+    .sat-nav a.nav-btn { font-size: 12px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); text-decoration: none; }
+    .sat-nav a.nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .wrap { max-width: 640px; margin: 0 auto; padding: 24px 16px 48px; }
+    h1 { font-size: 1.35rem; color: var(--gold); margin-bottom: 16px; }
+    .row { display: block; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; text-decoration: none; color: inherit; background: rgba(18,32,64,.45); }
+    .row:hover { border-color: rgba(201,168,76,.4); }
+    .row .t { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+    .row .d { font-size: 12px; color: var(--muted); }
+    .row .preview { font-size: 13px; color: var(--text); margin-top: 6px; line-height: 1.35; opacity: .92; }
+    .head-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .head-row h1 { margin-bottom: 0; }
+    #btn-inbox-refresh { padding: 8px 14px; border-radius: 10px; border: 1px solid var(--border); background: rgba(18,32,64,.6); color: var(--gold); font-size: 12px; cursor: pointer; font-family: inherit; }
+    .empty { text-align: center; padding: 40px 16px; color: var(--muted); border: 1px dashed var(--border); border-radius: 14px; }
+    #gate { text-align: center; padding: 32px; border: 1px solid var(--border); border-radius: 16px; }
+    #gate a { color: var(--gold); }
+  </style>
+</head>
+<body>
+  <header class="sat-nav">
+    <a class="logo" href="index.html">Business<span>Klar</span></a>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <a class="nav-btn" id="nav-dash" href="dashboard.html">—</a>
+      <a class="nav-btn" id="nav-sd" href="specialist-dashboard.html">—</a>
+      <a class="nav-btn" id="nav-home" href="index.html">—</a>
+    </div>
+  </header>
+  <div class="wrap">
+    <div id="gate" style="display:none">
+      <p id="gate-txt">—</p>
+      <p style="margin-top:12px"><a id="gate-link" href="index.html">—</a></p>
+    </div>
+    <div id="main" style="display:none">
+      <div class="head-row">
+        <h1 id="inbox-h1">—</h1>
+        <button type="button" id="btn-inbox-refresh">—</button>
+      </div>
+      <div id="list"></div>
+    </div>
+  </div>
+  <script src="satellite-i18n.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  window.BK_SAT.init();
+  var T = window.BK_SAT.t.bind(window.BK_SAT);
+  var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  document.title = T('inbox_title') + ' — BusinessKlar';
+  document.getElementById('nav-dash').href = window.BK_SAT.withLang('dashboard.html');
+  document.getElementById('nav-sd').href = window.BK_SAT.withLang('specialist-dashboard.html');
+  document.getElementById('nav-home').href = window.BK_SAT.withLang('index.html');
+  document.getElementById('nav-dash').textContent = T('nav_dashboard');
+  document.getElementById('nav-sd').textContent = T('nav_spec_dash');
+  document.getElementById('nav-home').textContent = T('nav_home');
+  document.getElementById('gate-txt').textContent = T('inbox_gate');
+  document.getElementById('gate-link').href = window.BK_SAT.withLang('index.html');
+  document.getElementById('gate-link').textContent = T('inbox_home');
+  document.getElementById('inbox-h1').textContent = T('inbox_title');
+  document.getElementById('btn-inbox-refresh').textContent = T('inbox_refresh');
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function loc() {
+    var m = { de: 'de-DE', en: 'en-GB', ru: 'ru-RU', uk: 'uk-UA', pl: 'pl-PL', ro: 'ro-RO', tr: 'tr-TR', es: 'es-ES' };
+    return m[window.BK_SAT.getLang()] || 'en-GB';
+  }
+
+  function truncPrev(s, n) {
+    s = String(s || '').replace(/\s+/g, ' ').trim();
+    if (s.length <= n) return s;
+    return s.slice(0, n - 1) + '…';
+  }
+
+  async function loadInboxList() {
+    var u = (await sb.auth.getUser()).data.user;
+    var listEl = document.getElementById('list');
+    if (!u) return;
+    var parts = await sb.from('conversation_participants')
+      .select('conversation_id')
+      .eq('user_id', u.id)
+      .is('deleted_at', null);
+    if (parts.error || !parts.data || !parts.data.length) {
+      listEl.innerHTML = '<div class="empty">' + esc(T('inbox_empty')) + '</div>';
+      return;
+    }
+    var ids = parts.data.map(function (p) { return p.conversation_id; });
+    var convs = await sb.from('conversations').select('id, updated_at, client_user_id, consultant_id').in('id', ids).order('updated_at', { ascending: false });
+    if (convs.error || !convs.data || !convs.data.length) {
+      listEl.innerHTML = '<div class="empty">' + esc(T('inbox_load_err')) + '</div>';
+      return;
+    }
+    var consIds = convs.data.map(function (c) { return c.consultant_id; });
+    var consQ = await sb.from('consultants').select('id, company_name, profile_id').in('id', consIds);
+    var consMap = {};
+    (consQ.data || []).forEach(function (c) { consMap[c.id] = c; });
+
+    var msgQ = await sb.from('conversation_messages')
+      .select('conversation_id, body, created_at')
+      .in('conversation_id', ids)
+      .order('created_at', { ascending: false });
+    var lastBy = {};
+    (msgQ.data || []).forEach(function (m) {
+      if (!lastBy[m.conversation_id]) lastBy[m.conversation_id] = m;
+    });
+
+    var convBase = window.BK_SAT.withLang('conversation.html');
+    var sep = convBase.indexOf('?') >= 0 ? '&' : '?';
+
+    listEl.innerHTML = convs.data.map(function (c) {
+      var isClient = c.client_user_id === u.id;
+      var co = consMap[c.consultant_id];
+      var title = isClient
+        ? (T('inbox_client') + ' ' + (co && co.company_name ? co.company_name : '—'))
+        : T('inbox_spec');
+      var lm = lastBy[c.id];
+      var timeStr = lm
+        ? new Date(lm.created_at).toLocaleString(loc())
+        : new Date(c.updated_at).toLocaleString(loc());
+      var preview = lm ? truncPrev(lm.body, 100) : T('inbox_no_msg');
+      var href = convBase + sep + 'id=' + encodeURIComponent(c.id);
+      return '<a class="row" href="' + String(href).replace(/"/g, '&quot;') + '">' +
+        '<div class="t">' + esc(title) + '</div>' +
+        '<div class="preview">' + esc(preview) + '</div>' +
+        '<div class="d">' + esc(T('inbox_last')) + ' ' + esc(timeStr) + '</div></a>';
+    }).join('');
+  }
+
+  (async function () {
+    var u = (await sb.auth.getUser()).data.user;
+    if (!u) {
+      document.getElementById('gate').style.display = 'block';
+      return;
+    }
+    document.getElementById('main').style.display = 'block';
+    await loadInboxList();
+    document.getElementById('btn-inbox-refresh').onclick = function () { loadInboxList(); };
+    setInterval(function () { loadInboxList(); }, 5000);
+  })();
+  </script>
+</body>
+</html>

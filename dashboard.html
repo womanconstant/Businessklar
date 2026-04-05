@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0A1628">
-  <title>Личный кабинет — BusinessKlar</title>
+  <title>BusinessKlar</title>
   <style>
     :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -19,10 +19,13 @@
     .wrap { max-width: 900px; margin: 0 auto; padding: 28px 18px 48px; }
     h1 { font-size: 1.45rem; color: var(--gold); margin-bottom: 8px; }
     .sub { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
-    .empty { text-align: center; padding: 48px 20px; border: 1px dashed var(--border); border-radius: 16px; color: var(--muted); font-size: 15px; }
+    .empty { text-align: center; padding: 56px 24px; border: 1px dashed var(--border); border-radius: 20px; color: var(--muted); font-size: 15px; line-height: 1.6; background: rgba(18,32,64,.35); max-width: 480px; margin: 0 auto; }
+    .empty .empty-icon { font-size: 42px; margin-bottom: 16px; opacity: .85; }
+    .empty a { display: inline-block; margin-top: 18px; padding: 12px 22px; background: var(--gold); color: var(--navy); font-weight: 600; border-radius: 12px; text-decoration: none; font-size: 14px; }
     .card { border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; background: linear-gradient(145deg, rgba(18,32,64,.95), rgba(26,48,80,.35)); }
     .card h3 { font-size: 16px; margin-bottom: 6px; color: var(--cream, #F5EDD8); }
-    .card .meta { font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+    .card .meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+    .card .status-pill { display: inline-block; font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 999px; background: rgba(201,168,76,.12); border: 1px solid rgba(201,168,76,.3); color: var(--gold); margin-bottom: 12px; }
     .row-btns { display: flex; flex-wrap: wrap; gap: 8px; }
     .row-btns a, .row-btns button { font-size: 12px; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(18,32,64,.8); color: var(--gold); text-decoration: none; cursor: pointer; font-family: inherit; }
     .row-btns a:hover, .row-btns button:hover { border-color: var(--gold); }
@@ -42,10 +45,11 @@
   <header class="sat-nav">
     <a class="logo" href="index.html">Business<span>Klar</span></a>
     <div class="links">
-      <a class="nav-btn" href="index.html">Главная</a>
-      <a class="nav-btn" href="specialists-home.html">Специалисты</a>
-      <a class="nav-btn" href="contact.html">Контакт</a>
-      <a class="nav-btn active" href="dashboard.html">Кабинет</a>
+      <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+      <a class="nav-btn" id="nav-spec" href="specialists-home.html">Specialists</a>
+      <a class="nav-btn" id="nav-contact" href="contact.html">Contact</a>
+      <a class="nav-btn active" id="nav-dash" href="dashboard.html">Account</a>
+      <button type="button" class="nav-btn" id="nav-logout" style="display:none;cursor:pointer;font-family:inherit">—</button>
     </div>
   </header>
 
@@ -54,30 +58,40 @@
   </div>
 
   <div id="main" style="display:none" class="wrap">
-    <h1 id="welcome">Личный кабинет</h1>
+    <h1 id="welcome">—</h1>
     <p class="sub" id="welcome-sub"></p>
     <div id="list"></div>
   </div>
 
   <div id="share-overlay" onclick="if(event.target===this)document.getElementById('share-overlay').classList.remove('open')">
     <div id="share-box" onclick="event.stopPropagation()">
-      <h2 style="font-size:1rem;color:var(--gold);margin-bottom:10px">Ссылка для просмотра</h2>
+      <h2 id="share-h2" style="font-size:1rem;color:var(--gold);margin-bottom:10px">—</h2>
       <p id="share-url"></p>
       <div class="sb-btns">
-        <button type="button" id="share-copy">Копировать</button>
-        <button type="button" style="background:transparent;color:var(--text);border-color:var(--border)" onclick="document.getElementById('share-overlay').classList.remove('open')">Закрыть</button>
+        <button type="button" id="share-copy">—</button>
+        <button type="button" id="share-close" style="background:transparent;color:var(--text);border-color:var(--border)">—</button>
       </div>
     </div>
   </div>
 
+  <script src="satellite-i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
   var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  var T = function (k) { return window.BK_SAT.t(k); };
+
+  function localeFmt() {
+    var m = { de: 'de-DE', en: 'en-GB', ru: 'ru-RU', uk: 'uk-UA', pl: 'pl-PL', ro: 'ro-RO', tr: 'tr-TR', es: 'es-ES' };
+    return m[window.BK_SAT.getLang()] || 'en-GB';
+  }
 
   function shareUrlClean(token) {
-    return new URL('share.html?token=' + encodeURIComponent(token), window.location.href).href;
+    var base = new URL('share.html?token=' + encodeURIComponent(token), window.location.href).href;
+    var u = new URL(base);
+    u.searchParams.set('lang', window.BK_SAT.getLang());
+    return u.href;
   }
 
   function caseTitle(row) {
@@ -85,13 +99,20 @@
     if (rd && rd.report_title) return rd.report_title;
     if (row.activity_text) return row.activity_text;
     if (row.legal_form) return row.legal_form;
-    return 'Расчёт';
+    return T('dash_case_default');
+  }
+
+  function caseStatus(row) {
+    var st = (row.status || '').toLowerCase();
+    if (st === 'completed' || st === 'done') return T('dash_st_done');
+    if (st === 'draft') return T('dash_st_draft');
+    return T('dash_st_saved');
   }
 
   function fmtDate(iso) {
     if (!iso) return '—';
     try {
-      return new Date(iso).toLocaleString('ru-RU', { dateStyle: 'short', timeStyle: 'short' });
+      return new Date(iso).toLocaleString(localeFmt(), { dateStyle: 'short', timeStyle: 'short' });
     } catch (e) {
       return String(iso);
     }
@@ -112,9 +133,9 @@
     document.getElementById('share-overlay').classList.add('open');
     document.getElementById('share-copy').onclick = function () {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(function () { alert('Скопировано'); }).catch(function () { prompt('Копируйте:', url); });
+        navigator.clipboard.writeText(url).then(function () { alert(T('dash_copied')); }).catch(function () { prompt(T('dash_copy_prompt'), url); });
       } else {
-        prompt('Копируйте ссылку:', url);
+        prompt(T('dash_copy_prompt'), url);
       }
     };
   }
@@ -128,7 +149,26 @@
     });
   }
 
+  function applyNav() {
+    window.BK_SAT.init();
+    document.getElementById('nav-home').href = window.BK_SAT.withLang('index.html');
+    document.getElementById('nav-spec').href = window.BK_SAT.withLang('specialists-home.html');
+    document.getElementById('nav-contact').href = window.BK_SAT.withLang('contact.html');
+    document.getElementById('nav-home').textContent = T('nav_home');
+    document.getElementById('nav-spec').textContent = T('nav_specialists');
+    document.getElementById('nav-contact').textContent = T('nav_contact');
+    document.getElementById('nav-dash').textContent = T('nav_dashboard');
+    var nlo = document.getElementById('nav-logout');
+    if (nlo) nlo.textContent = T('nav_logout');
+    document.getElementById('share-h2').textContent = T('dash_share_title');
+    document.getElementById('share-copy').textContent = T('dash_copy');
+    document.getElementById('share-close').textContent = T('dash_close');
+    document.getElementById('share-close').onclick = function () { document.getElementById('share-overlay').classList.remove('open'); };
+    document.title = T('nav_dashboard') + ' — BusinessKlar';
+  }
+
   (async function () {
+    applyNav();
     var gate = document.getElementById('gate');
     var main = document.getElementById('main');
     var inner = document.getElementById('gate-inner');
@@ -139,52 +179,87 @@
       if (gate) gate.style.display = 'block';
       if (main) main.style.display = 'none';
       if (inner) {
-        inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.2rem;margin-bottom:12px">Вход в кабинет</h1>' +
-          '<p>Чтобы видеть сохранённые расчёты, войдите в BusinessKlar.</p>' +
-          '<a href="index.html">На главную</a>';
+        inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.2rem;margin-bottom:12px">' + escapeHtml(T('dash_gate_title')) + '</h1>' +
+          '<p>' + escapeHtml(T('dash_gate_text')) + '</p>' +
+          '<a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '">' + escapeHtml(T('dash_gate_link')) + '</a>';
       }
       return;
     }
     if (gate) gate.style.display = 'none';
     if (main) main.style.display = 'block';
+    var nloBtn = document.getElementById('nav-logout');
+    if (nloBtn) {
+      nloBtn.style.display = 'inline-flex';
+      nloBtn.onclick = async function () {
+        await sb.auth.signOut({ scope: 'global' });
+        window.location.href = window.BK_SAT.withLang('index.html');
+      };
+    }
     var wEl = document.getElementById('welcome');
     var wsEl = document.getElementById('welcome-sub');
-    if (wEl) wEl.textContent = 'Здравствуйте' + (u.email ? ', ' + u.email.split('@')[0] : '');
-    if (wsEl) wsEl.textContent = 'Сохранённые расчёты из облака. PDF и ссылка «поделиться» доступны здесь.';
+    if (wEl) wEl.textContent = T('dash_hello') + (u.email ? ', ' + u.email.split('@')[0] : '');
+    if (wsEl) wsEl.textContent = T('dash_welcome_sub');
 
     var q = await sb.from('business_cases').select('*').eq('profile_id', u.id);
     if (!list) return;
     if (q.error) {
-      list.innerHTML = '<div class="empty">Не удалось загрузить список. Проверьте политики RLS в Supabase.</div>';
+      list.innerHTML = '<div class="empty">' + escapeHtml(T('dash_load_err')) + '</div>';
       return;
     }
     var rows = sortCases(q.data || []);
     if (!rows.length) {
-      list.innerHTML = '<div class="empty">У вас пока нет сохранённых расчётов. Пройдите опрос на главной и нажмите «Да, создать аккаунт и сохранить».</div>';
+      list.innerHTML = '<div class="empty"><div class="empty-icon" aria-hidden="true">📊</div>' +
+        '<strong style="color:var(--text);font-size:17px;display:block;margin-bottom:8px">' + escapeHtml(T('dash_empty_title')) + '</strong>' +
+        escapeHtml(T('dash_empty_body')) +
+        '<a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '">' + escapeHtml(T('dash_empty_link')) + '</a></div>';
       return;
     }
 
+    var idx = window.BK_SAT.withLang('index.html');
     list.innerHTML = rows.map(function (row) {
       var id = row.id;
       var title = caseTitle(row);
       var dt = fmtDate(row.created_at);
+      var st = caseStatus(row);
       return '<div class="card" data-case-id="' + id + '">' +
         '<h3>' + escapeHtml(title) + '</h3>' +
-        '<div class="meta">' + escapeHtml(dt) + '</div>' +
+        '<div class="meta">' + escapeHtml(T('dash_created')) + ' ' + escapeHtml(dt) + '</div>' +
+        '<div class="status-pill">' + escapeHtml(st) + '</div>' +
         '<div class="row-btns">' +
-        '<a href="index.html?case=' + encodeURIComponent(id) + '">Открыть</a>' +
-        '<a href="index.html?case=' + encodeURIComponent(id) + '&print=1">Скачать PDF</a>' +
-        '<button type="button" class="btn-share" data-id="' + id + '">Поделиться</button>' +
-        '<button type="button" class="danger btn-del" data-id="' + id + '">Удалить</button>' +
+        '<button type="button" class="btn-open-dash" data-id="' + id + '">' + escapeHtml(T('dash_open')) + '</button>' +
+        '<button type="button" class="btn-pdf-dash" data-id="' + id + '">' + escapeHtml(T('dash_pdf')) + '</button>' +
+        '<button type="button" class="btn-share" data-id="' + id + '">' + escapeHtml(T('dash_share')) + '</button>' +
+        '<button type="button" class="danger btn-del" data-id="' + id + '">' + escapeHtml(T('dash_delete')) + '</button>' +
         '</div></div>';
     }).join('');
+
+    list.querySelectorAll('.btn-open-dash').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-id');
+        try {
+          sessionStorage.setItem('bk_open_case_id', id);
+        } catch (e) {}
+        window.location.href = window.BK_SAT.withLang('index.html');
+      });
+    });
+
+    list.querySelectorAll('.btn-pdf-dash').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-id');
+        try {
+          sessionStorage.setItem('bk_open_case_id', id);
+          sessionStorage.setItem('bk_pdf_request', '1');
+        } catch (e) {}
+        window.location.href = window.BK_SAT.withLang('index.html');
+      });
+    });
 
     list.querySelectorAll('.btn-share').forEach(function (btn) {
       btn.addEventListener('click', async function () {
         var id = btn.getAttribute('data-id');
         var tok = await ensureTokenForCase(id, u.id);
         if (!tok) {
-          alert('Не удалось получить ссылку. Проверьте права в Supabase.');
+          alert(T('dash_share_fail'));
           return;
         }
         openShareDialog(shareUrlClean(tok));
@@ -194,15 +269,17 @@
     list.querySelectorAll('.btn-del').forEach(function (btn) {
       btn.addEventListener('click', async function () {
         var id = btn.getAttribute('data-id');
-        if (!confirm('Удалить этот расчёт безвозвратно?')) return;
+        if (!confirm(T('dash_del_confirm'))) return;
         var del = await sb.from('business_cases').delete().eq('id', id).eq('profile_id', u.id);
         if (del.error) {
-          alert('Не удалось удалить. Нужна политика DELETE в Supabase для business_cases.');
+          alert(T('dash_del_fail'));
           return;
         }
         btn.closest('.card').remove();
         if (!list.querySelector('.card')) {
-          list.innerHTML = '<div class="empty">У вас пока нет сохранённых расчётов.</div>';
+          list.innerHTML = '<div class="empty"><div class="empty-icon" aria-hidden="true">📊</div>' +
+            '<strong style="color:var(--text);font-size:17px;display:block;margin-bottom:8px">' + escapeHtml(T('dash_empty_title')) + '</strong>' +
+            '<a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '">' + escapeHtml(T('dash_empty_link')) + '</a></div>';
         }
       });
     });
@@ -210,9 +287,9 @@
       if (gate) gate.style.display = 'block';
       if (main) main.style.display = 'none';
       if (inner) {
-        inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.2rem;margin-bottom:12px">Ошибка</h1>' +
-          '<p>Не удалось загрузить кабинет. Откройте консоль или попробуйте позже.</p>' +
-          '<a href="index.html">На главную</a>';
+        inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.2rem;margin-bottom:12px">' + escapeHtml(T('dash_err_title')) + '</h1>' +
+          '<p>' + escapeHtml(T('dash_err_text')) + '</p>' +
+          '<a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '">' + escapeHtml(T('dash_gate_link')) + '</a>';
       }
     }
   })();

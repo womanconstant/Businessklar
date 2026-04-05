@@ -7,12 +7,7 @@ create unique index if not exists idx_business_cases_share_token
   on public.business_cases (share_token)
   where share_token is not null;
 
--- Optional: allow anonymous read of rows that are explicitly shared (MVP; review for production)
-drop policy if exists "business_cases_anon_select_shared" on public.business_cases;
-create policy "business_cases_anon_select_shared"
-  on public.business_cases for select
-  to anon, authenticated
-  using (is_shared is true and share_token is not null);
+-- Do NOT add a broad SELECT policy for shared rows (see supabase_security_hardening_share.sql + RPC get_shared_case_by_token).
 
 -- Ensure owners can update share fields (adjust if you already have a broader UPDATE policy)
 drop policy if exists "business_cases_owner_update" on public.business_cases;
@@ -57,3 +52,9 @@ create policy "business_cases_owner_delete"
   on public.business_cases for delete
   to authenticated
   using (profile_id = auth.uid());
+
+drop policy if exists "business_cases_owner_insert" on public.business_cases;
+create policy "business_cases_owner_insert"
+  on public.business_cases for insert
+  to authenticated
+  with check (profile_id = auth.uid());

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#0A1628">
-  <title>Каталог специалистов — BusinessKlar</title>
+  <title>BusinessKlar</title>
   <style>
     :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -24,11 +24,22 @@
     .filters select { background: rgba(18,32,64,.8); border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 10px; font-size: 13px; }
     .demo-banner { font-size: 13px; color: var(--gold); border: 1px dashed var(--border); padding: 12px 14px; border-radius: 12px; margin-bottom: 16px; background: rgba(201,168,76,.08); }
     .list { display: flex; flex-direction: column; gap: 12px; }
-    .card { border: 1px solid var(--border); border-radius: 16px; padding: 18px; background: linear-gradient(145deg, rgba(18,32,64,.95), rgba(26,48,80,.35)); }
-    .card h3 { font-size: 17px; margin-bottom: 6px; }
-    .card .meta { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
-    .card .tags { font-size: 11px; color: var(--muted); margin-bottom: 10px; }
-    .card .cta { display: inline-block; padding: 8px 16px; background: var(--gold); color: var(--navy); font-weight: 600; border-radius: 10px; text-decoration: none; font-size: 13px; }
+    .card { border: 1px solid var(--border); border-radius: 16px; padding: 18px; background: linear-gradient(145deg, rgba(18,32,64,.95), rgba(26,48,80,.35)); position: relative; }
+    .card .match-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: rgba(45,200,122,.15); border: 1px solid rgba(45,200,122,.35); color: #9dffc6; margin-bottom: 10px; }
+    .card h3 { font-size: 17px; margin-bottom: 4px; }
+    .card .sub-name { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    .card .meta { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    .card .tags { font-size: 12px; color: var(--text); margin-bottom: 8px; line-height: 1.4; }
+    .card .desc { font-size: 13px; color: var(--muted); line-height: 1.45; margin-bottom: 12px; }
+    .card .cta-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 4px; }
+    .card .cta { display: inline-block; padding: 8px 14px; background: var(--gold); color: var(--navy); font-weight: 600; border-radius: 10px; text-decoration: none; font-size: 13px; }
+    .card .btn-chat, .card .btn-more { padding: 8px 14px; border-radius: 10px; font-size: 13px; font-family: inherit; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: rgba(18,32,64,.6); color: var(--gold); }
+    .card .btn-chat:hover, .card .btn-more:hover { border-color: var(--gold); }
+    #detail-modal { display: none; position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,.55); align-items: center; justify-content: center; padding: 16px; }
+    #detail-modal.open { display: flex; }
+    #detail-box { max-width: 480px; width: 100%; background: var(--navy); border: 1px solid var(--border); border-radius: 16px; padding: 22px; max-height: 85vh; overflow-y: auto; }
+    #detail-box h3 { color: var(--gold); margin-bottom: 8px; font-size: 1.1rem; }
+    #detail-box .dm-close { float: right; background: none; border: none; color: var(--muted); cursor: pointer; font-size: 20px; line-height: 1; }
     .empty { text-align: center; padding: 32px; color: var(--muted); border: 1px dashed var(--border); border-radius: 16px; }
     #gate { padding: 32px 20px; border: 1px solid var(--border); border-radius: 16px; text-align: center; background: rgba(18,32,64,.5); margin: 24px auto; max-width: 560px; }
     #gate p { color: var(--muted); font-size: 14px; line-height: 1.5; margin-bottom: 16px; }
@@ -39,10 +50,10 @@
   <header class="sat-nav">
     <a class="logo" href="index.html">Business<span>Klar</span></a>
     <div class="links">
-      <a class="nav-btn" href="index.html">Главная</a>
-      <a class="nav-btn active" href="specialists-home.html">Специалисты</a>
-      <a class="nav-btn" href="contact.html">Контакт</a>
-      <a class="nav-btn" href="dashboard.html">Кабинет</a>
+      <a class="nav-btn" id="nav-home" href="index.html">Home</a>
+      <a class="nav-btn active" id="nav-spec" href="specialists-home.html">Specialists</a>
+      <a class="nav-btn" id="nav-contact" href="contact.html">Contact</a>
+      <a class="nav-btn" id="nav-dash" href="dashboard.html">Account</a>
     </div>
   </header>
 
@@ -51,29 +62,68 @@
   </div>
 
   <div id="main" style="display:none" class="wrap">
-    <h1 id="page-title">Каталог специалистов</h1>
+    <h1 id="page-title">—</h1>
     <p class="sub" id="page-sub"></p>
     <div class="filters">
-      <label>Город <select id="f-city"><option value="">Все</option></select></label>
-      <label>Язык <select id="f-lang"><option value="all">Все</option><option value="de">DE</option><option value="ru">RU</option><option value="en">EN</option></select></label>
+      <label><span id="lbl-city">—</span> <select id="f-city"></select></label>
+      <label><span id="lbl-lang">—</span> <select id="f-lang"></select></label>
     </div>
     <div id="demo-banner" class="demo-banner" style="display:none"></div>
     <div id="list" class="list"></div>
   </div>
 
+  <div id="detail-modal" onclick="if(event.target===this)this.classList.remove('open')">
+    <div id="detail-box" onclick="event.stopPropagation()"></div>
+  </div>
+
+  <script src="satellite-i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
   var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
   var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  window.BK_SAT.init();
+  var T = window.BK_SAT.t.bind(window.BK_SAT);
+  var LANG_OPTS = ['all', 'de', 'ru', 'en', 'uk', 'pl', 'ro', 'tr', 'es'];
 
-  var CAT_LABEL = { tax: 'Налоговые консультанты', accounting: 'Бухгалтеры', insurance: 'Страховые агенты', legal: 'Юридическая консультация' };
+  function catKey(k) {
+    var m = { tax: 'cat_tax', accounting: 'cat_acc', insurance: 'cat_ins', legal: 'cat_legal' };
+    return T(m[k] || 'spec_title');
+  }
+
+  document.getElementById('nav-home').href = window.BK_SAT.withLang('index.html');
+  document.getElementById('nav-spec').href = window.BK_SAT.withLang('specialists-home.html');
+  document.getElementById('nav-contact').href = window.BK_SAT.withLang('contact.html');
+  document.getElementById('nav-dash').href = window.BK_SAT.withLang('dashboard.html');
+  document.getElementById('nav-home').textContent = T('nav_home');
+  document.getElementById('nav-spec').textContent = T('nav_specialists');
+  document.getElementById('nav-contact').textContent = T('nav_contact');
+  document.getElementById('nav-dash').textContent = T('nav_dashboard');
+  document.getElementById('lbl-city').textContent = T('spec_filter_city');
+  document.getElementById('lbl-lang').textContent = T('spec_lang');
+  document.title = T('spec_title') + ' — BusinessKlar';
+
+  function buildLangFilter() {
+    var sel = document.getElementById('f-lang');
+    sel.textContent = '';
+    var opts = [
+      ['all', T('spec_lang_all')], ['de', T('spec_lang_de')], ['ru', T('spec_lang_ru')], ['en', T('spec_lang_en')],
+      ['uk', T('lang_uk')], ['pl', T('lang_pl')], ['ro', T('lang_ro')], ['tr', T('lang_tr')], ['es', T('lang_es')]
+    ];
+    opts.forEach(function (o) {
+      var op = document.createElement('option');
+      op.value = o[0];
+      op.textContent = o[1];
+      sel.appendChild(op);
+    });
+  }
+  buildLangFilter();
 
   var DEMO_ROWS = [
-    { id: 'demo-1', company_name: 'Demo Steuerberatung Nord', categories: ['tax'], languages: ['de', 'ru'], cities: ['Berlin', 'Hamburg'], priority: 10, email: 'demo-steuer@example.com', phone: '+49 30 000000', address: 'Berlin (демо)' },
-    { id: 'demo-2', company_name: 'Demo Buchhaltung GmbH', categories: ['accounting'], languages: ['de', 'en'], cities: ['München'], priority: 20, email: 'demo-buch@example.com', phone: '+49 89 000000', address: 'München (демо)' },
-    { id: 'demo-3', company_name: 'Demo Versicherungsmakler', categories: ['insurance'], languages: ['de'], cities: ['Hamburg', 'Köln'], priority: 15, email: 'demo-insurance@example.com', phone: '+49 40 000000', address: 'Hamburg (демо)' },
-    { id: 'demo-4', company_name: 'Demo Rechtsanwälte', categories: ['legal'], languages: ['de', 'ru', 'en'], cities: ['Frankfurt am Main'], priority: 25, email: 'demo-legal@example.com', phone: '+49 69 000000', address: 'Frankfurt (демо)' }
+    { id: 'demo-1', display_name: 'Team Nord', company_name: 'Demo Steuerberatung Nord', description: 'Taxes for sole traders and UG, ELSTER, annual return. Consultations DE/RU.', categories: ['tax'], languages: ['de', 'ru'], cities: ['Berlin', 'Hamburg'], priority: 10, email: 'demo-steuer@example.com', phone: '+49 30 000000', address: 'Berlin (demo)' },
+    { id: 'demo-2', display_name: 'Demo Accounting', company_name: 'Demo Buchhaltung GmbH', description: 'Bookkeeping, payroll, EÜR for small businesses.', categories: ['accounting'], languages: ['de', 'en'], cities: ['München'], priority: 20, email: 'demo-buch@example.com', phone: '+49 89 000000', address: 'München (demo)' },
+    { id: 'demo-3', display_name: 'Insurance HH', company_name: 'Demo Versicherungsmakler', description: 'Business insurance, liability, advisory.', categories: ['insurance'], languages: ['de'], cities: ['Hamburg', 'Köln'], priority: 15, email: 'demo-insurance@example.com', phone: '+49 40 000000', address: 'Hamburg (demo)' },
+    { id: 'demo-4', display_name: 'Legal FF', company_name: 'Demo Rechtsanwälte', description: 'Corporate law, contracts, company formation.', categories: ['legal'], languages: ['de', 'ru', 'en'], cities: ['Frankfurt am Main'], priority: 25, email: 'demo-legal@example.com', phone: '+49 69 000000', address: 'Frankfurt (demo)' }
   ];
 
   function arrHas(arr, val) {
@@ -83,16 +133,16 @@
 
   function sortRows(rows, cityVal, langVal) {
     return rows.slice().sort(function (a, b) {
-      var pa = a.priority != null ? Number(a.priority) : 999999;
-      var pb = b.priority != null ? Number(b.priority) : 999999;
-      if (pa !== pb) return pa - pb;
       var ca = cityVal && arrHas(a.cities, cityVal) ? 1 : 0;
       var cb = cityVal && arrHas(b.cities, cityVal) ? 1 : 0;
       if (cb !== ca) return cb - ca;
       var la = langVal && langVal !== 'all' && arrHas(a.languages, langVal) ? 1 : 0;
       var lb = langVal && langVal !== 'all' && arrHas(b.languages, langVal) ? 1 : 0;
       if (lb !== la) return lb - la;
-      return (a.company_name || '').localeCompare(b.company_name || '', 'ru');
+      var pa = a.priority != null ? Number(a.priority) : 999999;
+      var pb = b.priority != null ? Number(b.priority) : 999999;
+      if (pa !== pb) return pa - pb;
+      return (a.company_name || '').localeCompare(b.company_name || '', 'de');
     });
   }
 
@@ -123,26 +173,147 @@
     });
   }
 
+  function catLabels(cats) {
+    if (!Array.isArray(cats) || !cats.length) return '—';
+    return cats.map(function (c) { return catKey(c); }).join(', ');
+  }
+
+  function truncText(s, n) {
+    s = String(s || '').replace(/\s+/g, ' ').trim();
+    if (s.length <= n) return s;
+    return s.slice(0, n - 1) + '…';
+  }
+
+  function convUrl(id) {
+    var base = window.BK_SAT.withLang('conversation.html');
+    var sep = base.indexOf('?') >= 0 ? '&' : '?';
+    return base + sep + 'id=' + encodeURIComponent(id);
+  }
+
+  var cardCache = {};
+  var convCreateInFlight = false;
+  var lastNewConvAt = 0;
+  var MIN_NEW_CONV_MS = 15000;
+
+  async function openChatForConsultant(consultantId) {
+    var u = (await sb.auth.getUser()).data.user;
+    if (!u) {
+      window.location.href = window.BK_SAT.withLang('index.html');
+      return;
+    }
+    var ex = await sb.from('conversations').select('id').eq('client_user_id', u.id).eq('consultant_id', consultantId).maybeSingle();
+    if (ex.data && ex.data.id) {
+      window.location.href = convUrl(ex.data.id);
+      return;
+    }
+    var now = Date.now();
+    if (convCreateInFlight || now - lastNewConvAt < MIN_NEW_CONV_MS) return;
+    convCreateInFlight = true;
+    var cons = await sb.from('consultants').select('profile_id').eq('id', consultantId).single();
+    if (cons.error || !cons.data || !cons.data.profile_id) {
+      convCreateInFlight = false;
+      alert(T('spec_chat_na'));
+      return;
+    }
+    var ins = await sb.from('conversations').insert({
+      client_user_id: u.id,
+      consultant_id: consultantId
+    }).select('id').single();
+    var cid;
+    if (ins.error) {
+      if (ins.error.code === '23505' || (ins.error.message && ins.error.message.indexOf('duplicate') >= 0)) {
+        var again = await sb.from('conversations').select('id').eq('client_user_id', u.id).eq('consultant_id', consultantId).maybeSingle();
+        cid = again.data && again.data.id;
+      } else {
+        convCreateInFlight = false;
+        alert(ins.error.message || T('spec_conv_err'));
+        return;
+      }
+    } else {
+      cid = ins.data && ins.data.id;
+    }
+    if (!cid) {
+      convCreateInFlight = false;
+      return;
+    }
+    lastNewConvAt = Date.now();
+    var pIns = await sb.from('conversation_participants').insert([
+      { conversation_id: cid, user_id: u.id },
+      { conversation_id: cid, user_id: cons.data.profile_id }
+    ]);
+    if (pIns.error && pIns.error.code !== '23505' && (pIns.error.message || '').indexOf('duplicate') < 0) {
+      convCreateInFlight = false;
+      alert(pIns.error.message || T('spec_part_err'));
+      return;
+    }
+    convCreateInFlight = false;
+    window.location.href = convUrl(cid);
+  }
+
+  function openDetailModal(id) {
+    var r = cardCache[id];
+    if (!r) return;
+    var box = document.getElementById('detail-box');
+    var ov = document.getElementById('detail-modal');
+    if (!box || !ov) return;
+    var title = (r.display_name || r.company_name || '—') + ' — ' + (r.company_name || '');
+    box.innerHTML = '<button type="button" class="dm-close" onclick="document.getElementById(\'detail-modal\').classList.remove(\'open\')" aria-label="' + escapeHtml(T('dash_close')) + '">&times;</button>' +
+      '<h3>' + escapeHtml(title) + '</h3>' +
+      '<p style="font-size:13px;color:var(--muted);margin-bottom:12px">' + escapeHtml((r.cities || []).join(', ')) + ' · ' +
+      escapeHtml((r.languages || []).join(', ').toUpperCase()) + '</p>' +
+      '<p style="font-size:14px;line-height:1.5;color:var(--text)">' + escapeHtml(r.description || T('spec_desc_ph')) + '</p>' +
+      (r.phone ? '<p style="margin-top:12px;font-size:13px;color:var(--muted)">' + escapeHtml(T('spec_phone')) + ' ' + escapeHtml(r.phone) + '</p>' : '') +
+      (r.email ? '<p style="font-size:13px"><a href="' + escapeHtml(mailtoHref(r.email)) + '" style="color:var(--gold)">' + escapeHtml(T('spec_email')) + '</a></p>' : '');
+    ov.classList.add('open');
+  }
+
   function renderList(rows, citySel, langSel) {
     var el = document.getElementById('list');
     var filtered = filterCityLang(rows, citySel, langSel);
     var sorted = sortRows(filtered, citySel, langSel);
+    cardCache = {};
+    var shLink = window.BK_SAT.withLang('specialists-home.html');
     if (!sorted.length) {
       el.innerHTML =
-        '<div class="empty">Нет специалистов по выбранным фильтрам. Попробуйте снять ограничения по городу и языку или ' +
-        '<a href="specialists-home.html" style="color:var(--gold)">вернитесь к категориям</a>.</div>';
+        '<div class="empty">' + escapeHtml(T('spec_empty_intro')) + ' ' +
+        '<a href="' + String(shLink).replace(/"/g, '&quot;') + '" style="color:var(--gold)">' + escapeHtml(T('spec_home_link')) + '</a>.</div>';
       return;
     }
     el.innerHTML = sorted.map(function (r) {
-      var tags = [];
-      if (r.cities && r.cities.length) tags.push('Города: ' + r.cities.join(', '));
-      if (r.languages && r.languages.length) tags.push('Языки: ' + r.languages.join(', ').toUpperCase());
+      var idKey = String(r.id);
+      cardCache[idKey] = r;
+      var cityLine = (r.cities && r.cities.length) ? r.cities.join(', ') : '—';
+      var langLine = (r.languages && r.languages.length) ? r.languages.join(', ').toUpperCase() : '—';
+      var match = (citySel && arrHas(r.cities, citySel)) || (langSel && langSel !== 'all' && arrHas(r.languages, langSel));
+      var badge = match ? '<div class="match-badge">' + escapeHtml(T('spec_match')) + '</div>' : '';
+      var head = escapeHtml(r.display_name || r.company_name || '—');
+      var sub = r.display_name ? '<div class="sub-name">' + escapeHtml(r.company_name || '') + '</div>' : '';
+      var desc = truncText(r.description, 160);
       var mail = mailtoHref(r.email);
-      var cta = mail !== '#' ? '<a class="cta" href="' + escapeHtml(mail) + '">Связаться</a>' : '';
-      return '<div class="card"><h3>' + escapeHtml(r.company_name || '—') + '</h3>' +
-        '<div class="meta">' + escapeHtml(r.address || '') + (r.phone ? ' · ' + escapeHtml(r.phone) : '') + '</div>' +
-        (tags.length ? '<div class="tags">' + escapeHtml(tags.join(' · ')) + '</div>' : '') + cta + '</div>';
+      var cta = mail !== '#' ? '<a class="cta" href="' + escapeHtml(mail) + '">' + escapeHtml(T('spec_email')) + '</a>' : '';
+      var isDemo = String(r.id || '').indexOf('demo') === 0;
+      var chatBtn = !isDemo && r.id
+        ? '<button type="button" class="btn-chat" data-consultant-id="' + escapeHtml(String(r.id)) + '">' + escapeHtml(T('spec_write')) + '</button>'
+        : '';
+      var moreBtn = '<button type="button" class="btn-more" data-card-id="' + escapeHtml(idKey) + '">' + escapeHtml(T('spec_more')) + '</button>';
+      return '<div class="card">' + badge +
+        '<h3>' + head + '</h3>' + sub +
+        '<div class="meta">📍 ' + escapeHtml(cityLine) + '</div>' +
+        '<div class="tags"><strong>' + escapeHtml(T('spec_langs')) + '</strong> ' + escapeHtml(langLine) + '<br><strong>' + escapeHtml(T('spec_cats')) + '</strong> ' + escapeHtml(catLabels(r.categories)) + '</div>' +
+        (desc ? '<div class="desc">' + escapeHtml(desc) + '</div>' : '') +
+        '<div class="cta-row">' + cta + chatBtn + moreBtn + '</div></div>';
     }).join('');
+    el.querySelectorAll('.btn-chat').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var cid = btn.getAttribute('data-consultant-id');
+        if (cid) openChatForConsultant(cid);
+      });
+    });
+    el.querySelectorAll('.btn-more').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openDetailModal(btn.getAttribute('data-card-id'));
+      });
+    });
   }
 
   function fillCitySelect(rows, selected) {
@@ -155,7 +326,7 @@
     sel.textContent = '';
     var o0 = document.createElement('option');
     o0.value = '';
-    o0.textContent = 'Все';
+    o0.textContent = T('spec_all');
     sel.appendChild(o0);
     cities.forEach(function (c) {
       var o = document.createElement('option');
@@ -174,9 +345,9 @@
     if (!u) {
       gate.style.display = 'block';
       main.style.display = 'none';
-      inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.25rem;margin-bottom:12px">Каталог для зарегистрированных пользователей</h1>' +
-        '<p>Чтобы просматривать каталог специалистов, войдите или зарегистрируйтесь в BusinessKlar.</p>' +
-        '<a href="index.html">Перейти в BusinessKlar</a>';
+      inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.25rem;margin-bottom:12px">' + escapeHtml(T('spec_gate_title')) + '</h1>' +
+        '<p>' + escapeHtml(T('spec_gate_text')) + '</p>' +
+        '<a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '">' + escapeHtml(T('spec_gate_link')) + '</a>';
       return;
     }
     gate.style.display = 'none';
@@ -187,8 +358,8 @@
     var urlCity = params.get('city') || '';
     var urlLang = params.get('lang') || '';
 
-    document.getElementById('page-title').textContent = CAT_LABEL[category] || 'Каталог специалистов';
-    document.getElementById('page-sub').textContent = category ? 'Категория: ' + (CAT_LABEL[category] || category) : 'Все категории';
+    document.getElementById('page-title').textContent = catKey(category) || T('spec_title');
+    document.getElementById('page-sub').textContent = category ? (T('spec_sub_cat') + ' ' + catKey(category)) : T('spec_sub_all');
 
     var q = await sb.from('consultants').select('*');
     var allRows = [];
@@ -201,27 +372,32 @@
       allRows = DEMO_ROWS.slice();
       useDemo = true;
     } else {
-      allRows = q.data;
+      allRows = q.data.filter(function (r) {
+        return r.is_published === true;
+      });
     }
 
     if (useDemo) {
       document.getElementById('demo-banner').style.display = 'block';
-      document.getElementById('demo-banner').textContent = 'Показаны демонстрационные карточки. Добавьте записи в таблицу consultants в Supabase, чтобы видеть реальных специалистов.';
+      document.getElementById('demo-banner').textContent = T('spec_demo');
     }
 
     var catRows = filterByCategory(allRows, category);
     if (!catRows.length && allRows.length && !useDemo) {
       document.getElementById('list').innerHTML =
-        '<div class="empty">В этой категории пока нет специалистов в базе. Выберите другую категорию на ' +
-        '<a href="specialists-home.html" style="color:var(--gold)">главной странице каталога</a>.</div>';
-      document.getElementById('f-city').innerHTML = '<option value="">Все</option>';
-      document.getElementById('f-lang').value = urlLang && ['all', 'de', 'ru', 'en'].indexOf(urlLang) !== -1 ? urlLang : 'all';
+        '<div class="empty">' + escapeHtml(T('spec_empty_cat')) + ' ' +
+        '<a href="' + String(window.BK_SAT.withLang('specialists-home.html')).replace(/"/g, '&quot;') + '" style="color:var(--gold)">' + escapeHtml(T('spec_home_link')) + '</a>.</div>';
+      document.getElementById('f-city').innerHTML = '';
+      fillCitySelect([], '');
+      buildLangFilter();
+      document.getElementById('f-lang').value = LANG_OPTS.indexOf(urlLang) >= 0 ? urlLang : 'all';
       return;
     }
 
     var fCity = document.getElementById('f-city');
     var fLang = document.getElementById('f-lang');
     fillCitySelect(catRows, '');
+    buildLangFilter();
     if (urlCity) {
       fCity.value = urlCity;
       if (fCity.value !== urlCity) {
@@ -232,7 +408,7 @@
         fCity.appendChild(ox);
       }
     }
-    fLang.value = urlLang && ['all', 'de', 'ru', 'en'].indexOf(urlLang) !== -1 ? urlLang : 'all';
+    fLang.value = LANG_OPTS.indexOf(urlLang) >= 0 ? urlLang : 'all';
 
     function refresh() {
       renderList(catRows, fCity.value || '', fLang.value || 'all');
