@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A1628">
+  <title>BusinessKlar</title>
+  <style>
+    :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
+    .sat-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 56px; border-bottom: 1px solid var(--border); background: rgba(10,22,40,.95); flex-wrap: wrap; gap: 8px; }
+    .sat-nav .logo { font-family: Georgia, serif; font-size: 18px; font-weight: 700; color: var(--gold); text-decoration: none; }
+    .sat-nav .logo span { color: var(--text); font-weight: 300; }
+    .sat-nav .links { display: flex; gap: 8px; flex-wrap: wrap; }
+    .sat-nav a.nav-btn { font-size: 12px; padding: 6px 12px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); text-decoration: none; }
+    .sat-nav a.nav-btn:hover { border-color: var(--gold); color: var(--gold); }
+    .wrap { max-width: 560px; margin: 0 auto; padding: 28px 18px 48px; }
+    h1 { font-size: 1.4rem; color: var(--gold); margin-bottom: 10px; }
+    .lead { color: var(--muted); font-size: 14px; margin-bottom: 22px; line-height: 1.5; }
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    input, textarea, select { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(18,32,64,.85); color: var(--text); font-size: 14px; margin-bottom: 14px; font-family: inherit; }
+    textarea { min-height: 100px; resize: vertical; }
+    .hint { font-size: 11px; color: var(--muted); margin-top: -10px; margin-bottom: 12px; }
+    button.primary { padding: 14px 22px; background: var(--gold); color: var(--navy); font-weight: 600; border: none; border-radius: 12px; cursor: pointer; font-size: 15px; width: 100%; }
+    #gate, #has-profile { padding: 24px; border: 1px solid var(--border); border-radius: 16px; margin-bottom: 20px; text-align: center; }
+    #gate a, #has-profile a { color: var(--gold); }
+    #msg { margin-top: 12px; font-size: 14px; }
+    .cats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+    .cats label { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <header class="sat-nav">
+    <a class="logo" href="index.html">Business<span>Klar</span></a>
+    <div class="links">
+      <a class="nav-btn" id="nav-home" href="index.html">—</a>
+      <a class="nav-btn" id="nav-spec" href="specialists-home.html">—</a>
+      <a class="nav-btn" id="nav-dash" href="dashboard.html">—</a>
+      <a class="nav-btn" id="nav-sd" href="specialist-dashboard.html">—</a>
+    </div>
+  </header>
+  <div class="wrap">
+    <div id="gate" style="display:none">
+      <p><strong id="gate-title">—</strong></p>
+      <p id="gate-text" style="margin-top:8px;font-size:14px;color:var(--muted)"></p>
+      <p style="margin-top:12px"><a id="gate-link" href="index.html">—</a></p>
+    </div>
+    <div id="has-profile" style="display:none"></div>
+    <div id="form-wrap" style="display:none">
+      <h1 id="form-title">—</h1>
+      <p class="lead" id="form-lead"></p>
+      <form id="f">
+        <label for="display_name" id="lbl-display">—</label>
+        <input id="display_name" name="display_name" required maxlength="120">
+        <label for="company_name" id="lbl-company">—</label>
+        <input id="company_name" name="company_name" required maxlength="200">
+        <label id="lbl-cities">—</label>
+        <input id="cities" name="cities" required>
+        <p class="hint" id="hint-cities"></p>
+        <label id="lbl-langs">—</label>
+        <div class="cats" id="lang-cats"></div>
+        <label id="lbl-cats">—</label>
+        <div class="cats" id="cat-cats"></div>
+        <label for="services" id="lbl-services">—</label>
+        <input id="services" name="services">
+        <label for="description" id="lbl-desc">—</label>
+        <textarea id="description" name="description" required></textarea>
+        <label for="email" id="lbl-email">—</label>
+        <input id="email" name="email" type="email" required autocomplete="email">
+        <label for="phone" id="lbl-phone">—</label>
+        <input id="phone" name="phone" type="tel">
+        <button type="submit" class="primary" id="btn-submit">—</button>
+        <p id="msg"></p>
+      </form>
+    </div>
+  </div>
+  <script src="satellite-i18n.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+  window.BK_SAT.init();
+  var T = window.BK_SAT.t.bind(window.BK_SAT);
+  var WL = window.BK_SAT.withLang.bind(window.BK_SAT);
+
+  var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  function esc(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function applyNav() {
+    document.title = T('bs_title') + ' — BusinessKlar';
+    document.getElementById('nav-home').href = WL('index.html');
+    document.getElementById('nav-spec').href = WL('specialists-home.html');
+    document.getElementById('nav-dash').href = WL('dashboard.html');
+    document.getElementById('nav-sd').href = WL('specialist-dashboard.html');
+    document.getElementById('nav-home').textContent = T('nav_home');
+    document.getElementById('nav-spec').textContent = T('nav_specialists');
+    document.getElementById('nav-dash').textContent = T('nav_dashboard');
+    document.getElementById('nav-sd').textContent = T('nav_spec_dash');
+    document.querySelector('.logo').href = WL('index.html');
+    document.getElementById('gate-title').textContent = T('bs_gate_title');
+    document.getElementById('gate-text').textContent = T('bs_gate_text');
+    var gl = document.getElementById('gate-link');
+    gl.href = WL('index.html');
+    gl.textContent = T('bs_gate_link');
+    document.getElementById('form-title').textContent = T('bs_title');
+    document.getElementById('form-lead').textContent = T('bs_lead');
+    document.getElementById('lbl-display').textContent = T('bs_l_display');
+    document.getElementById('lbl-company').textContent = T('bs_l_company');
+    document.getElementById('lbl-cities').textContent = T('bs_l_cities');
+    document.getElementById('cities').placeholder = T('bs_cities_ph');
+    document.getElementById('hint-cities').textContent = T('bs_hint_cities');
+    document.getElementById('lbl-langs').textContent = T('bs_l_langs');
+    document.getElementById('lbl-cats').textContent = T('bs_l_cats');
+    document.getElementById('lbl-services').textContent = T('bs_l_services');
+    document.getElementById('services').placeholder = T('bs_services_ph');
+    document.getElementById('lbl-desc').textContent = T('bs_l_desc');
+    document.getElementById('lbl-email').textContent = T('bs_l_email');
+    document.getElementById('lbl-phone').textContent = T('bs_l_phone');
+    document.getElementById('btn-submit').textContent = T('bs_submit');
+  }
+  applyNav();
+
+  var LANGS = [
+    { v: 'de', l: T('lang_de') }, { v: 'ru', l: T('lang_ru') }, { v: 'en', l: T('lang_en') },
+    { v: 'uk', l: T('lang_uk') }, { v: 'pl', l: T('lang_pl') }, { v: 'ro', l: T('lang_ro') },
+    { v: 'tr', l: T('lang_tr') }, { v: 'es', l: T('lang_es') }
+  ];
+  var CATS = [
+    { v: 'tax', l: T('bcat_tax') }, { v: 'accounting', l: T('bcat_acc') },
+    { v: 'insurance', l: T('bcat_ins') }, { v: 'legal', l: T('bcat_legal') }
+  ];
+
+  function splitList(s) {
+    return String(s || '').split(/[,;]/).map(function (x) { return x.trim(); }).filter(Boolean);
+  }
+
+  (async function () {
+    var u = (await sb.auth.getUser()).data.user;
+    var gate = document.getElementById('gate');
+    var formWrap = document.getElementById('form-wrap');
+    var hasP = document.getElementById('has-profile');
+    if (!u) {
+      gate.style.display = 'block';
+      return;
+    }
+    gate.style.display = 'none';
+    var existing = await sb.from('consultants').select('id, status').eq('profile_id', u.id).maybeSingle();
+    if (existing.data && existing.data.id) {
+      hasP.style.display = 'block';
+      hasP.innerHTML = '<p>' + esc(T('bs_has_profile')) + '</p><p style="margin-top:12px"><a href="' + esc(WL('specialist-dashboard.html')) + '">' + esc(T('bs_open_sd')) + '</a></p>';
+      return;
+    }
+    formWrap.style.display = 'block';
+    if (u.email) document.getElementById('email').value = u.email;
+
+    document.getElementById('lang-cats').innerHTML = LANGS.map(function (x) {
+      return '<label><input type="checkbox" name="lang" value="' + esc(x.v) + '"> ' + esc(x.l) + '</label>';
+    }).join('');
+    document.getElementById('cat-cats').innerHTML = CATS.map(function (x) {
+      return '<label><input type="checkbox" name="cat" value="' + esc(x.v) + '"> ' + esc(x.l) + '</label>';
+    }).join('');
+
+    document.getElementById('f').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      var msg = document.getElementById('msg');
+      msg.textContent = '';
+      var langs = [].slice.call(document.querySelectorAll('input[name="lang"]:checked')).map(function (el) { return el.value; });
+      var cats = [].slice.call(document.querySelectorAll('input[name="cat"]:checked')).map(function (el) { return el.value; });
+      if (!langs.length) {
+        msg.textContent = T('bs_err_lang');
+        return;
+      }
+      if (!cats.length) {
+        msg.textContent = T('bs_err_cat');
+        return;
+      }
+      var cities = splitList(document.getElementById('cities').value);
+      var services = splitList(document.getElementById('services').value);
+      var row = {
+        profile_id: u.id,
+        display_name: document.getElementById('display_name').value.trim(),
+        company_name: document.getElementById('company_name').value.trim(),
+        cities: cities,
+        languages: langs,
+        categories: cats,
+        services: services,
+        description: document.getElementById('description').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        phone: document.getElementById('phone').value.trim() || null,
+        status: 'review',
+        is_published: false,
+        is_verified: false
+      };
+      var ins = await sb.from('consultants').insert([row]).select('id');
+      if (ins.error) {
+        msg.textContent = ins.error.message || T('bs_err_save');
+        return;
+      }
+      msg.style.color = 'var(--gold)';
+      msg.textContent = T('bs_success');
+      formWrap.style.display = 'none';
+      hasP.style.display = 'block';
+      hasP.innerHTML = '<p>' + esc(T('bs_review')) + '</p><p style="margin-top:12px"><a href="' + esc(WL('specialist-dashboard.html')) + '">' + esc(T('bs_open_sd')) + '</a></p>';
+    });
+  })();
+  </script>
+</body>
+</html>
