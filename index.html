@@ -81,7 +81,8 @@
       height: 60px;
       background: rgba(10, 22, 40, .95);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border)
+      border-bottom: 1px solid var(--border);
+      overflow: hidden
     }
 
     .logo {
@@ -102,7 +103,9 @@
     .nav-btns {
       display: flex;
       gap: 6px;
-      align-items: center
+      align-items: center;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch
     }
 
     .nav-btn {
@@ -2109,7 +2112,7 @@
       <a class="nav-btn" id="nb-dash" href="dashboard.html">Кабинет</a>
       <button type="button" class="nav-btn" id="nb-logout" style="display:none" onclick="window.bkLogout && window.bkLogout()">Logout</button>
       <button class="nav-btn" id="nb-feh" onclick="showPage('fehler');renderFehler()"
-        style="font-size:10px;padding:4px 8px">⚠️ Fehler</button>
+        style="font-size:10px;padding:4px 8px">Штрафы</button>
       <button class="nav-btn" id="nb-daten" onclick="showPage('datenschutz')"
         style="font-size:10px;padding:4px 8px">Datenschutz</button>
       <button class="nav-btn primary" id="nb-surv" onclick="startSurvey(true)">Fragebogen &#9658;</button>
@@ -2339,14 +2342,12 @@
       </div>
     </div>
 
-    <!-- FEHLER / MISTAKES -->
+    <!-- ШТРАФЫ / FINES & MISTAKES -->
     <div id="page-fehler" class="page" role="main">
       <div class="glossary-wrap">
-        <div class="section-label" id="el-fhlbl">Typische Fehler</div>
-        <h2 style="font-family:'Fraunces',serif;font-size:34px;font-weight:400;margin-bottom:12px" id="el-fhh">Schwarze
-          Liste der Fehler</h2>
-        <p style="color:var(--text-muted);font-size:16px;line-height:1.7;margin-bottom:40px" id="el-fhd">15 Bußgelder +
-          10 USt-Fallen die Unternehmer am häufigsten treffen</p>
+        <div class="section-label" id="el-fhlbl">Штрафы</div>
+        <h2 style="font-family:'Fraunces',serif;font-size:34px;font-weight:400;margin-bottom:12px" id="el-fhh">Штрафы и типичные ошибки</h2>
+        <p style="color:var(--text-muted);font-size:16px;line-height:1.7;margin-bottom:40px" id="el-fhd">15 типичных штрафов + 10 ошибок с НДС, которые чаще всего встречаются у предпринимателей</p>
         <div id="fehler-content"></div>
       </div>
     </div>
@@ -2536,6 +2537,8 @@
       auth_confirmed: 'E-Mail best\u00e4tigt. Sie sind angemeldet.',
       pdf_gen_fail: 'PDF konnte nicht erstellt oder hochgeladen werden. Pr\u00fcfen Sie Storage-Bucket case_pdfs in Supabase.',
       nav_logout: 'Abmelden',
+      nav_feh: 'Bu\u00dfgelder',
+      nav_daten: 'Datenschutz',
       auth_forgot_link: 'Passwort vergessen?',
       auth_back_login: 'Zur\u00fcck zum Login',
       auth_forgot_mode: 'Link senden',
@@ -2651,7 +2654,10 @@
       act_freiberuf: '\u0412\u043e\u0437\u043c\u043e\u0436\u0435\u043d Freiberufler',
       act_cat_lbl: '\u041a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f: ',
       act_fb_lbl: '\u0412\u043e\u0437\u043c\u043e\u0436\u0435\u043d Freiberufler',
-      visitcnt: '\u0432\u0438\u0437\u0438\u0442\u043e\u0432 \u0432\u0441\u0435\u0433\u043e'
+      visitcnt: '\u0432\u0438\u0437\u0438\u0442\u043e\u0432 \u0432\u0441\u0435\u0433\u043e',
+      nav_logout: '\u0412\u044b\u0439\u0442\u0438',
+      nav_feh: '\u0428\u0442\u0440\u0430\u0444\u044b',
+      nav_daten: '\u041a\u043e\u043d\u0444\u0438\u0434\u0435\u043d\u0446\u0438\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c'
     };
 
     TX.en = {
@@ -2752,6 +2758,8 @@
       auth_confirmed: 'Email confirmed. You are signed in.',
       pdf_gen_fail: 'Could not create or upload PDF. Check the case_pdfs storage bucket in Supabase.',
       nav_logout: 'Log out',
+      nav_feh: 'Fines',
+      nav_daten: 'Privacy',
       auth_forgot_link: 'Forgot password?',
       auth_back_login: 'Back to login',
       auth_forgot_mode: 'Send link',
@@ -2918,6 +2926,10 @@
       if (atr) atr.textContent = t('authtabreg');
       var nfl = document.getElementById('nb-logout');
       if (nfl) nfl.textContent = t('nav_logout');
+      var nfeh = document.getElementById('nb-feh');
+      if (nfeh) nfeh.textContent = t('nav_feh');
+      var ndat = document.getElementById('nb-daten');
+      if (ndat) ndat.textContent = t('nav_daten');
       var afl = document.getElementById('auth-forgot-link');
       if (afl) afl.textContent = t('auth_forgot_link');
       var abl = document.getElementById('auth-back-login');
@@ -3252,7 +3264,8 @@
 
         // ── Header ───────────────────────────────────────────
         document.getElementById('r-name').textContent = lbl('Бизнес в Германии', 'Business in Germany', 'Unternehmen in Deutschland');
-        document.getElementById('r-lf').textContent = lfDE;
+        // Label the badge clearly as recommended Rechtsform (legal form), not Tätigkeitsart
+        document.getElementById('r-lf').textContent = lbl('Рекомендуемая форма (Rechtsform): ', 'Recommended form (Rechtsform): ', 'Empfohlene Rechtsform: ') + lfDE;
         document.getElementById('r-meta').textContent = t('ctylbl') + ': ' + cityLbl + ' · ' + t('gen') + ': ' + new Date().toLocaleDateString();
 
         updateGuestNotice();
@@ -3297,7 +3310,7 @@
           ? renderComplianceSection({ surveyData: d, activityKey: act, cityLabel: cityLbl, currentLang: currentLang })
           : '';
         var top5Main =
-          '<div class="rpt-sec-h">🎯 ' + lbl('Рекомендация: ', 'Recommendation: ', 'Empfehlung: ') + lfDE + '</div>' +
+          '<div class="rpt-sec-h">🎯 ' + lbl('Рекомендуемая правовая форма (Rechtsform): ', 'Recommended legal form (Rechtsform): ', 'Empfohlene Rechtsform: ') + lfDE + '</div>' +
           '<div class="r-card"><h3>' + lbl('Что сделать в первую очередь', 'What to do first', 'Was zuerst zu tun ist') + '</h3>' +
           '<div class="r-card-sub">' + lbl('Порядок действий', 'Order of steps', 'Reihenfolge der Schritte') + '</div>' + stepsHtml + '</div>';
         document.getElementById('r-top5').innerHTML = compBlock
@@ -3448,91 +3461,128 @@
 
         var allCats = [
           {
-            n: lbl('Формы бизнеса', 'Business Forms', 'Rechtsformen'), terms: [
-              { de: 'Freiberufler', tr: lbl('Свободная профессия', 'Freelance profession', 'Freie Berufe'), body: lbl('IT, консультанты, дизайнеры, врачи, переводчики. Не платят Gewerbesteuer. Регистрация только через Finanzamt.', 'IT, consultants, designers, doctors, translators. No Gewerbesteuer. Register via Finanzamt only.', 'IT, Berater, Designer, Ärzte, Übersetzer. Keine Gewerbesteuer. Nur Finanzamt-Anmeldung.') },
-              { de: 'Einzelunternehmen', tr: lbl('ИП / Индивидуальный предприниматель', 'Sole trader', 'Einzelunternehmen'), body: lbl('Самая простая форма. Полная личная ответственность. Gewerbesteuer если прибыль > 24.500 €. Самая распространённая форма малого бизнеса.', 'Simplest form. Full personal liability. Gewerbesteuer if profit > 24,500 €. Most common for small business.', 'Einfachste Form. Volle persönliche Haftung. GewSt wenn Gewinn > 24.500 €.') },
-              { de: 'GbR (Gesellschaft bürgerlichen Rechts)', tr: lbl('Простое товарищество (2+ человек)', 'Simple partnership (2+ people)', 'Einfache Partnerschaft'), body: lbl('Партнёрство минимум двух людей. Каждый партнёр платит Einkommensteuer со своей доли. Gewerbesteuer если коммерческая деятельность.', 'Partnership of at least 2 people. Each partner pays income tax on their share.', 'Partnerschaft mind. 2 Personen. Einkommensteuer bei jedem Gesellschafter.') },
-              { de: 'UG (haftungsbeschränkt)', tr: lbl('Мини-ООО / Mini-GmbH', 'Mini-GmbH / micro company', 'Mini-GmbH'), body: lbl('Минимальный капитал 1 EUR. Ограниченная ответственность. Требует нотариуса и Handelsregister. 25% прибыли обязательно резервируется до достижения 25.000 EUR.', 'Min. capital 1 EUR. Limited liability. Requires notary + Handelsregister. 25% of profit must be reserved until reaching 25,000 EUR.', 'Min. Kapital 1 EUR. Haftungsbeschränkt. Notar + HR-Eintrag. 25% Gewinn in Rücklage bis 25.000 EUR.') },
-              { de: 'GmbH (Gesellschaft mit beschränkter Haftung)', tr: lbl('ООО', 'Limited liability company', 'GmbH'), body: lbl('Минимальный капитал 25.000 EUR. Ограниченная ответственность. Körperschaftsteuer 15% + Solidaritätszuschlag + Gewerbesteuer. При выводе дивидендов — ещё Kapitalertragsteuer 25%.', 'Min. capital 25,000 EUR. Limited liability. Körperschaftsteuer 15% + Soli + Gewerbesteuer. Dividends: +25% Kapitalertragsteuer.', 'Min. Kapital 25.000 EUR. Körperschaftsteuer 15% + Soli + GewSt. Dividenden: +25% KapESt.') },
-              { de: 'AG (Aktiengesellschaft)', tr: lbl('АО / Акционерное общество', 'Joint-stock company', 'Aktiengesellschaft'), body: lbl('Минимальный капитал 50.000 EUR. Körperschaftsteuer 15%, Gewerbesteuer, USt. Для крупного бизнеса или публичных компаний.', 'Min. capital 50,000 EUR. For large or publicly traded companies.', 'Min. Kapital 50.000 EUR. Für große oder börsennotierte Unternehmen.') },
-              { de: 'OHG (Offene Handelsgesellschaft)', tr: lbl('Коммерческое партнёрство', 'Commercial partnership', 'OHG'), body: lbl('Партнёры несут полную личную ответственность. Einkommensteuer у партнёров, Gewerbesteuer у OHG.', 'Partners have full personal liability. Income tax at partner level.', 'Volle persönliche Haftung der Gesellschafter.') },
-              { de: 'KG (Kommanditgesellschaft)', tr: lbl('Коммандитное товарищество', 'Limited partnership', 'KG'), body: lbl('Партнёрство с ограниченными инвесторами (Kommanditisten). Полная ответственность у Komplementär.', 'Partnership with limited investors. General partner has full liability.', 'Partnerschaft mit beschränkten Investoren (Kommanditisten).') },
-              { de: 'GmbH & Co. KG', tr: lbl('Гибрид: KG управляемая GmbH', 'Hybrid: KG managed by GmbH', 'GmbH & Co. KG'), body: lbl('Популярная форма в Германии. Объединяет преимущества KG и ограниченной ответственности GmbH.', 'Popular hybrid. Combines KG benefits with GmbH limited liability.', 'Beliebte Hybridform. Verbindet KG-Vorteile mit GmbH-Haftungsbeschränkung.') },
-              { de: 'Holding', tr: lbl('Холдинг', 'Holding company', 'Holding'), body: lbl('Компания, владеющая долями других компаний. Часто используется для оптимизации налогообложения.', 'Company that holds stakes in other companies. Often used for tax optimization.', 'Gesellschaft, die Anteile anderer Unternehmen hält.') },
+            n: lbl('Вид деятельности / Статус (Tätigkeitsart / Status)', 'Activity Type / Status (Tätigkeitsart / Status)', 'Tätigkeitsart / Status'), terms: [
+              {
+                de: 'Freiberufler (Freie Berufe)',
+                tr: lbl('Свободная профессия', 'Freelance profession', 'Freie Berufe'),
+                body: lbl(
+                  'IT-специалисты, консультанты, дизайнеры, врачи, переводчики, архитекторы, юристы. Не платят Gewerbesteuer. Регистрация только через Finanzamt — без Gewerbeamt. Статус подтверждает Finanzamt.',
+                  'IT professionals, consultants, designers, doctors, translators, architects, lawyers. No Gewerbesteuer. Register only via Finanzamt — no Gewerbeamt needed. Status confirmed by Finanzamt.',
+                  'IT, Berater, Designer, Ärzte, Übersetzer, Architekten, Juristen. Keine Gewerbesteuer. Nur Finanzamt-Anmeldung. Status bestätigt das Finanzamt.'
+                )
+              },
+              {
+                de: 'Gewerbetreibender',
+                tr: lbl('Коммерческий предприниматель', 'Commercial entrepreneur', 'Gewerbetreibender'),
+                body: lbl(
+                  'Все виды торговли, ремесло, общепит, услуги (не Freiberuf). Обязательна регистрация в Gewerbeamt (~15–65 €). Платит Gewerbesteuer при прибыли > 24.500 EUR. Автоматическое членство в IHK или HWK.',
+                  'All trade, craft, gastronomy, services (not Freiberuf). Must register at Gewerbeamt (~15–65 €). Pays Gewerbesteuer if profit > 24,500 EUR. Automatic IHK or HWK membership.',
+                  'Handel, Handwerk, Gastronomie, Dienstleistungen (kein Freiberuf). Gewerbeanmeldung Pflicht (~15–65 €). Gewerbesteuer ab 24.500 EUR Gewinn. Automatische IHK/HWK-Mitgliedschaft.'
+                )
+              },
+              {
+                de: 'Selbständiger',
+                tr: lbl('Самозанятый', 'Self-employed', 'Selbständiger'),
+                body: lbl(
+                  'Общий термин для тех, кто работает на себя: включает и Freiberufler, и Gewerbetreibenden. Самозанятый платит свои налоги и страховки самостоятельно. Не является наёмным работником.',
+                  'General term for anyone working independently: includes both Freiberufler and Gewerbetreibende. A Selbständiger pays their own taxes and insurance. Not an employee.',
+                  'Oberbegriff für alle Selbständigen: umfasst Freiberufler und Gewerbetreibende. Zahlt Steuern und Versicherungen selbst. Kein Arbeitnehmer.'
+                )
+              },
+              {
+                de: 'Kleinunternehmer (§19 UStG)',
+                tr: lbl('Малый предприниматель', 'Small business owner', 'Kleinunternehmer'),
+                body: lbl(
+                  'Освобождение от НДС при обороте до 22.000 EUR/год (с 2025: до 25.000 EUR). Нельзя указывать НДС в счёте и нельзя возвращать Vorsteuer. Статус выбирается при регистрации в Finanzamt.',
+                  'VAT exemption up to 22,000 EUR/year (from 2025: up to 25,000 EUR). Cannot show VAT on invoices and cannot reclaim Vorsteuer. Status chosen at Finanzamt registration.',
+                  'USt-Befreiung bis 22.000 EUR/Jahr (ab 2025: 25.000 EUR). Kein USt-Ausweis auf Rechnungen, kein Vorsteuerabzug. Bei Finanzamt-Anmeldung wählbar.'
+                )
+              },
+              {
+                de: 'Arbeitnehmer (Angestellter)',
+                tr: lbl('Наёмный работник / Сотрудник', 'Employee', 'Arbeitnehmer / Angestellter'),
+                body: lbl(
+                  'Работает по трудовому договору. Налоги и социальные взносы удерживает работодатель. Не является предпринимателем. Открытие бизнеса возможно параллельно (Nebentätigkeit), если работодатель не запрещает.',
+                  'Works under an employment contract. Taxes and social contributions are withheld by the employer. Not an entrepreneur. Starting a side business (Nebentätigkeit) is possible if employer does not prohibit it.',
+                  'Arbeitet auf Basis eines Arbeitsvertrags. Steuern und Sozialabgaben zieht der Arbeitgeber ab. Kein Unternehmer. Nebentätigkeit möglich, wenn Arbeitgeber nicht untersagt.'
+                )
+              },
             ]
           },
           {
-            n: lbl('Налоги', 'Taxes', 'Steuern'), terms: [
-              { de: 'Einkommensteuer (ESt)', tr: lbl('Подоходный налог', 'Income tax', 'Einkommensteuer'), body: lbl('Прогрессивная ставка 0–45%. Платится физлицами с личной прибыли. Freibetrag 11.604 EUR/год (2024). До 277.826 EUR — 42%, выше — 45% (Reichensteuer).', 'Progressive rate 0–45%. Paid by individuals on personal income. Freibetrag 11,604 EUR/year (2024). Above 277,826 EUR: 45% (Reichensteuer).', 'Progressiver Satz 0–45%. Freibetrag 11.604 EUR/Jahr. Über 277.826 EUR: 45% (Reichensteuer).') },
-              { de: 'Körperschaftsteuer (KSt)', tr: lbl('Налог на прибыль компании', 'Corporate income tax', 'Körperschaftsteuer'), body: lbl('Фиксированная ставка 15%. Платят UG, GmbH, AG. Дополнительно — Solidaritätszuschlag 5.5%. При выводе прибыли — Kapitalertragsteuer 25%.', 'Fixed rate 15%. Paid by UG, GmbH, AG. Plus Solidaritätszuschlag 5.5%. Dividends: +25%.', 'Fixer Satz 15%. Für UG, GmbH, AG. Plus Soli 5.5%. Dividenden: +25% KapESt.') },
-              { de: 'Gewerbesteuer (GewSt)', tr: lbl('Торговый налог', 'Trade tax', 'Gewerbesteuer'), body: lbl('Муниципальный налог. Формула: Прибыль × 3.5% × Hebesatz. Freibetrag 24.500 EUR для физлиц и GbR. Freiberufler НЕ платят. Hebesatz зависит от города (250–520%).', 'Municipal tax. Formula: Profit × 3.5% × Hebesatz. Freibetrag 24,500 EUR for individuals. Freiberufler exempt. Hebesatz depends on city (250–520%).', 'Kommunalsteuer. Formel: Gewinn × 3,5% × Hebesatz. Freibetrag 24.500 EUR. Freiberufler befreit.') },
-              { de: 'Umsatzsteuer (USt) / MwSt', tr: lbl('НДС', 'VAT / Sales tax', 'Mehrwertsteuer'), body: lbl('Стандартная ставка 19%, сниженная 7% (еда, книги). Kleinunternehmer до 22.000 EUR — освобождены. Ежемесячная декларация через ELSTER.', 'Standard rate 19%, reduced 7% (food, books). Kleinunternehmer up to 22,000 EUR exempt. Monthly declaration via ELSTER.', '19% Regelsteuersatz, 7% ermäßigt. Kleinunternehmer bis 22.000 EUR befreit. Monatliche Voranmeldung via ELSTER.') },
-              { de: 'Kapitalertragsteuer', tr: lbl('Налог на дивиденды', 'Capital gains / dividend tax', 'Kapitalertragsteuer'), body: lbl('25% + Solidaritätszuschlag на дивиденды и инвестиционные доходы. Платится при выводе прибыли из GmbH/UG.', '25% + Soli on dividends and investment income. Applies when withdrawing profit from GmbH/UG.', '25% + Soli auf Dividenden und Kapitalerträge.') },
-              { de: 'Lohnsteuer', tr: lbl('Налог на зарплату', 'Payroll tax', 'Lohnsteuer'), body: lbl('Прогрессивный налог 14–42%. Работодатель удерживает из зарплаты сотрудника и перечисляет в Finanzamt.', 'Progressive 14–42%. Employer withholds from employee salary and transfers to Finanzamt.', 'Progressiv 14–42%. Arbeitgeber zieht vom Gehalt ab und zahlt ans Finanzamt.') },
-              { de: 'Solidaritätszuschlag (Soli)', tr: lbl('Надбавка солидарности', 'Solidarity surcharge', 'Solidaritätszuschlag'), body: lbl('5.5% от суммы Einkommensteuer или Körperschaftsteuer. Для большинства малых бизнесов с 2021 года отменён.', '5.5% of Einkommensteuer or Körperschaftsteuer. Abolished for most small businesses since 2021.', '5.5% von KSt oder ESt. Seit 2021 für die meisten abgeschafft.') },
-              { de: 'Kirchensteuer', tr: lbl('Церковный налог', 'Church tax', 'Kirchensteuer'), body: lbl('8–9% от Einkommensteuer. Только для членов католической или протестантской церкви.', '8–9% of income tax. Only for members of Catholic or Protestant church.', '8–9% der ESt. Nur für Kirchenmitglieder.') },
-              { de: 'Grundsteuer', tr: lbl('Налог на недвижимость', 'Property tax', 'Grundsteuer'), body: lbl('Если бизнес владеет недвижимостью. Рассчитывается по новым правилам с 2025 года.', 'If business owns real estate. New calculation rules from 2025.', 'Für Unternehmen mit Immobilienbesitz. Neue Berechnung ab 2025.') },
-              { de: 'Erbschaftsteuer / Schenkungsteuer', tr: lbl('Налог на наследство/подарки', 'Inheritance/gift tax', 'Erbschafts- und Schenkungsteuer'), body: lbl('При передаче бизнеса по наследству или в дар. Есть льготы для передачи бизнеса.', 'When passing business through inheritance or as gift. Business transfer reliefs available.', 'Bei Unternehmensübertragung. Begünstigungen für Betriebsvermögen.') },
-            ]
-          },
-          {
-            n: lbl('Социальные взносы', 'Social contributions', 'Sozialversicherung'), terms: [
-              { de: 'Krankenversicherung', tr: lbl('Медицинская страховка', 'Health insurance', 'Krankenversicherung'), body: lbl('Обязательна для всех. Самозанятые выбирают между GKV (~14.6%) и PKV. ~350–900 EUR/мес для самозанятых.', 'Mandatory for everyone. Self-employed choose between GKV (~14.6%) and PKV. ~350–900 EUR/month.', 'Pflicht. Selbständige wählen zwischen GKV und PKV. ~350–900 EUR/Mon.') },
-              { de: 'Rentenversicherung', tr: lbl('Пенсионные взносы', 'Pension insurance', 'Rentenversicherung'), body: lbl('18.6% (пополам между работодателем и работником). Самозанятые — добровольно или обязательно для отдельных профессий.', '18.6% (split employer/employee). Self-employed: voluntary or mandatory for certain professions.', '18,6% (Arbeitgeber/Arbeitnehmer je Hälfte).') },
-              { de: 'Arbeitslosenversicherung', tr: lbl('Страхование от безработицы', 'Unemployment insurance', 'Arbeitslosenversicherung'), body: lbl('2.6% от зарплаты. Самозанятые не платят обязательно, но могут платить добровольно.', '2.6% of salary. Self-employed not mandatory, but voluntary option available.', '2,6% vom Lohn. Für Selbständige freiwillig möglich.') },
-              { de: 'Pflegeversicherung', tr: lbl('Страхование ухода', 'Long-term care insurance', 'Pflegeversicherung'), body: lbl('~3.4% от зарплаты. Обязательна для всех. Самозанятые платят сами.', '~3.4% of salary. Mandatory for everyone. Self-employed pay themselves.', '~3,4% vom Lohn. Pflicht für alle.') },
-              { de: 'Berufsgenossenschaft (BG)', tr: lbl('Страхование от несчастных случаев', 'Accident insurance (BG)', 'Gesetzliche Unfallversicherung'), body: lbl('Обязательная регистрация в течение 1 недели после открытия. BG зависит от вида деятельности: VBG (IT/офис), BG BAU (строительство), BGHW (торговля), BGN (рестораны), BGW (медицина). Проверить: bg-check.dguv.de', 'Mandatory registration within 1 week of founding. BG depends on activity: VBG (IT/office), BG BAU (construction), BGHW (trade), BGN (restaurants), BGW (healthcare).', 'Pflichtanmeldung innerhalb 1 Woche. BG je nach Tätigkeit: VBG (IT), BG BAU (Bau), BGHW (Handel), BGN (Gastronomie), BGW (Gesundheit).') },
-            ]
-          },
-          {
-            n: lbl('Государственные органы', 'Government offices', 'Behörden'), terms: [
-              { de: 'Finanzamt', tr: lbl('Налоговая инспекция', 'Tax office', 'Finanzamt'), body: lbl('Регистрация через ELSTER.de. Получите Steuernummer для выставления счетов.', 'Registration via ELSTER.de. Receive Steuernummer for invoicing.', 'Anmeldung via ELSTER.de. Erhalt der Steuernummer für Rechnungen.') },
-              { de: 'Gewerbeamt', tr: lbl('Регистрация бизнеса', 'Business registration office', 'Gewerbeamt'), body: lbl('Регистрация Gewerbe: ~15–65 EUR. Онлайн или лично. Freiberufler не обязаны.', 'Register Gewerbe: ~15–65 EUR. Online or in person. Freiberufler exempt.', 'Gewerbeanmeldung: ~15–65 EUR. Online oder persönlich. Freiberufler befreit.') },
-              { de: 'Handelsregister', tr: lbl('Реестр компаний', 'Commercial register', 'Handelsregister'), body: lbl('Обязательно для GmbH, UG, AG. Ведётся Amtsgericht. Стоимость регистрации ~150–300 EUR + нотариус.', 'Mandatory for GmbH, UG, AG. Maintained by Amtsgericht. Registration ~150–300 EUR + notary.', 'Pflicht für GmbH, UG, AG. Beim Amtsgericht. Eintrag ~150–300 EUR + Notar.') },
-              { de: 'IHK / HWK', tr: lbl('Торгово-промышленная / ремесленная палата', 'Chamber of commerce / crafts', 'IHK / HWK'), body: lbl('Автоматическое членство для Gewerbe. Ежегодный взнос ~100–300 EUR. Freiberufler не обязаны.', 'Automatic membership for Gewerbe. Annual fee ~100–300 EUR. Freiberufler exempt.', 'Automatische Mitgliedschaft. Jahresbeitrag ~100–300 EUR. Freiberufler befreit.') },
-              { de: 'ELSTER', tr: lbl('Налоговый портал', 'Tax portal (ELSTER)', 'Steuerportal ELSTER'), body: lbl('Официальный портал подачи налоговых деклараций. elster.de — регистрация обязательна.', 'Official tax declaration portal. elster.de — registration mandatory.', 'Offizielles Steuerportal. elster.de — Registrierung Pflicht.') },
-              { de: 'Bundesanzeiger', tr: lbl('Официальный портал публикаций', 'Official publications portal', 'Bundesanzeiger'), body: lbl('GmbH и AG обязаны публиковать годовую отчётность.', 'GmbH and AG must publish annual financial statements.', 'GmbH und AG müssen Jahresabschluss veröffentlichen.') },
-            ]
-          },
-          {
-            n: lbl('Регистрационные номера', 'Registration numbers', 'Registrierungsnummern'), terms: [
-              { de: 'Steuernummer', tr: lbl('Налоговый номер компании', 'Company tax number', 'Steuernummer'), body: lbl('Выдаётся Finanzamt при регистрации. Указывается на всех счетах.', 'Issued by Finanzamt upon registration. Required on all invoices.', 'Vom Finanzamt vergeben. Auf alle Rechnungen.') },
-              { de: 'Steuer-ID (Identifikationsnummer)', tr: lbl('Личный налоговый номер', 'Personal tax ID', 'Steuer-ID'), body: lbl('11-значный личный номер человека. Не меняется всю жизнь. Выдаётся Bundeszentralamt für Steuern.', '11-digit personal number. Permanent throughout life.', '11-stellige persönliche Nummer. Lebenslang unveränderlich.') },
-              { de: 'USt-IdNr (Umsatzsteuer-Identifikationsnummer)', tr: lbl('Европейский номер НДС', 'European VAT number', 'USt-IdNr'), body: lbl('Нужен для торговли с компаниями в ЕС (B2B). Начинается с DE. Бесплатно в Finanzamt.', 'Required for B2B trade within EU. Starts with DE. Free from Finanzamt.', 'Für B2B-Handel in der EU. Beginnt mit DE. Kostenlos beim Finanzamt.') },
-              { de: 'Betriebsnummer', tr: lbl('Номер работодателя', 'Employer number', 'Betriebsnummer'), body: lbl('Выдаётся при найме первого сотрудника через Agentur für Arbeit.', 'Issued when hiring first employee via Agentur für Arbeit.', 'Bei Einstellung des ersten Mitarbeiters bei der Agentur für Arbeit.') },
-            ]
-          },
-          {
-            n: lbl('Бухгалтерия', 'Accounting', 'Buchhaltung'), terms: [
-              { de: 'EÜR (Einnahmen-Überschuss-Rechnung)', tr: lbl('Упрощённый учёт доходов/расходов', 'Simple income-expense statement', 'Einnahmen-Überschuss-Rechnung'), body: lbl('Упрощённая форма учёта для малого бизнеса. Обязательна для Einzelunternehmen и GbR с оборотом до 600.000 EUR.', 'Simplified accounting for small business. Mandatory for Einzelunternehmen and GbR up to 600,000 EUR revenue.', 'Vereinfachte Buchführung. Für Einzelunternehmen und GbR bis 600.000 EUR.') },
-              { de: 'Bilanz / doppelte Buchführung', tr: lbl('Полная бухгалтерия / баланс', 'Full accounting / balance sheet', 'Doppelte Buchführung'), body: lbl('Обязательна для GmbH, UG, AG и крупных ИП (оборот > 600.000 EUR или прибыль > 60.000 EUR).', 'Mandatory for GmbH, UG, AG and large sole traders (revenue > 600,000 EUR or profit > 60,000 EUR).', 'Pflicht für GmbH, UG, AG und große Einzelunternehmen.') },
-              { de: 'Abschreibung (AfA)', tr: lbl('Амортизация', 'Depreciation', 'Abschreibung'), body: lbl('Списание стоимости оборудования и активов. Линейное или дегрессивное. Уменьшает налогооблагаемую прибыль.', 'Write-off of equipment and asset value. Linear or declining balance. Reduces taxable profit.', 'Wertminderung von Wirtschaftsgütern. Linear oder degressiv.') },
-              { de: 'Vorsteuer', tr: lbl('Входящий НДС (возвратный)', 'Input VAT (recoverable)', 'Vorsteuer'), body: lbl('НДС, который вы заплатили поставщику и можете вернуть от государства. Разница Vorsteuer и USt = то что платите.', 'VAT you paid to suppliers and can reclaim from government. Difference = your actual USt payment.', 'Gezahlte USt, die Sie vom Staat zurückfordern können.') },
-              { de: 'Kleinunternehmerregelung (§19 UStG)', tr: lbl('Режим малого предпринимателя', 'Small business VAT exemption', 'Kleinunternehmerregelung'), body: lbl('Освобождение от НДС при обороте до 22.000 EUR/год. Нельзя указывать НДС в счёте. Нельзя возвращать Vorsteuer.', 'VAT exemption up to 22,000 EUR/year. Cannot show VAT on invoices. Cannot reclaim Vorsteuer.', 'Befreiung bis 22.000 EUR/Jahr. Kein USt-Ausweis auf Rechnungen.') },
-            ]
-          },
-          {
-            n: lbl('НДС и его ставки', 'VAT rates and rules', 'USt-Regelungen'), terms: [
-              { de: 'Ist-Versteuerung', tr: lbl('НДС по оплате', 'VAT on cash basis', 'Ist-Versteuerung'), body: lbl('НДС платится после получения оплаты от клиента. Выгодно для малого бизнеса.', 'VAT paid after receiving payment from client. Advantageous for small business.', 'USt wird nach Zahlungseingang fällig.') },
-              { de: 'Soll-Versteuerung', tr: lbl('НДС по выставлению счёта', 'VAT on accrual basis', 'Soll-Versteuerung'), body: lbl('НДС платится после выставления счёта, даже если клиент ещё не заплатил.', 'VAT due after invoice is issued, even if client hasn\'t paid yet.', 'USt wird nach Rechnungsstellung fällig.') },
-              { de: 'Innergemeinschaftliche Lieferung', tr: lbl('Поставка внутри ЕС (B2B)', 'Intra-EU supply (B2B)', 'Innergemeinschaftliche Lieferung'), body: lbl('Продажа компании в другой стране ЕС: НДС 0%, но нужно проверить VAT номер клиента и указать его в счёте.', 'Sale to company in another EU country: VAT 0%, but must verify client VAT number.', 'Lieferung an EU-Unternehmen: 0% USt, aber VAT-Nummer des Kunden prüfen.') },
-              { de: 'OSS (One Stop Shop)', tr: lbl('Единое окно НДС ЕС', 'One Stop Shop (EU VAT)', 'One Stop Shop'), body: lbl('Если продаёте частным клиентам в ЕС и оборот > 10.000 EUR/год — платите НДС страны покупателя через OSS.', 'If selling to EU consumers and turnover > 10,000 EUR/year — pay VAT of buyer\'s country via OSS.', 'Bei Verkauf an EU-Verbraucher > 10.000 EUR: USt des Käuferlands via OSS abführen.') },
-            ]
-          },
-          {
-            n: lbl('Управление компанией', 'Company management', 'Unternehmensführung'), terms: [
-              { de: 'Geschäftsführer', tr: lbl('Директор / Управляющий', 'Managing director', 'Geschäftsführer'), body: lbl('Руководитель GmbH или UG. Может быть одновременно владельцем. Ответственность за решения компании.', 'Manager of GmbH or UG. Can also be the owner. Liable for company decisions.', 'Leiter der GmbH oder UG.') },
-              { de: 'Stammkapital', tr: lbl('Уставный капитал', 'Share capital', 'Stammkapital'), body: lbl('UG: от 1 EUR. GmbH: минимум 25.000 EUR. Защищает кредиторов. Не обязательно иметь наличными сразу.', 'UG: from 1 EUR. GmbH: min 25,000 EUR. Protects creditors.', 'UG: ab 1 EUR. GmbH: mind. 25.000 EUR.') },
-              { de: 'Gesellschaftsvertrag', tr: lbl('Учредительный договор / Устав', 'Articles of association', 'Gesellschaftsvertrag'), body: lbl('Основной документ компании. Для UG/GmbH — обязательно через нотариуса.', 'Main company document. For UG/GmbH — mandatory via notary.', 'Gründungsdokument. Für UG/GmbH notariell beglaubigt.') },
-              { de: 'Liquidation', tr: lbl('Закрытие компании', 'Company liquidation', 'Liquidation'), body: lbl('Официальная процедура закрытия. Для UG/GmbH — несколько месяцев, нотариус, публикация в Bundesanzeiger.', 'Official closure procedure. For UG/GmbH — several months, notary, Bundesanzeiger publication.', 'Offizielles Verfahren. Für UG/GmbH: Notar, Bundesanzeiger-Bekanntmachung.') },
-            ]
-          },
-          {
-            n: lbl('Отчётность', 'Reporting', 'Steuererklärungen'), terms: [
-              { de: 'Einkommensteuererklärung', tr: lbl('Декларация подоходного налога', 'Income tax return', 'Einkommensteuererklärung'), body: lbl('Ежегодно до 31 июля. При помощи Steuerberater — до 28 февраля следующего года. Через ELSTER.de.', 'Annually by July 31. With Steuerberater: by Feb 28 of following year.', 'Jährlich bis 31. Juli. Mit Steuerberater: bis 28. Februar des Folgejahres.') },
-              { de: 'Gewerbesteuererklärung', tr: lbl('Декларация торгового налога', 'Trade tax return', 'Gewerbesteuererklärung'), body: lbl('Ежегодно. Только для Gewerbe. Freiberufler не подают.', 'Annually. Only for Gewerbe. Freiberufler exempt.', 'Jährlich. Nur für Gewerbetreibende.') },
-              { de: 'Umsatzsteuer-Voranmeldung', tr: lbl('Ежемесячная декларация НДС', 'Monthly VAT pre-return', 'USt-Voranmeldung'), body: lbl('Ежемесячно до 10-го числа через ELSTER. Квартально при небольших оборотах.', 'Monthly by 10th via ELSTER. Quarterly for small turnovers.', 'Monatlich bis 10. via ELSTER. Quartalsmeldung bei kleinen Umsätzen.') },
-              { de: 'Jahresabschluss', tr: lbl('Годовая финансовая отчётность', 'Annual financial statements', 'Jahresabschluss'), body: lbl('GmbH и AG обязаны публиковать в Bundesanzeiger. ИП и GbR — не обязательно.', 'GmbH and AG must publish in Bundesanzeiger. Sole traders and GbR — not mandatory.', 'GmbH und AG: Veröffentlichung im Bundesanzeiger Pflicht.') },
+            n: lbl('Правовые формы бизнеса (Rechtsformen)', 'Legal Forms of Business (Rechtsformen)', 'Rechtsformen'), terms: [
+              {
+                de: 'Einzelunternehmen',
+                tr: lbl('Индивидуальный предприниматель (ИП)', 'Sole trader', 'Einzelunternehmen'),
+                body: lbl(
+                  'Самая простая форма. Один владелец, полная личная ответственность. Gewerbesteuer при прибыли > 24.500 EUR. Нотариус не нужен. Подходит для начала с небольшими оборотами.',
+                  'Simplest form. One owner, full personal liability. Gewerbesteuer if profit > 24,500 EUR. No notary required. Suitable for starting with small turnover.',
+                  'Einfachste Form. Volle persönliche Haftung. GewSt ab 24.500 EUR Gewinn. Kein Notar. Ideal für den Einstieg.'
+                )
+              },
+              {
+                de: 'GbR (Gesellschaft bürgerlichen Rechts)',
+                tr: lbl('Простое товарищество (2+ человек)', 'Civil law partnership (2+ people)', 'GbR'),
+                body: lbl(
+                  'Партнёрство минимум двух человек без регистрации в Handelsregister. Каждый партнёр несёт полную личную ответственность по долгам. Подходит для небольших совместных проектов.',
+                  'Partnership of at least 2 people, no Handelsregister entry required. Each partner has full personal liability for debts. Suitable for small joint projects.',
+                  'Partnerschaft ab 2 Personen ohne HR-Eintrag. Volle gesamtschuldnerische Haftung. Für kleine Gemeinschaftsprojekte.'
+                )
+              },
+              {
+                de: 'UG (haftungsbeschränkt)',
+                tr: lbl('Мини-ООО / Mini-GmbH', 'Mini-GmbH / micro limited company', 'UG'),
+                body: lbl(
+                  'Минимальный уставный капитал от 1 EUR. Ограниченная ответственность. Обязательна регистрация у нотариуса и запись в Handelsregister (~700–1.200 €). 25% прибыли обязательно резервируется до достижения 25.000 EUR — тогда возможно преобразование в GmbH.',
+                  'Minimum share capital from 1 EUR. Limited liability. Mandatory notary and Handelsregister entry (~700–1,200 €). 25% of profit must be reserved until reaching 25,000 EUR — then can be converted to GmbH.',
+                  'Min. Stammkapital 1 EUR. Haftungsbeschränkt. Notarpflicht + HR-Eintrag (~700–1.200 €). 25% Gewinnrücklage bis 25.000 EUR, dann Umwandlung in GmbH möglich.'
+                )
+              },
+              {
+                de: 'GmbH (Gesellschaft mit beschränkter Haftung)',
+                tr: lbl('ООО / Общество с ограниченной ответственностью', 'Limited liability company (LLC)', 'GmbH'),
+                body: lbl(
+                  'Минимальный уставный капитал 25.000 EUR. Ограниченная ответственность. Körperschaftsteuer 15% + Solidaritätszuschlag 5,5% + Gewerbesteuer. При выплате дивидендов — Kapitalertragsteuer 25%. Требует нотариуса и Handelsregister.',
+                  'Minimum share capital 25,000 EUR. Limited liability. Körperschaftsteuer 15% + Solidaritätszuschlag 5.5% + Gewerbesteuer. Dividends: +25% Kapitalertragsteuer. Requires notary and Handelsregister.',
+                  'Min. Stammkapital 25.000 EUR. Haftungsbeschränkt. KSt 15% + Soli 5,5% + GewSt. Dividenden: +25% KapESt. Notar + HR-Eintrag Pflicht.'
+                )
+              },
+              {
+                de: 'GbR (kaufmännisch) / OHG (Offene Handelsgesellschaft)',
+                tr: lbl('Торговое товарищество', 'Commercial partnership / OHG', 'OHG'),
+                body: lbl(
+                  'Партнёрство двух и более лиц с коммерческой деятельностью. Регистрация в Handelsregister обязательна при крупных оборотах. Все партнёры несут полную личную ответственность.',
+                  'Partnership of two or more with commercial activity. Handelsregister entry mandatory for larger turnover. All partners have full personal liability.',
+                  'Partnerschaft ab 2 Personen für kaufmännische Tätigkeit. HR-Eintrag Pflicht bei größerem Umsatz. Volle gesamtschuldnerische Haftung.'
+                )
+              },
+              {
+                de: 'KG (Kommanditgesellschaft)',
+                tr: lbl('Коммандитное товарищество', 'Limited partnership', 'KG'),
+                body: lbl(
+                  'Партнёрство с двумя типами участников: Komplementär (полная ответственность, управляет) и Kommanditist (ограниченная ответственность, инвестор). Популярно в семейных компаниях.',
+                  'Partnership with two types of partners: Komplementär (full liability, manages) and Kommanditist (limited liability, investor). Popular in family businesses.',
+                  'Zwei Gesellschaftertypen: Komplementär (volle Haftung, Geschäftsführung) und Kommanditist (beschränkte Haftung). Beliebt in Familienunternehmen.'
+                )
+              },
+              {
+                de: 'GmbH & Co. KG',
+                tr: lbl('Гибридная форма: KG под управлением GmbH', 'Hybrid: KG managed by GmbH', 'GmbH & Co. KG'),
+                body: lbl(
+                  'Популярная форма в Германии. KG, где Komplementär — GmbH (ограниченная ответственность). Объединяет преимущества KG (налоговая прозрачность) и GmbH (защита активов).',
+                  'Popular form in Germany. KG where the general partner is a GmbH (limited liability). Combines advantages of KG (tax transparency) with GmbH (asset protection).',
+                  'Beliebte Hybridform. KG mit GmbH als Komplementär. Verbindet KG-Vorteile (Steuerliche Transparenz) mit GmbH-Haftungsbeschränkung.'
+                )
+              },
+              {
+                de: 'AG (Aktiengesellschaft)',
+                tr: lbl('Акционерное общество', 'Joint-stock company', 'AG'),
+                body: lbl(
+                  'Минимальный уставный капитал 50.000 EUR. Для крупного бизнеса или компаний с несколькими инвесторами. Акции могут котироваться на бирже. Сложная структура управления (Vorstand + Aufsichtsrat).',
+                  'Minimum share capital 50,000 EUR. For large business or companies with multiple investors. Shares can be listed on stock exchange. Complex governance structure (Vorstand + Aufsichtsrat).',
+                  'Min. Grundkapital 50.000 EUR. Für große Unternehmen oder Börsennotierung. Komplexe Struktur: Vorstand + Aufsichtsrat.'
+                )
+              },
             ]
           },
         ];
@@ -3650,21 +3700,12 @@
       // ── ШТРАФЫ / FINES ────────────────────────────────────
       function renderFines(act) {
         var el = document.getElementById('r-fines'); if (!el) return;
-        var pack = (window.BK_REPORT_I18N && window.BK_REPORT_I18N.finesFor)
-          ? window.BK_REPORT_I18N.finesFor(currentLang)
-          : { title: 'Fines', sub: '', rows: [] };
-        var fines = pack.rows ? pack.rows.slice() : [];
-        if (act === 'gastro' && pack.gastroExtra) fines.unshift(pack.gastroExtra);
-        var html = '<div class="r-card" style="border-color:rgba(232,85,85,.3)">' +
-          '<h3 style="color:var(--red)">⚠️ ' + pack.title + '</h3>' +
-          '<div class="r-card-sub">' + pack.sub + '</div>';
-        fines.forEach(function (f) {
-          html += '<div class="fine-row"><div style="flex:1"><div style="font-size:14px;font-weight:600">' + f.n + '</div>' +
-            '<div style="font-size:12px;color:var(--text-muted);margin-top:2px">' + f.d + '</div></div>' +
-            '<div class="fine-amt">' + f.a + '</div></div>';
-        });
-        html += '</div>';
-        el.innerHTML = html;
+        var refTxt = (currentLang === 'de')
+          ? 'Typische Fehler und mögliche Bußgelder finden Sie auf der Seite «Штрафы».'
+          : (currentLang === 'en')
+          ? 'Typical mistakes and possible fines — see the «Штрафы» page.'
+          : 'Типичные ошибки и возможные штрафы смотрите на странице «Штрафы».';
+        el.innerHTML = '<p style="font-size:13px;color:var(--text-muted);margin:16px 0 0">ℹ️ ' + refTxt + '</p>';
       }
 
       // ── CLOSING TEXT ──────────────────────────────────────
