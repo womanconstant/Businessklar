@@ -179,7 +179,6 @@
   "Nordhausen": "TH",
   "Norderstedt": "SH",
   "Nürnberg": "BY",
-  "Nörenberg": "BY",
   "Oberhausen": "NW",
   "Offenburg": "BW",
   "Oldenburg": "NI",
