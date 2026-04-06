@@ -874,6 +874,66 @@
       margin: 16px 0 8px
     }
 
+    .rf-switch-btn {
+      padding: 5px 14px;
+      border-radius: 16px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      transition: background .15s, color .15s, border-color .15s
+    }
+
+    .rf-switch-btn:hover {
+      border-color: var(--gold);
+      color: var(--gold)
+    }
+
+    .rf-switch-btn.rf-active {
+      background: rgba(201, 168, 76, .18);
+      border-color: var(--gold);
+      color: var(--gold)
+    }
+
+    .r-lf-status { margin: 4px 0 0 }
+
+    .r-lf-switcher {
+      margin: 10px 0 0;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px
+    }
+
+    .r-lf-desc {
+      margin: 8px 0 0;
+      font-size: 13px;
+      color: var(--text-muted);
+      max-width: 520px;
+      line-height: 1.4
+    }
+
+    .status-badge-fb {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(99, 179, 237, .15);
+      color: #63b3ed
+    }
+
+    .status-badge-gew {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, .08);
+      color: var(--text-muted)
+    }
+
     .report-tabs {
       display: flex;
       gap: 4px;
@@ -2294,6 +2354,9 @@
           <div class="section-label" id="el-rplbl">Ihr pers&#246;nlicher Bericht</div>
           <h2 id="r-name">Unternehmen in Deutschland</h2>
           <div class="lf-badge" id="r-lf"></div>
+          <div id="r-lf-status" class="r-lf-status"></div>
+          <div id="r-lf-switcher" class="r-lf-switcher"></div>
+          <div id="r-lf-desc" class="r-lf-desc"></div>
           <div style="font-size:13px;color:var(--text-muted)" id="r-meta"></div>
         </div>
         <div class="vcnt no-print" aria-live="polite"><span id="v-cnt">...</span></div>
@@ -2537,7 +2600,7 @@
       wnext_pdf_t: 'PDF laden',
       wnext_pdf_d: 'Druckfertige \u00dcbersicht f\u00fcr Berater, Bank oder Ihre Unterlagen.',
       wnext_spec_t: 'Spezialist finden',
-      wnext_spec_d: 'Passende Experten nach Stadt und Sprache \u2014 ein Klick in den Katalog.',
+      wnext_spec_d: 'Passende Experten nach Stadt und Sprache. Funktion zur Spezialistensuche befindet sich in Entwicklung.',
       saveben: '\u2713 Mit Speichern: dauerhafter Zugriff, PDF-Download und Katalog-Spezialisten.',
       btn_save_result: 'Ergebnis speichern',
       btn_pdf_dl: 'PDF herunterladen',
@@ -2545,7 +2608,7 @@
       wnext_decl: 'Ohne Cloud fortfahren',
       flashpdf: 'Speicherung abgelehnt: PDF aus dem Konto ist f\u00fcr diese Ansicht nicht verf\u00fcgbar. Speichern Sie das Ergebnis oder heben Sie den Verzicht auf.',
       flashspec: 'Bitte Speicherung aktivieren (oder Verzicht aufheben), um zum Spezialisten-Katalog zu gelangen.',
-      speccta: 'Spezialisten erreichen Sie \u00fcber \u00abSpezialist finden\u00bb oben \u2014 gefiltert nach Stadt und Sprache aus Ihrem Plan.',
+      speccta: 'Spezialisten erreichen Sie über «Spezialist finden» oben. Die Funktion zur Spezialistensuche befindet sich in Entwicklung.',
       authtablogin: 'Anmelden',
       authtabreg: 'Registrieren',
       authlogin: 'Anmelden',
@@ -2651,7 +2714,7 @@
       gateinfo: '\u0417\u0430\u0447\u0435\u043c \u0432\u0445\u043e\u0434? \u0422\u0430\u043a \u043c\u044b \u0441\u043e\u0445\u0440\u0430\u043d\u044f\u0435\u043c \u043f\u043b\u0430\u043d \u0432 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0435, \u0434\u0430\u0451\u043c PDF \u0432 \u043a\u0430\u0431\u0438\u043d\u0435\u0442\u0435 \u0438 \u043e\u0442\u043a\u0440\u044b\u0432\u0430\u0435\u043c \u043a\u0430\u0442\u0430\u043b\u043e\u0433 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u043e\u0432. \u0411\u0435\u0437 \u0430\u043a\u043a\u0430\u0443\u043d\u0442\u0430 \u0434\u0430\u043d\u043d\u044b\u0435 \u043e\u0441\u0442\u0430\u044e\u0442\u0441\u044f \u0442\u043e\u043b\u044c\u043a\u043e \u0432 \u044d\u0442\u043e\u043c \u0431\u0440\u0430\u0443\u0437\u0435\u0440\u0435.',
       gatedecl: '\u0412\u044b \u043e\u0442\u043a\u0430\u0437\u0430\u043b\u0438\u0441\u044c \u043e\u0442 \u043e\u0431\u043b\u0430\u0447\u043d\u043e\u0433\u043e \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f: PDF, \u0448\u0430\u0440\u0438\u043d\u0433 \u0438 \u043f\u0435\u0440\u0435\u0445\u043e\u0434 \u043a \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u0430\u043c \u0434\u043b\u044f \u044d\u0442\u043e\u0433\u043e \u043f\u0440\u043e\u0441\u043c\u043e\u0442\u0440\u0430 \u043e\u0433\u0440\u0430\u043d\u0438\u0447\u0435\u043d\u044b. \u0418\u0437\u043c\u0435\u043d\u0438\u0442\u0435 \u0432\u044b\u0431\u043e\u0440 \u043d\u0438\u0436\u0435 \u0438\u043b\u0438 \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442.',
       guest_t: '\u0413\u043e\u0441\u0442\u0435\u0432\u043e\u0439 \u0440\u0435\u0436\u0438\u043c',
-      guest_d: '\u0411\u0435\u0437 \u0432\u0445\u043e\u0434\u0430 \u0434\u0430\u043d\u043d\u044b\u0435 \u043d\u0435 \u043f\u043e\u043f\u0430\u0434\u0430\u044e\u0442 \u043d\u0430 \u0441\u0435\u0440\u0432\u0435\u0440. \u0427\u0442\u043e\u0431\u044b \u0432\u0435\u0440\u043d\u0443\u0442\u044c\u0441\u044f \u043a \u043f\u043b\u0430\u043d\u0443: \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 PDF \u0438\u043b\u0438 \u0441\u043e\u0437\u0434\u0430\u0439\u0442\u0435 \u0430\u043a\u043a\u0430\u0443\u043d\u0442.',
+      guest_d: 'Без входа данные не попадают на сервер. Чтобы вернуться к плану - создайте аккаунт и там сохранится Ваш расчет в PDF.',
       wnext_h: '\u0427\u0442\u043e \u0434\u0430\u043b\u044c\u0448\u0435',
       wnext_lead: '\u0422\u0440\u0438 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u2014 \u0432\u044b\u0431\u0435\u0440\u0438\u0442\u0435, \u0447\u0442\u043e \u043d\u0443\u0436\u043d\u043e \u0441\u0435\u0439\u0447\u0430\u0441.',
       wnext_save_t: '\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442',
@@ -2659,7 +2722,7 @@
       wnext_pdf_t: '\u0421\u043a\u0430\u0447\u0430\u0442\u044c PDF',
       wnext_pdf_d: '\u0413\u043e\u0442\u043e\u0432\u044b\u0439 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442 \u0434\u043b\u044f \u0431\u0430\u043d\u043a\u0430, \u043a\u043e\u043d\u0441\u0443\u043b\u044c\u0442\u0430\u043d\u0442\u0430 \u0438\u043b\u0438 \u0430\u0440\u0445\u0438\u0432\u0430.',
       wnext_spec_t: '\u041d\u0430\u0439\u0442\u0438 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u0430',
-      wnext_spec_d: '\u041f\u043e\u0434\u0431\u043e\u0440 \u043f\u043e \u0433\u043e\u0440\u043e\u0434\u0443 \u0438 \u044f\u0437\u044b\u043a\u0443 \u0438\u0437 \u0432\u0430\u0448\u0435\u0439 \u0430\u043d\u043a\u0435\u0442\u044b \u2014 \u043e\u0434\u0438\u043d \u043a\u043b\u0438\u043a.',
+      wnext_spec_d: 'Подбор по городу и языку из вашей анкеты. Функция подбора специалиста находится в разработке.',
       saveben: '\u0421 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0435\u043c: \u043f\u043e\u0441\u0442\u043e\u044f\u043d\u043d\u044b\u0439 \u0434\u043e\u0441\u0442\u0443\u043f, PDF \u0438 \u043a\u0430\u0442\u0430\u043b\u043e\u0433 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u043e\u0432.',
       btn_save_result: '\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u0440\u0435\u0437\u0443\u043b\u044c\u0442\u0430\u0442',
       btn_pdf_dl: '\u0421\u043a\u0430\u0447\u0430\u0442\u044c PDF',
@@ -2667,7 +2730,7 @@
       wnext_decl: '\u041f\u0440\u043e\u0434\u043e\u043b\u0436\u0438\u0442\u044c \u0431\u0435\u0437 \u043e\u0431\u043b\u0430\u043a\u0430',
       flashpdf: '\u0412\u044b \u043e\u0442\u043a\u0430\u0437\u0430\u043b\u0438\u0441\u044c \u043e\u0442 \u0441\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u044f: PDF \u0438\u0437 \u043a\u0430\u0431\u0438\u043d\u0435\u0442\u0430 \u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u0435\u043d. \u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 \u0440\u0430\u0441\u0447\u0451\u0442 \u0438\u043b\u0438 \u0441\u043d\u0438\u043c\u0438\u0442\u0435 \u043e\u0442\u043a\u0430\u0437.',
       flashspec: '\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u0435 \u0440\u0430\u0441\u0447\u0451\u0442 (\u0438\u043b\u0438 \u0441\u043d\u0438\u043c\u0438\u0442\u0435 \u043e\u0442\u043a\u0430\u0437 \u043e\u0442 \u043e\u0431\u043b\u0430\u043a\u0430), \u0447\u0442\u043e\u0431\u044b \u043f\u0435\u0440\u0435\u0439\u0442\u0438 \u043a \u043a\u0430\u0442\u0430\u043b\u043e\u0433\u0443 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u043e\u0432.',
-      speccta: '\u0421\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u043e\u0432 \u2014 \u0447\u0435\u0440\u0435\u0437 \u00ab\u041d\u0430\u0439\u0442\u0438 \u0441\u043f\u0435\u0446\u0438\u0430\u043b\u0438\u0441\u0442\u0430\u00bb \u0432\u044b\u0448\u0435 \u0441 \u0443\u0447\u0451\u0442\u043e\u043c \u0433\u043e\u0440\u043e\u0434\u0430 \u0438 \u044f\u0437\u044b\u043a\u0430.',
+      speccta: 'Специалистов — через «Найти специалиста» выше. Функция подбора специалиста находится в разработке.',
       authtablogin: '\u0412\u0445\u043e\u0434',
       authtabreg: '\u0420\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u044f',
       authlogin: '\u0412\u043e\u0439\u0442\u0438',
@@ -2753,7 +2816,7 @@
       wnext_pdf_t: 'Download PDF',
       wnext_pdf_d: 'Print-ready summary for your bank, advisor or files.',
       wnext_spec_t: 'Find a specialist',
-      wnext_spec_d: 'Matched by city and language from your questionnaire \u2014 one click.',
+      wnext_spec_d: 'Matched by city and language from your questionnaire. Specialist matching feature is under development.',
       saveben: '\u2713 With save: permanent access, PDF download and the specialists catalogue.',
       btn_save_result: 'Save your result',
       btn_pdf_dl: 'Download PDF',
@@ -2761,7 +2824,7 @@
       wnext_decl: 'Continue without cloud save',
       flashpdf: 'You declined saving: PDF from the dashboard isn\u2019t available for this view. Save your result or undo the decline.',
       flashspec: 'Please enable saving (or undo the decline) to open the specialists catalogue.',
-      speccta: 'Use \u201cFind a specialist\u201d above \u2014 filtered by city and language from your plan.',
+      speccta: 'Use «Find a specialist» above. Specialist matching feature is under development.',
       authtablogin: 'Sign in',
       authtabreg: 'Register',
       authlogin: 'Sign in',
@@ -3237,12 +3300,17 @@
         }
 
         // ── Form recommendation ──────────────────────────────
+        var isFB = ['it_digital', 'consulting', 'creative', 'medical'].indexOf(act) > -1;
         var lf, lfDE;
-        if (['it_digital', 'consulting', 'creative', 'medical'].indexOf(act) > -1 && ry1 < 150000) { lf = 'freib'; lfDE = 'Freiberufler'; }
-        else if (ry1 < 50000 && !hs) { lf = 'eu'; lfDE = ry1 < 22000 ? 'Einzelunternehmen (Kleinunternehmer)' : 'Einzelunternehmen'; }
+        var _rfOvr = window._bkRechtsformOverride || null;
+        if (_rfOvr === 'ug') { lf = 'ug'; lfDE = 'UG (haftungsbeschränkt)'; }
+        else if (_rfOvr === 'gmbh') { lf = 'gmbh'; lfDE = 'GmbH'; }
+        else if (_rfOvr === 'eu') { lf = 'eu'; lfDE = 'Einzelunternehmen'; }
+        else if (isFB && ry1 < 150000 && !hs) { lf = 'eu'; lfDE = 'Einzelunternehmen'; }
+        else if (ry1 < 50000 && !hs) { lf = 'eu'; lfDE = 'Einzelunternehmen'; }
         else { lf = 'ug'; lfDE = 'UG (haftungsbeschränkt)'; }
 
-        var isFB = lf === 'freib', isUG = lf === 'ug', isK = ry1 < 22000 && !isUG;
+        var isUG = lf === 'ug' || lf === 'gmbh', isK = ry1 < 25000 && !isUG;
 
         // City: autocomplete model only (Hebesatz + display name)
         var cityLbl = (d.city_name && String(d.city_name).trim()) ? String(d.city_name).trim() : '\u2014';
@@ -3301,16 +3369,57 @@
           taxRows.push({ l: lbl('Чистая прибыль (Nettoeinkommen)', 'Net income', 'Nettoeinkommen'), v: netProfit, pos: true, big: true });
           if (isK) taxRows.push({
             info: lbl(
-              'Режим Kleinunternehmer (до 22.000 EUR): НДС не взимается, но нельзя указывать 19% в счёте.',
-              'Kleinunternehmer status (up to 22,000 EUR): no VAT, but cannot show 19% on invoices.',
-              'Kleinunternehmerregelung (§19 UStG): Keine USt-Pflicht, aber kein Ausweis auf Rechnung.')
+              'Режим Kleinunternehmer (Vorjahresumsatz bis 25.000 EUR): НДС не взимается, но нельзя указывать 19% в счёте.',
+              'Kleinunternehmer status (prior-year revenue up to 25,000 EUR): no VAT, but cannot show 19% on invoices.',
+              'Kleinunternehmerregelung (§19 UStG, Vorjahresumsatz bis 25.000 EUR): Keine USt-Pflicht, aber kein Ausweis auf Rechnung.')
           });
         }
 
         // ── Header ───────────────────────────────────────────
         document.getElementById('r-name').textContent = lbl('Бизнес в Германии', 'Business in Germany', 'Unternehmen in Deutschland');
-        document.getElementById('r-lf').textContent = lfDE;
+        document.getElementById('r-lf').textContent = lbl('Rechtsform: ', 'Legal form: ', 'Rechtsform: ') + lfDE;
         document.getElementById('r-meta').textContent = t('ctylbl') + ': ' + cityLbl + ' · ' + t('gen') + ': ' + new Date().toLocaleDateString();
+
+        // Status badge (Freiberuflich / Gewerblich)
+        var statusEl = document.getElementById('r-lf-status');
+        if (statusEl) {
+          statusEl.innerHTML = isFB
+            ? '<span class="status-badge-fb">Status: Freiberuflich (§ 18 EStG)</span>'
+            : '<span class="status-badge-gew">Status: Gewerblich</span>';
+        }
+
+        // Interactive Rechtsform switcher
+        var switchEl = document.getElementById('r-lf-switcher');
+        if (switchEl) {
+          var _rfForms = [
+            { key: 'eu', label: 'Einzelunternehmen' },
+            { key: 'ug', label: 'UG (haftungsbeschränkt)' },
+            { key: 'gmbh', label: 'GmbH' }
+          ];
+          switchEl.innerHTML = _rfForms.map(function (f) {
+            var active = (f.key === lf);
+            return '<button type="button" class="rf-switch-btn' + (active ? ' rf-active' : '') + '" data-rf="' + f.key + '">' + f.label + '</button>';
+          }).join('');
+          switchEl.onclick = function (e) {
+            var btn = (e.target && e.target.getAttribute && e.target.getAttribute('data-rf')) ? e.target : null;
+            if (!btn && e.target && e.target.closest) btn = e.target.closest('[data-rf]');
+            if (btn) {
+              window._bkRechtsformOverride = btn.getAttribute('data-rf');
+              generateReport();
+            }
+          };
+        }
+
+        // Rechtsform description
+        var descEl = document.getElementById('r-lf-desc');
+        if (descEl) {
+          var _lfDescMap = {
+            eu: lbl('Вы несёте личную ответственность своим имуществом. Нет минимального уставного капитала.', 'Personal liability with your private assets. No minimum capital required.', 'Sie haften grundsätzlich persönlich mit Ihrem Privatvermögen. Kein gesetzliches Mindestkapital.'),
+            ug: lbl('Ответственность ограничена имуществом общества. Необходим нотариус и Handelsregister. Обязательное формирование резерва.', 'Liability generally limited to company assets. Notary and Handelsregister required. Mandatory reserve accumulation.', 'Haftung grundsätzlich auf das Gesellschaftsvermögen beschränkt. Notar und Handelsregister erforderlich. Rücklagenpflicht.'),
+            gmbh: lbl('Ответственность ограничена имуществом общества. Минимальный уставный капитал 25.000 EUR. Необходим нотариус и Handelsregister.', 'Liability generally limited to company assets. Minimum share capital 25,000 EUR. Notary and Handelsregister required.', 'Haftung grundsätzlich auf das Gesellschaftsvermögen beschränkt. Mindeststammkapital 25.000 EUR. Notar und Handelsregister erforderlich.')
+          };
+          descEl.textContent = _lfDescMap[lf] || '';
+        }
 
         updateGuestNotice();
 
@@ -3344,7 +3453,7 @@
         var ihkUrl = (cityAuth && cityAuth.ihk && cityAuth.ihk.url) ? cityAuth.ihk.url : 'https://www.ihk.de';
         var steps = [];
         if (!isFB) steps.push({ n: 'Gewerbeanmeldung', d: lbl('В Gewerbeamt, ~15–65 €', 'At Gewerbeamt, ~15–65 €', 'Im Gewerbeamt, Gebühr 15–65 €'), l: gewerbeUrl });
-        if (isUG) steps.push({ n: 'Notar + Handelsregister', d: lbl('Для UG обязательно, ~700–1.200 €', 'Required for UG, ~700–1,200 €', 'Pflicht für UG, ~700–1.200 €'), l: 'https://www.handelsregister.de' });
+        if (isUG) steps.push({ n: 'Notar + Handelsregister', d: lbl(lf === 'gmbh' ? 'Для GmbH обязательно, ~2.000–5.000 €' : 'Для UG обязательно, ~700–1.200 €', lf === 'gmbh' ? 'Required for GmbH, ~2,000–5,000 €' : 'Required for UG, ~700–1,200 €', lf === 'gmbh' ? 'Pflicht für GmbH, ~2.000–5.000 €' : 'Pflicht für UG, ~700–1.200 €'), l: 'https://www.handelsregister.de' });
         steps.push({ n: 'Finanzamt (ELSTER)', d: lbl('Налоговая анкета, бесплатно', 'Tax registration, free', 'Steuerlichen Erfassungsbogen, kostenlos'), l: 'https://www.elster.de' });
         if (!isFB) steps.push({ n: 'IHK-Mitgliedschaft', d: lbl('Автоматически, ~100–300 €/год', 'Automatic, ~100–300 €/year', 'Automatisch, Beitrag ~100–300 €/Jahr'), l: ihkUrl });
         steps.push({ n: 'Berufsgenossenschaft: ' + bgR, d: lbl('Обязательно в течение 1 недели', 'Required within 1 week', 'Pflicht innerhalb 1 Woche'), l: bgL });
@@ -3358,7 +3467,7 @@
           ? renderComplianceSection({ surveyData: d, activityKey: act, cityLabel: cityLbl, currentLang: currentLang })
           : '';
         var top5Main =
-          '<div class="rpt-sec-h">🎯 ' + lbl('Рекомендация: ', 'Recommendation: ', 'Empfehlung: ') + lfDE + '</div>' +
+          '<div class="rpt-sec-h">🎯 ' + lbl('Рекомендация — Rechtsform: ', 'Recommendation — Legal form: ', 'Empfehlung — Rechtsform: ') + lfDE + (isFB ? ' · Status: Freiberuflich' : '') + '</div>' +
           '<div class="r-card"><h3>' + lbl('Что сделать в первую очередь', 'What to do first', 'Was zuerst zu tun ist') + '</h3>' +
           '<div class="r-card-sub">' + lbl('Порядок действий', 'Order of steps', 'Reihenfolge der Schritte') + '</div>' + stepsHtml + '</div>';
         document.getElementById('r-top5').innerHTML = compBlock
@@ -3369,18 +3478,11 @@
           '<div class="r-card"><h3>' + lbl('Открытые вопросы', 'Open questions', 'Offene Fragen') + '</h3>' +
           '<div class="r-card-sub">' + lbl('Уточните у Steuerberater или IHK', 'Clarify with Steuerberater or IHK', 'Beim Steuerberater klären') + '</div>' +
           '<div class="top5-li"><div class="top5-num" style="background:rgba(255,255,255,.08);color:var(--text-muted)">?</div>' +
-          '<div class="top5-txt">' + (isK ? lbl('Стоит ли оставаться Kleinunternehmer? Порог 22.000 EUR/год.', 'Keep Kleinunternehmer status? Threshold 22,000 EUR/year.', 'Kleinunternehmer sinnvoll? Grenze: 22.000 EUR/Jahr.') : lbl('Нужна ли полная бухгалтерия или достаточно EÜR?', 'Full accounting or simple EÜR?', 'Doppelte Buchführung oder EÜR?')) + '</div></div></div>';
+          '<div class="top5-txt">' + (isK ? lbl('Стоит ли оставаться Kleinunternehmer? Vorjahresumsatz bis 25.000 EUR, laufender Umsatz bis 100.000 EUR.', 'Keep Kleinunternehmer status? Prior-year revenue up to 25,000 EUR, current revenue up to 100,000 EUR.', 'Kleinunternehmer sinnvoll? Vorjahresumsatz bis 25.000 EUR, laufender Umsatz bis 100.000 EUR.') : lbl('Нужна ли полная бухгалтерия или достаточно EÜR?', 'Full accounting or simple EÜR?', 'Doppelte Buchführung oder EÜR?')) + '</div></div></div>';
 
         // ── SECTION 2: Registrations ──────────────────────────
-        document.getElementById('r-regs').innerHTML =
-          '<div class="rpt-sec-h">🏛️ ' + lbl('Где и в каком порядке регистрироваться', 'Where and how to register', 'Wo und in welcher Reihenfolge anmelden') + '</div>' +
-          steps.map(function (s, i) {
-            return '<div class="r-card" style="margin-bottom:10px">' +
-              '<strong>' + (i + 1) + '. ' + s.n + '</strong>' +
-              '<p style="font-size:13px;color:var(--text-muted);margin:6px 0 4px">' + s.d + '</p>' +
-              (s.l ? '<a href="' + s.l + '" target="_blank" rel="noopener" style="color:var(--gold);font-size:12px">→ ' + t('offlink') + '</a>' : '') +
-              '</div>';
-          }).join('');
+        // Steps are already shown in Section 1 above — clear to avoid duplication
+        document.getElementById('r-regs').innerHTML = '';
 
         // ── SECTION 3: Finance ────────────────────────────────
         var fh = '<div class="rpt-sec-h">💰 ' + lbl('Расчёт налогов и доходов', 'Tax & income calculation', 'Steuer- & Einkommensberechnung') + '</div>';
@@ -3414,23 +3516,6 @@
           fh += '<div class="tx-row"><div class="tx-lbl">USt-Voranmeldung<small>' + lbl('через ELSTER, до 10-го числа', 'via ELSTER, by 10th', 'via ELSTER, bis 10.') + '</small></div><div class="tx-val" style="font-size:11px">ELSTER.de</div></div></div>';
         }
 
-        // Staff
-        if (hs) {
-          fh += '<div class="r-card"><h3>' + lbl('Налоги на персонал', 'Payroll taxes', 'Personalsteuern') + '</h3>';
-          [
-            { l: 'Lohnsteuer', s: lbl('14–42% прогрессивно', '14–42% progressive', '14–42% progressiv') },
-            { l: 'Solidaritätszuschlag', s: '5.5% von Lohnsteuer' },
-            { l: 'Krankenversicherung (AG-Anteil)', s: '~7.3%' },
-            { l: 'Rentenversicherung (AG-Anteil)', s: '9.3%' },
-            { l: 'Arbeitslosenversicherung (AG)', s: '1.3%' },
-            { l: 'Pflegeversicherung (AG)', s: '~1.7%' },
-            { l: lbl('Итого нагрузка работодателя (FTE)', 'Total employer cost (FTE)', 'Gesamtkosten Arbeitgeber (FTE)'), s: '×1.23 ' + lbl('от брутто', 'of gross', 'vom Brutto'), big: true },
-            { l: lbl('Minijob: нагрузка работодателя', 'Minijob employer cost', 'Minijob AG-Kosten'), s: '×1.30', big: true },
-          ].forEach(function (r) {
-            fh += '<div class="tx-row"><div class="tx-lbl">' + r.l + '<small>' + r.s + '</small></div><div class="tx-val' + (r.big ? ' big pos' : '') + '">' + (r.big ? r.s : '') + '</div></div>';
-          });
-          fh += '</div>';
-        }
         document.getElementById('r-fin').innerHTML = fh;
 
         // ── SECTION 4: Insurance ──────────────────────────────
@@ -3695,24 +3780,20 @@
           '<p class="bk-next-lead">' + esc(t('wnext_lead')) + '</p>' +
           '<div class="wnext-grid">' +
           '<div class="wnext-item"><strong>' + esc(t('wnext_save_t')) + '</strong><span>' + esc(t('wnext_save_d')) + '</span></div>' +
-          '<div class="wnext-item"><strong>' + esc(t('wnext_pdf_t')) + '</strong><span>' + esc(t('wnext_pdf_d')) + '</span></div>' +
           '<div class="wnext-item"><strong>' + esc(t('wnext_spec_t')) + '</strong><span>' + esc(t('wnext_spec_d')) + '</span></div>' +
           '</div>' +
           '<div class="save-benefit-strip">' + esc(t('saveben')) + '</div>' +
           '<div class="bk-next-btns">' +
           '<button type="button" class="btn-next-primary" id="bk-next-save">' + esc(t('btn_save_result')) + '</button>' +
-          '<button type="button" class="btn-next-sec" id="bk-next-pdf">' + esc(t('btn_pdf_dl')) + '</button>' +
           '<button type="button" class="btn-next-sec" id="bk-next-spec">' + esc(t('btn_find_spec')) + '</button>' +
           '</div>' +
           '<p class="bk-next-decline"><button type="button" id="bk-next-decline">' + esc(t('wnext_decl')) + '</button></p>' +
           '</div>';
         setTimeout(function () {
           var s = document.getElementById('bk-next-save');
-          var p = document.getElementById('bk-next-pdf');
           var sp = document.getElementById('bk-next-spec');
           var d = document.getElementById('bk-next-decline');
           if (s) s.onclick = function () { if (window.bkHandleNextSave) window.bkHandleNextSave(); };
-          if (p) p.onclick = function () { if (window.bkHandleNextPdf) window.bkHandleNextPdf(); };
           if (sp) sp.onclick = function () { if (window.bkHandleNextSpec) window.bkHandleNextSpec(); };
           if (d) d.onclick = function () { if (window.bkOnSaveNo) window.bkOnSaveNo(); };
         }, 0);
@@ -3736,12 +3817,7 @@
           '<div class="closing-box">' +
           '<blockquote>' + C.quote + '</blockquote>' +
           '<div class="disc">' + C.disc + '</div></div>';
-        if (ul) {
-          ul.innerHTML =
-            '<div class="upsell-box no-print">' +
-            '<h3>' + C.upsell_h + '</h3>' +
-            '<p>' + C.upsell_p + '</p></div>';
-        }
+        if (ul) { ul.innerHTML = ''; }
       }
 
       // ── HELPER ────────────────────────────────────────────
@@ -4176,7 +4252,7 @@
           { t: lbl('B2B в ЕС: 0% НДС', 'B2B in EU: 0% VAT', 'B2B innerhalb EU: 0% USt'), body: lbl('Если клиент — компания с VAT номером в ЕС → НДС 0% (innergemeinschaftliche Lieferung). Нужно проверить VAT и указать в счёте. Ошибка → Finanzamt начислит 19% задним числом.', 'If client has EU VAT number → 0% VAT (intra-EU supply). Must verify VAT number. Error → Finanzamt charges 19% retroactively.', 'EU-Unternehmen mit VAT-Nummer → 0% USt. VAT-Nummer prüfen und auf Rechnung angeben.') },
           { t: lbl('B2C в ЕС: НДС страны покупателя', 'B2C in EU: buyer country VAT', 'B2C in EU: USt des Käuferlandes'), body: lbl('Если продаёте частным клиентам в ЕС > 10.000 EUR/год → платите НДС их страны через OSS.', 'If selling to EU consumers > 10,000 EUR/year → pay their country VAT via OSS.', 'Über 10.000 EUR an EU-Verbraucher → USt des Käuferlandes via OSS.') },
           { t: lbl('Онлайн-курсы и цифровые услуги', 'Online courses and digital services', 'Online-Kurse und digitale Dienste'), body: lbl('НДС зависит от страны клиента. Одна из самых сложных тем.', 'VAT depends on client country. One of the most complex areas.', 'USt abhängig vom Sitzland des Kunden. Sehr komplexes Thema.') },
-          { t: lbl('Kleinunternehmer и 19% в счёте', 'Kleinunternehmer and 19% on invoice', 'Kleinunternehmer und USt-Ausweis'), body: lbl('Если вы Kleinunternehmer (до 22.000 EUR), нельзя указывать 19% в счёте. Иначе должны заплатить этот НДС!', 'If you are Kleinunternehmer (up to 22,000 EUR), cannot show 19% on invoice. Otherwise you must pay that VAT!', 'Kleinunternehmer darf keine 19% ausweisen — sonst USt-Schuld.') },
+          { t: lbl('Kleinunternehmer и 19% в счёте', 'Kleinunternehmer and 19% on invoice', 'Kleinunternehmer und USt-Ausweis'), body: lbl('Если вы Kleinunternehmer (Vorjahresumsatz до 25.000 EUR), нельзя указывать 19% в счёте. Иначе должны заплатить этот НДС!', 'If you are Kleinunternehmer (prior-year revenue up to 25,000 EUR), cannot show 19% on invoice. Otherwise you must pay that VAT!', 'Kleinunternehmer darf keine 19% ausweisen — sonst USt-Schuld.') },
           { t: lbl('Покупка из другой страны ЕС', 'Purchase from another EU country', 'Kauf aus EU-Ausland'), body: lbl('Innergemeinschaftlicher Erwerb: 0% в счёте поставщика, но вы сами начисляете 19% и указываете в декларации.', 'Intra-EU purchase: 0% on supplier invoice, but you self-assess 19% in your declaration.', 'Innergemeinschaftlicher Erwerb: 0% in der Eingangsrechnung, aber selbst 19% abführen.') },
           { t: lbl('Автомобиль: бизнес и личное использование', 'Car: business and personal use', 'Auto: Betrieb und Privatnutzung'), body: lbl('Если машина используется лично — нужно платить НДС на private Nutzung. Часто забывают.', 'If car used privately — must pay VAT on private use portion. Often forgotten.', 'Private Nutzung des Firmenwagens: USt auf Privatanteil Pflicht.') },
           { t: lbl('НДС — это деньги государства', 'VAT is the government money', 'USt ist Staatsgeld'), body: lbl('НДС не ваши деньги. Если потратили — Finanzamt начислит штраф + проценты.', 'VAT is not your money. If you spent it — Finanzamt will charge penalties + interest.', 'USt ist kein Eigenkapital. Ausgegeben → Nachzahlung + Zinsen.') },
