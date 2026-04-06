@@ -3341,9 +3341,9 @@
 
         // ── SECTION 1: Empfehlung + Schritte ─────────────────
         // Use city-specific authority URLs from CITY_AUTHORITY_MAP when available
-        var _cauth = (window.CITY_AUTHORITY_MAP && cityLbl && window.CITY_AUTHORITY_MAP[cityLbl]) ? window.CITY_AUTHORITY_MAP[cityLbl] : null;
-        var gewerbeUrl = (_cauth && _cauth.gewerbe && _cauth.gewerbe.url) ? _cauth.gewerbe.url : 'https://www.verwaltung.bund.de/';
-        var ihkUrl = (_cauth && _cauth.ihk && _cauth.ihk.url) ? _cauth.ihk.url : 'https://www.ihk.de';
+        var cityAuth = (window.CITY_AUTHORITY_MAP && cityLbl && window.CITY_AUTHORITY_MAP[cityLbl]) ? window.CITY_AUTHORITY_MAP[cityLbl] : null;
+        var gewerbeUrl = (cityAuth && cityAuth.gewerbe && cityAuth.gewerbe.url) ? cityAuth.gewerbe.url : 'https://www.verwaltung.bund.de/';
+        var ihkUrl = (cityAuth && cityAuth.ihk && cityAuth.ihk.url) ? cityAuth.ihk.url : 'https://www.ihk.de';
         var steps = [];
         if (!isFB) steps.push({ n: 'Gewerbeanmeldung', d: lbl('В Gewerbeamt, ~15–65 €', 'At Gewerbeamt, ~15–65 €', 'Im Gewerbeamt, Gebühr 15–65 €'), l: gewerbeUrl });
         if (isUG) steps.push({ n: 'Notar + Handelsregister', d: lbl('Для UG обязательно, ~700–1.200 €', 'Required for UG, ~700–1,200 €', 'Pflicht für UG, ~700–1.200 €'), l: 'https://www.handelsregister.de' });
