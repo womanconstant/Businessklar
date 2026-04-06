@@ -825,6 +825,42 @@
       margin: 16px 0 8px
     }
 
+    .lf-switch-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 14px 0 8px;
+      padding: 0;
+      border: none;
+      background: none
+    }
+
+    .lf-switch-btn {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      padding: 6px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: all .2s;
+      white-space: nowrap
+    }
+
+    .lf-switch-btn.active {
+      background: rgba(201, 168, 76, .15);
+      border-color: var(--gold);
+      color: var(--gold);
+      font-weight: 700
+    }
+
+    .lf-switch-btn:hover:not(.active) {
+      border-color: var(--gold);
+      color: var(--gold)
+    }
+
     .report-tabs {
       display: flex;
       gap: 4px;
@@ -2942,6 +2978,7 @@
     // ============================================================
     var currentStep = 0;
     var surveyData = {};
+    window._bkLfOverride = null;
     try {
       try { localStorage.removeItem('bk_draft'); } catch (e0) {}
       var sd = sessionStorage.getItem('bk_survey_sess');
@@ -3137,6 +3174,7 @@
         renderSurveyStep();
         window.scrollTo(0, 0);
       } else {
+        window._bkLfOverride = null;
         generateReport();
         showPage('report');
       }
@@ -3181,9 +3219,17 @@
 
         // ── Form recommendation ──────────────────────────────
         var lf, lfDE;
-        if (['it_digital', 'consulting', 'creative', 'medical'].indexOf(act) > -1 && ry1 < 150000) { lf = 'freib'; lfDE = 'Freiberufler'; }
-        else if (ry1 < 50000 && !hs) { lf = 'eu'; lfDE = ry1 < 22000 ? 'Einzelunternehmen (Kleinunternehmer)' : 'Einzelunternehmen'; }
-        else { lf = 'ug'; lfDE = 'UG (haftungsbeschränkt)'; }
+        var _canFB = ['it_digital', 'consulting', 'creative', 'medical'].indexOf(act) > -1;
+        if (window._bkLfOverride === 'freib') {
+          lf = 'freib'; lfDE = 'Freiberufler';
+        } else if (window._bkLfOverride === 'gewerbe') {
+          if (ry1 < 50000 && !hs) { lf = 'eu'; lfDE = ry1 < 22000 ? 'Einzelunternehmen (Kleinunternehmer)' : 'Einzelunternehmen'; }
+          else { lf = 'ug'; lfDE = 'UG (haftungsbeschränkt)'; }
+        } else {
+          if (_canFB && ry1 < 150000) { lf = 'freib'; lfDE = 'Freiberufler'; }
+          else if (ry1 < 50000 && !hs) { lf = 'eu'; lfDE = ry1 < 22000 ? 'Einzelunternehmen (Kleinunternehmer)' : 'Einzelunternehmen'; }
+          else { lf = 'ug'; lfDE = 'UG (haftungsbeschränkt)'; }
+        }
 
         var isFB = lf === 'freib', isUG = lf === 'ug', isK = ry1 < 22000 && !isUG;
 
@@ -3252,7 +3298,27 @@
 
         // ── Header ───────────────────────────────────────────
         document.getElementById('r-name').textContent = lbl('Бизнес в Германии', 'Business in Germany', 'Unternehmen in Deutschland');
-        document.getElementById('r-lf').textContent = lfDE;
+        // Render activity-type (legal form) switch control
+        (function () {
+          var el = document.getElementById('r-lf');
+          if (!el) return;
+          if (_canFB) {
+            var isFreib = lf === 'freib';
+            el.className = 'lf-switch-wrap';
+            el.innerHTML =
+              '<button class="lf-switch-btn' + (isFreib ? ' active' : '') + '" id="lf-btn-freib">Freiberufler</button>' +
+              '<button class="lf-switch-btn' + (!isFreib ? ' active' : '') + '" id="lf-btn-gewerbe">Gewerbetreibender</button>';
+            setTimeout(function () {
+              var bf = document.getElementById('lf-btn-freib');
+              var bg = document.getElementById('lf-btn-gewerbe');
+              if (bf) bf.onclick = function () { window._bkLfOverride = 'freib'; generateReport(); };
+              if (bg) bg.onclick = function () { window._bkLfOverride = 'gewerbe'; generateReport(); };
+            }, 0);
+          } else {
+            el.className = 'lf-badge';
+            el.textContent = lfDE;
+          }
+        })();
         document.getElementById('r-meta').textContent = t('ctylbl') + ': ' + cityLbl + ' · ' + t('gen') + ': ' + new Date().toLocaleDateString();
 
         updateGuestNotice();
@@ -3281,11 +3347,17 @@
         else { bgR = 'BG (DGUV)'; bgL = 'https://bg-check.dguv.de/'; }
 
         // ── SECTION 1: Empfehlung + Schritte ─────────────────
+        var _cam = (typeof window.CITY_AUTHORITY_MAP !== 'undefined' && window.CITY_AUTHORITY_MAP) ? window.CITY_AUTHORITY_MAP : {};
+        var _cityEntry = (cityLbl !== '\u2014' && _cam[cityLbl]) ? _cam[cityLbl] : null;
+        var gewerbeUrl = (_cityEntry && _cityEntry.gewerbe && _cityEntry.gewerbe.url)
+          ? _cityEntry.gewerbe.url : 'https://www.service-bund.de/';
+        var ihkUrl = (_cityEntry && _cityEntry.ihk && _cityEntry.ihk.url)
+          ? _cityEntry.ihk.url : 'https://www.ihk.de/';
         var steps = [];
-        if (!isFB) steps.push({ n: 'Gewerbeanmeldung', d: lbl('В Gewerbeamt, ~15–65 €', 'At Gewerbeamt, ~15–65 €', 'Im Gewerbeamt, Gebühr 15–65 €'), l: 'https://service.duesseldorf.de' });
+        if (!isFB) steps.push({ n: 'Gewerbeanmeldung', d: lbl('В Gewerbeamt, ~15–65 €', 'At Gewerbeamt, ~15–65 €', 'Im Gewerbeamt, Gebühr 15–65 €'), l: gewerbeUrl });
         if (isUG) steps.push({ n: 'Notar + Handelsregister', d: lbl('Для UG обязательно, ~700–1.200 €', 'Required for UG, ~700–1,200 €', 'Pflicht für UG, ~700–1.200 €'), l: 'https://www.handelsregister.de' });
         steps.push({ n: 'Finanzamt (ELSTER)', d: lbl('Налоговая анкета, бесплатно', 'Tax registration, free', 'Steuerlichen Erfassungsbogen, kostenlos'), l: 'https://www.elster.de' });
-        if (!isFB) steps.push({ n: 'IHK-Mitgliedschaft', d: lbl('Автоматически, ~100–300 €/год', 'Automatic, ~100–300 €/year', 'Automatisch, Beitrag ~100–300 €/Jahr'), l: 'https://www.ihk.de' });
+        if (!isFB) steps.push({ n: 'IHK-Mitgliedschaft', d: lbl('Автоматически, ~100–300 €/год', 'Automatic, ~100–300 €/year', 'Automatisch, Beitrag ~100–300 €/Jahr'), l: ihkUrl });
         steps.push({ n: 'Berufsgenossenschaft: ' + bgR, d: lbl('Обязательно в течение 1 недели', 'Required within 1 week', 'Pflicht innerhalb 1 Woche'), l: bgL });
         steps.push({ n: 'Krankenversicherung', d: lbl('Обязательно для самозанятых, ~350–900 €/мес', 'Mandatory for self-employed, ~350–900 €/mon', 'Pflicht für Selbständige, ~350–900 €/Mon.'), l: null });
 
@@ -3310,16 +3382,8 @@
           '<div class="top5-li"><div class="top5-num" style="background:rgba(255,255,255,.08);color:var(--text-muted)">?</div>' +
           '<div class="top5-txt">' + (isK ? lbl('Стоит ли оставаться Kleinunternehmer? Порог 22.000 EUR/год.', 'Keep Kleinunternehmer status? Threshold 22,000 EUR/year.', 'Kleinunternehmer sinnvoll? Grenze: 22.000 EUR/Jahr.') : lbl('Нужна ли полная бухгалтерия или достаточно EÜR?', 'Full accounting or simple EÜR?', 'Doppelte Buchführung oder EÜR?')) + '</div></div></div>';
 
-        // ── SECTION 2: Registrations ──────────────────────────
-        document.getElementById('r-regs').innerHTML =
-          '<div class="rpt-sec-h">🏛️ ' + lbl('Где и в каком порядке регистрироваться', 'Where and how to register', 'Wo und in welcher Reihenfolge anmelden') + '</div>' +
-          steps.map(function (s, i) {
-            return '<div class="r-card" style="margin-bottom:10px">' +
-              '<strong>' + (i + 1) + '. ' + s.n + '</strong>' +
-              '<p style="font-size:13px;color:var(--text-muted);margin:6px 0 4px">' + s.d + '</p>' +
-              (s.l ? '<a href="' + s.l + '" target="_blank" rel="noopener" style="color:var(--gold);font-size:12px">→ ' + t('offlink') + '</a>' : '') +
-              '</div>';
-          }).join('');
+        // ── SECTION 2: Registrations (content already shown in Section 1) ──
+        document.getElementById('r-regs').innerHTML = '';
 
         // ── SECTION 3: Finance ────────────────────────────────
         var fh = '<div class="rpt-sec-h">💰 ' + lbl('Расчёт налогов и доходов', 'Tax & income calculation', 'Steuer- & Einkommensberechnung') + '</div>';
@@ -3565,6 +3629,7 @@
       }
 
       function startSurvey(fromHome) {
+        window._bkLfOverride = null;
         if (fromHome === true) {
           window._bkCaseLockedFromCabinet = false;
           window._bkActiveCaseId = null;
@@ -3763,7 +3828,7 @@
         { n: 'Ilmenau', hb: 400 }, { n: 'Kamp-Lintfort', hb: 480 }, { n: 'Kamen', hb: 480 }, { n: 'Kevelaer', hb: 420 },
         { n: 'Kleve', hb: 420 }, { n: 'Königswinter', hb: 450 }, { n: 'Langen (Hessen)', hb: 380 },
         { n: 'Lehrte', hb: 420 }, { n: 'Lemgo', hb: 420 }, { n: 'Lohmar', hb: 450 },
-        { n: 'Nürnberg', hb: 447 }, { n: 'Nörenberg', hb: 447 }
+        { n: 'Nürnberg', hb: 447 }
       ];
 
       function citySearch(query) {
@@ -3978,9 +4043,19 @@
         var results = activitySearch(val);
         if (!results.length || val.length < 2) { list.style.display = 'none'; updateDetectedAct(detected); return; }
         list.innerHTML = results.map(function (r) {
-          return '<div class="ac-item" onclick="selectActivity(' + JSON.stringify(r.term) + ',' + JSON.stringify(r.act.k) + ',' + JSON.stringify(r.act.bg) + ',' + (r.act.fb ? 'true' : 'false') + ')">' +
+          return '<div class="ac-item" role="option">' +
             '<span>' + escapeHtml(r.term) + '</span><span class="ac-badge">' + escapeHtml(r.act.bg) + '</span></div>';
         }).join('');
+        // Bind events without inline onclick to avoid HTML-attribute quoting issues
+        var items = list.querySelectorAll('.ac-item');
+        results.forEach(function (r, idx) {
+          var item = items[idx];
+          if (!item) return;
+          item.addEventListener('mousedown', function (e) { e.preventDefault(); });
+          item.addEventListener('click', function () {
+            selectActivity(r.term, r.act.k, r.act.bg, !!r.act.fb);
+          });
+        });
         list.style.display = 'block';
         updateDetectedAct(detected);
       }
