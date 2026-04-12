@@ -3123,6 +3123,24 @@
           type: 'activity_ac'
         },
         {
+          id: 'founders_count', title: t('q_founders_title'),
+          hint: t('q_founders_hint'),
+          type: 'radio', opts: [
+            { v: '1', l: t('founders_1') },
+            { v: '2', l: t('founders_2') },
+            { v: '3', l: t('founders_3plus') }
+          ]
+        },
+        {
+          id: 'liability_preference', title: t('q_liability_title'),
+          hint: t('q_liability_hint'),
+          type: 'radio', opts: [
+            { v: 'yes', l: t('liability_yes') },
+            { v: 'maybe', l: t('liability_maybe') },
+            { v: 'no', l: t('liability_no') }
+          ]
+        },
+        {
           id: 'city', title: t('q_city_title'),
           hint: t('q_city_hint'),
           type: 'city_ac'
@@ -3149,24 +3167,6 @@
             { v: 'ecommerce', l: t('ex_ec') }, { v: 'eu_clients', l: t('ex_eu') }, { v: 'non_eu', l: t('ex_nu') },
             { v: 'personal_data', l: t('ex_pd') }, { v: 'financial_risk', l: t('ex_fr') },
             { v: 'employees_later', l: t('ex_el') }, { v: 'none', l: t('ex_no') }
-          ]
-        },
-        {
-          id: 'founders_count', title: t('q_founders_title'),
-          hint: t('q_founders_hint'),
-          type: 'radio', opts: [
-            { v: '1', l: t('founders_1') },
-            { v: '2', l: t('founders_2') },
-            { v: '3', l: t('founders_3plus') }
-          ]
-        },
-        {
-          id: 'liability_preference', title: t('q_liability_title'),
-          hint: t('q_liability_hint'),
-          type: 'radio', opts: [
-            { v: 'yes', l: t('liability_yes') },
-            { v: 'maybe', l: t('liability_maybe') },
-            { v: 'no', l: t('liability_no') }
           ]
         },
         {
@@ -3353,7 +3353,13 @@
         }
 
         // ── Eligible forms ───────────────────────────────────
-        var isFB = ['it_digital', 'consulting', 'creative', 'medical'].indexOf(act) > -1;
+        // isFB: use stored activity_fb flag (more accurate); fall back to static key list for old sessions
+        var isFB;
+        if (d.activity_fb !== undefined && d.activity_fb !== null && d.activity_fb !== '') {
+          isFB = d.activity_fb === '1' || d.activity_fb === true;
+        } else {
+          isFB = ['it_digital', 'consulting', 'creative', 'medical'].indexOf(act) > -1;
+        }
         var eligibleForms;
         if (foundersCount === 1) {
           eligibleForms = [
@@ -3431,7 +3437,7 @@
             { l: 'Solidaritätszuschlag', s: '5.5% von Körperschaftsteuer', v: solK, neg: true },
             { l: 'Gewerbesteuer', s: lbl('Ставка ' + hb + '% (' + cityLbl + ')', 'Rate ' + hb + '% (' + cityLbl + ')', 'Hebesatz ' + hb + '% (' + cityLbl + ')'), v: gst, neg: true },
             { sep: true },
-            { l: lbl('Прибыль после налогов (UG)', 'Profit after tax (UG)', 'Gewinn nach Steuern (UG)'), s: lbl('Остаётся в компании', 'Stays in company', 'Verbleibt in der Gesellschaft'), v: netProfit, pos: true, big: true },
+            { l: lbl('Прибыль после налогов (' + lfDE + ')', 'Profit after tax (' + lfDE + ')', 'Gewinn nach Steuern (' + lfDE + ')'), s: lbl('Остаётся в компании', 'Stays in company', 'Verbleibt in der Gesellschaft'), v: netProfit, pos: true, big: true },
             { sep: true },
             { hdr: lbl('При выводе дивидендов', 'Upon dividend payout', 'Bei Dividendenausschüttung') },
             { l: 'Kapitalertragsteuer 25%', s: lbl('на дивиденды', 'on dividends', 'auf Dividenden'), v: div25, neg: true },
@@ -4210,6 +4216,7 @@
         if (detected) {
           surveyData['activity'] = detected.k;
           surveyData['activity_bg'] = detected.bg;
+          surveyData['activity_fb'] = detected.fb ? '1' : '0';
           autosave();
         }
         var results = activitySearch(val);
@@ -4254,6 +4261,7 @@
         surveyData['activity_text'] = term;
         surveyData['activity'] = key;
         surveyData['activity_bg'] = bg;
+        surveyData['activity_fb'] = fb ? '1' : '0';
         autosave();
         var inp = document.getElementById('inp-act-ac');
         if (inp) inp.value = term;
