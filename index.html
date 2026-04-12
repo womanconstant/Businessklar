@@ -3337,7 +3337,7 @@
         var sf = parseInt(d.staff_fulltime) || 0, sm = parseInt(d.staff_minijob) || 0;
         var hs = sf > 0 || sm > 0;
         var act = d.activity || 'other', ext = d.extras || [];
-        var fn = parseInt(d.founders_count) || 1;
+        var foundersCount = parseInt(d.founders_count) || 1;
         var liabPref = d.liability_preference || null;
 
         function L8(m) {
@@ -3355,7 +3355,7 @@
         // ── Eligible forms ───────────────────────────────────
         var isFB = ['it_digital', 'consulting', 'creative', 'medical'].indexOf(act) > -1;
         var eligibleForms;
-        if (fn === 1) {
+        if (foundersCount === 1) {
           eligibleForms = [
             { key: 'eu', label: 'Einzelunternehmen' },
             { key: 'ug', label: 'UG (haftungsbeschränkt)' },
@@ -3380,7 +3380,7 @@
             if (isFB && ry1 < 150000 && !hs) { lf = 'eu'; }
             else if (ry1 < 50000 && !hs) { lf = 'eu'; }
             else { lf = eligibleKeys.indexOf('eu') > -1 ? 'ug' : eligibleForms[0].key; }
-          } else if (fn === 1) {
+          } else if (foundersCount === 1) {
             if (liabPref === 'yes') {
               lf = ry1 > 1000000 ? 'gmbh' : 'ug';
             } else if (liabPref === 'maybe') {
@@ -3402,7 +3402,7 @@
         lfDE = _lfLabels[lf] || lf;
 
         var isUG = lf === 'ug' || lf === 'gmbh';
-        var isGbR = lf === 'gbr', isPartG = lf === 'partg', isMulti = fn >= 2;
+        var isGbR = lf === 'gbr', isPartG = lf === 'partg', isMultiFounder = foundersCount >= 2;
         var isK = ry1 < 25000 && !isUG;
 
         // City: autocomplete model only (Hebesatz + display name)
@@ -3607,7 +3607,7 @@
           fh += '<div class="tx-row"><div class="tx-lbl">USt-Voranmeldung<small>' + lbl('через ELSTER, до 10-го числа', 'via ELSTER, by 10th', 'via ELSTER, bis 10.') + '</small></div><div class="tx-val" style="font-size:11px">ELSTER.de</div></div></div>';
         }
 
-        if (isMulti) {
+        if (isMultiFounder) {
           fh += '<div class="tx-info">\u2139\ufe0f ' + t('multi_founder_note') + '</div>';
         }
 
