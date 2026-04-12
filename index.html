@@ -3157,7 +3157,7 @@
           type: 'radio', opts: [
             { v: '1', l: t('founders_1') },
             { v: '2', l: t('founders_2') },
-            { v: '3plus', l: t('founders_3plus') }
+            { v: '3', l: t('founders_3plus') }
           ]
         },
         {
@@ -3377,9 +3377,10 @@
           if (_rfOvr) window._bkRechtsformOverride = null;
           if (liabPref === null) {
             // Legacy behaviour for old sessions without liability_preference
+            // foundersCount will always be 1 here (old sessions have no founders_count)
             if (isFB && ry1 < 150000 && !hs) { lf = 'eu'; }
             else if (ry1 < 50000 && !hs) { lf = 'eu'; }
-            else { lf = eligibleKeys.indexOf('eu') > -1 ? 'ug' : eligibleForms[0].key; }
+            else { lf = 'ug'; }
           } else if (foundersCount === 1) {
             if (liabPref === 'yes') {
               lf = ry1 > 1000000 ? 'gmbh' : 'ug';
@@ -3505,8 +3506,16 @@
             eu: lbl('Вы несёте личную ответственность своим имуществом. Нет минимального уставного капитала.', 'Personal liability with your private assets. No minimum capital required.', 'Sie haften grundsätzlich persönlich mit Ihrem Privatvermögen. Kein gesetzliches Mindestkapital.'),
             ug: lbl('Ответственность ограничена имуществом общества. Необходим нотариус и Handelsregister. Обязательное формирование резерва.', 'Liability generally limited to company assets. Notary and Handelsregister required. Mandatory reserve accumulation.', 'Haftung grundsätzlich auf das Gesellschaftsvermögen beschränkt. Notar und Handelsregister erforderlich. Rücklagenpflicht.'),
             gmbh: lbl('Ответственность ограничена имуществом общества. Минимальный уставный капитал 25.000 EUR. Необходим нотариус и Handelsregister.', 'Liability generally limited to company assets. Minimum share capital 25,000 EUR. Notary and Handelsregister required.', 'Haftung grundsätzlich auf das Gesellschaftsvermögen beschränkt. Mindeststammkapital 25.000 EUR. Notar und Handelsregister erforderlich.'),
-            gbr: lbl('Простейшая форма для 2+ партнёров. Личная ответственность всех участников. Нет минимального уставного капитала. Gewerbeanmeldung для каждого партнёра.', 'Simplest form for 2+ partners. Personal liability of all partners. No minimum capital required. Gewerbeanmeldung per partner.', 'Einfachste Form für 2+ Partner. Persönliche Haftung aller Gesellschafter. Kein Mindestkapital. Gewerbeanmeldung je Gesellschafter.'),
-            partg: lbl('Специальная форма для 2+ представителей свободных профессий. Регистрация в Partnerschaftsregister обязательна. Без Gewerbesteuer.', 'Special form for 2+ liberal professionals. Registration in Partnerschaftsregister required. No Gewerbesteuer.', 'Spezielle Form für 2+ Freiberufler. Eintragung im Partnerschaftsregister erforderlich. Keine Gewerbesteuer.')
+            gbr: lbl(
+              'Простейшая форма для 2+ партнёров. Личная ответственность всех участников. Нет минимального уставного капитала. Gewerbeanmeldung для каждого партнёра.',
+              'Simplest form for 2+ partners. Personal liability of all partners. No minimum capital required. Gewerbeanmeldung per partner.',
+              'Einfachste Form für 2+ Partner. Persönliche Haftung aller Gesellschafter. Kein Mindestkapital. Gewerbeanmeldung je Gesellschafter.'
+            ),
+            partg: lbl(
+              'Специальная форма для 2+ представителей свободных профессий. Регистрация в Partnerschaftsregister обязательна. Без Gewerbesteuer.',
+              'Special form for 2+ liberal professionals. Registration in Partnerschaftsregister required. No Gewerbesteuer.',
+              'Spezielle Form für 2+ Freiberufler. Eintragung im Partnerschaftsregister erforderlich. Keine Gewerbesteuer.'
+            )
           };
           descEl.textContent = _lfDescMap[lf] || '';
         }
