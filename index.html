@@ -3355,8 +3355,10 @@
         // ── Eligible forms ───────────────────────────────────
         // isFB: use stored activity_fb flag (more accurate); fall back to static key list for old sessions
         var isFB;
-        if (d.activity_fb !== undefined && d.activity_fb !== null && d.activity_fb !== '') {
-          isFB = d.activity_fb === '1' || d.activity_fb === true;
+        if (d.activity_fb === '1' || d.activity_fb === true) {
+          isFB = true;
+        } else if (d.activity_fb === '0' || d.activity_fb === false) {
+          isFB = false;
         } else {
           isFB = ['it_digital', 'consulting', 'creative', 'medical'].indexOf(act) > -1;
         }
@@ -3382,8 +3384,8 @@
         } else {
           if (_rfOvr) window._bkRechtsformOverride = null;
           if (liabPref === null) {
-            // Legacy behaviour for old sessions without liability_preference
-            // foundersCount will always be 1 here (old sessions have no founders_count)
+            // Legacy path: old sessions without liability_preference.
+            // founders_count may also be absent (defaults to 1 via parseInt fallback).
             if (isFB && ry1 < 150000 && !hs) { lf = 'eu'; }
             else if (ry1 < 50000 && !hs) { lf = 'eu'; }
             else { lf = 'ug'; }
