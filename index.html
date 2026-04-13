@@ -5006,7 +5006,9 @@
     try {
       var h0 = window.location.hash;
       if (h0 && (/type=recovery/i.test(h0) || /recovery/i.test(h0))) {
-        var ru = new URL('recovery.html', window.location.href);
+        var ru = typeof BK_AUTH !== 'undefined' && BK_AUTH.recoveryRedirectUrl
+          ? new URL(BK_AUTH.recoveryRedirectUrl())
+          : new URL('recovery.html', window.location.href);
         ru.hash = h0;
         try {
           var lgH = localStorage.getItem('bk_lang');
@@ -5072,7 +5074,14 @@
 
   <script>
   async function registerUser(email, password) {
-    return supabaseClient.auth.signUp({ email: email, password: password });
+    var emailRedirectTo = typeof BK_AUTH !== 'undefined' && BK_AUTH.signUpRedirectUrl
+      ? BK_AUTH.signUpRedirectUrl()
+      : new URL('index.html', window.location.href).href.split('#')[0];
+    return supabaseClient.auth.signUp({
+      email: email,
+      password: password,
+      options: { emailRedirectTo: emailRedirectTo }
+    });
   }
   </script>
 

@@ -131,30 +131,59 @@
     return sb.auth.updateUser({ password: newPassword });
   }
 
-  function recoveryRedirectUrl() {
+  /**
+   * Origin для ссылок в письмах Supabase (reset password, confirm email).
+   * Без жёсткого localhost: всегда реальный origin страницы, либо явный override.
+   * Опционально: window.__BK_PUBLIC_SITE_ORIGIN__ = 'https://example.com' (корень сайта,
+   * если страница открыта не с того URL или нужен фиксированный production host).
+   */
+  function getAuthRedirectBaseUrl() {
     try {
-      var u = new URL('recovery.html', global.location.href);
+      var ov = global.__BK_PUBLIC_SITE_ORIGIN__;
+      if (ov != null && String(ov).trim()) {
+        var root = String(ov).trim().replace(/\/+$/, '');
+        if (/^https?:\/\//i.test(root)) return root;
+      }
+      if (global.location && global.location.origin) return global.location.origin;
+    } catch (e) {}
+    return '';
+  }
+
+  /**
+   * Полный redirect URL для auth-email: страница относительно текущего деплоя (как location.href),
+   * или относительно __BK_PUBLIC_SITE_ORIGIN__ если задан.
+   */
+  function buildAuthEmailRedirectUrl(pagePath) {
+    var path = String(pagePath || 'index.html');
+    try {
+      var baseHref;
+      var ov = global.__BK_PUBLIC_SITE_ORIGIN__;
+      if (ov != null && String(ov).trim()) {
+        var siteRoot = String(ov).trim().replace(/\/+$/, '');
+        if (/^https?:\/\//i.test(siteRoot)) baseHref = siteRoot + '/';
+      }
+      if (!baseHref) baseHref = global.location.href;
+      var u = new URL(path, baseHref);
       try {
         var lg = global.localStorage.getItem('bk_lang');
         if (lg) u.searchParams.set('lang', lg);
       } catch (e) {}
       return u.href.split('#')[0];
     } catch (e2) {
-      return global.location.href.split('#')[0];
+      try {
+        return global.location.href.split('#')[0];
+      } catch (e3) {
+        return '';
+      }
     }
   }
 
+  function recoveryRedirectUrl() {
+    return buildAuthEmailRedirectUrl('recovery.html');
+  }
+
   function signUpRedirectUrl() {
-    try {
-      var u = new URL('index.html', global.location.href);
-      try {
-        var lg = global.localStorage.getItem('bk_lang');
-        if (lg) u.searchParams.set('lang', lg);
-      } catch (e) {}
-      return u.href.split('#')[0];
-    } catch (e2) {
-      return global.location.href.split('#')[0];
-    }
+    return buildAuthEmailRedirectUrl('index.html');
   }
 
   /**
@@ -350,6 +379,8 @@
     logout: logout,
     forgotPassword: forgotPassword,
     completePasswordRecovery: completePasswordRecovery,
+    getAuthRedirectBaseUrl: getAuthRedirectBaseUrl,
+    buildAuthEmailRedirectUrl: buildAuthEmailRedirectUrl,
     recoveryRedirectUrl: recoveryRedirectUrl,
     signUpRedirectUrl: signUpRedirectUrl,
     bindAuthModal: bindAuthModal
