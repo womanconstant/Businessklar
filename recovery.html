@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0A1628">
+  <title>BusinessKlar</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600&family=Fraunces:opsz,wght@9..144,400&display=swap" rel="stylesheet">
+  <style>
+    :root { --navy: #0A1628; --navy-mid: #122040; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); --red: #E85555; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; padding: 28px 18px 48px; }
+    .wrap { max-width: 440px; margin: 0 auto; }
+    h1 { font-family: Fraunces, Georgia, serif; font-size: 1.45rem; color: var(--gold); margin-bottom: 10px; }
+    .lead { color: var(--muted); font-size: 14px; margin-bottom: 22px; line-height: 1.5; }
+    label { display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+    input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(18,32,64,.85); color: var(--text); font-size: 14px; margin-bottom: 14px; font-family: inherit; }
+    .btn-row { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+    button { padding: 12px 22px; background: var(--gold); color: var(--navy); font-weight: 600; border: none; border-radius: 12px; cursor: pointer; font-size: 14px; font-family: inherit; }
+    button.secondary { background: transparent; color: var(--text); border: 1px solid var(--border); }
+    #msg { margin-top: 14px; font-size: 14px; min-height: 1.4em; }
+    #msg.err { color: var(--red); }
+    #msg.ok { color: #8c8; }
+    .hidden { display: none !important; }
+    a.logo { font-family: Georgia, serif; font-size: 18px; font-weight: 700; color: var(--gold); text-decoration: none; display: inline-block; margin-bottom: 28px; }
+    a.logo span { color: var(--text); font-weight: 300; }
+    #panel-loading { min-height: 120px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a class="logo" id="logo-recovery" href="index.html">Business<span>Klar</span></a>
+
+    <div id="panel-loading">
+      <p class="lead" id="lead-loading" style="color:var(--muted)">—</p>
+    </div>
+
+    <div id="panel-bad" class="hidden">
+      <h1 id="h-bad">—</h1>
+      <p class="lead" id="lead-bad">—</p>
+      <div class="btn-row">
+        <button type="button" id="btn-bad-login">—</button>
+        <button type="button" class="secondary" id="btn-bad-home">—</button>
+      </div>
+    </div>
+
+    <div id="panel-form" class="hidden">
+      <h1 id="h1">—</h1>
+      <p class="lead" id="lead">—</p>
+      <label for="pw1" id="lbl1">—</label>
+      <input type="password" id="pw1" autocomplete="new-password">
+      <label for="pw2" id="lbl2">—</label>
+      <input type="password" id="pw2" autocomplete="new-password">
+      <div class="btn-row">
+        <button type="button" id="btn-go">—</button>
+        <button type="button" class="secondary" id="btn-dash">—</button>
+      </div>
+      <p id="msg" role="status"></p>
+    </div>
+
+    <div id="panel-done" class="hidden">
+      <h1 id="h-done">—</h1>
+      <p class="lead" id="lead-done">—</p>
+      <div class="btn-row">
+        <button type="button" id="btn-done-dash">—</button>
+        <button type="button" class="secondary" id="btn-done-home">—</button>
+      </div>
+    </div>
+  </div>
+  <script src="satellite-i18n.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="bk-auth.js"></script>
+  <script>
+  var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { detectSessionInUrl: true, persistSession: true, autoRefreshToken: true }
+  });
+  if (typeof BK_AUTH !== 'undefined') {
+    BK_AUTH.initAuthLayer(sb);
+  }
+  window.BK_SAT.init();
+  var T = window.BK_SAT.t.bind(window.BK_SAT);
+  function esc(s) { return String(s || '').replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+
+  function applyChrome() {
+    document.documentElement.lang = window.BK_SAT.getLang();
+    document.title = T('recovery_title') + ' — BusinessKlar';
+    try {
+      document.getElementById('logo-recovery').href = window.BK_SAT.withLang('index.html');
+    } catch (e) {}
+    document.getElementById('lead-loading').textContent = T('recovery_checking_link');
+    document.getElementById('h-bad').textContent = T('auth_err_invalid_recovery_link');
+    document.getElementById('lead-bad').textContent = T('recovery_link_bad_body');
+    document.getElementById('btn-bad-login').textContent = T('authlogin');
+    document.getElementById('btn-bad-home').textContent = T('recovery_go_home');
+    document.getElementById('h1').textContent = T('recovery_title');
+    document.getElementById('lead').textContent = T('recovery_lead');
+    document.getElementById('lbl1').textContent = T('recovery_new_pw');
+    document.getElementById('lbl2').textContent = T('recovery_repeat_pw');
+    document.getElementById('btn-go').textContent = T('recovery_submit');
+    document.getElementById('btn-dash').textContent = T('recovery_go_dashboard');
+    document.getElementById('h-done').textContent = T('recovery_success_title');
+    document.getElementById('lead-done').textContent = T('auth_success_password_changed');
+    document.getElementById('btn-done-dash').textContent = T('recovery_go_dashboard');
+    document.getElementById('btn-done-home').textContent = T('recovery_go_home');
+    document.getElementById('btn-bad-login').onclick = function () {
+      window.location.href = window.BK_SAT.withLang('index.html');
+    };
+    document.getElementById('btn-bad-home').onclick = function () {
+      window.location.href = window.BK_SAT.withLang('index.html');
+    };
+    document.getElementById('btn-done-dash').onclick = function () {
+      window.location.href = window.BK_SAT.withLang('dashboard.html');
+    };
+    document.getElementById('btn-done-home').onclick = function () {
+      window.location.href = window.BK_SAT.withLang('index.html');
+    };
+    var bh = document.getElementById('btn-dash');
+    bh.onclick = function () {
+      window.location.href = window.BK_SAT.withLang('dashboard.html');
+    };
+  }
+  applyChrome();
+
+  var _busy = false;
+  function setMsg(text, kind) {
+    var m = document.getElementById('msg');
+    m.textContent = text || '';
+    m.className = kind || '';
+  }
+
+  function showBad() {
+    document.getElementById('panel-loading').classList.add('hidden');
+    document.getElementById('panel-form').classList.add('hidden');
+    document.getElementById('panel-done').classList.add('hidden');
+    document.getElementById('panel-bad').classList.remove('hidden');
+  }
+
+  function showForm() {
+    document.getElementById('panel-loading').classList.add('hidden');
+    document.getElementById('panel-bad').classList.add('hidden');
+    document.getElementById('panel-done').classList.add('hidden');
+    document.getElementById('panel-form').classList.remove('hidden');
+  }
+
+  function renderAuthUI() {
+    /* Зарезервировано под отключение reload в handleAuthSuccess. */
+  }
+  if (typeof BK_AUTH !== 'undefined') {
+    window.addEventListener(BK_AUTH.EVENT_NAME, renderAuthUI);
+  }
+
+  (async function initRecovery() {
+    var hash = window.location.hash || '';
+    if (hash.indexOf('error=') >= 0 || /error_description/i.test(hash)) {
+      document.getElementById('panel-loading').classList.add('hidden');
+      showBad();
+      return;
+    }
+    await sb.auth.getSession();
+    var sess = (await sb.auth.getSession()).data.session;
+    var user = (await sb.auth.getUser()).data.user;
+    document.getElementById('panel-loading').classList.add('hidden');
+    if (!sess || !user) {
+      showBad();
+      return;
+    }
+    showForm();
+    document.getElementById('btn-go').onclick = async function () {
+      if (_busy) return;
+      var p1 = document.getElementById('pw1').value;
+      var p2 = document.getElementById('pw2').value;
+      if (!p1 || p1.length < 8) {
+        setMsg(T('auth_err_weak_password'), 'err');
+        return;
+      }
+      if (p1 !== p2) {
+        setMsg(T('recovery_err_mismatch'), 'err');
+        return;
+      }
+      _busy = true;
+      setMsg('', '');
+      var up = typeof BK_AUTH !== 'undefined'
+        ? await BK_AUTH.completePasswordRecovery(sb, p1)
+        : await sb.auth.updateUser({ password: p1 });
+      _busy = false;
+      if (up.error) {
+        var mapped = typeof BK_AUTH !== 'undefined' ? BK_AUTH.mapAuthError(up.error.message, T) : (up.error.message || '');
+        setMsg(T('recovery_err_update') + ' ' + esc(mapped), 'err');
+        return;
+      }
+      if (typeof BK_AUTH !== 'undefined') {
+        await BK_AUTH.handleAuthSuccess('recovery-complete', { reload: false });
+      }
+      document.getElementById('panel-loading').classList.add('hidden');
+      document.getElementById('panel-form').classList.add('hidden');
+      document.getElementById('panel-bad').classList.add('hidden');
+      document.getElementById('panel-done').classList.remove('hidden');
+    };
+  })();
+  </script>
+</body>
+</html>

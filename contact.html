@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0A1628">
   <title>BusinessKlar</title>
   <style>
-    :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
+    :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); --red: #E85555; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
     .sat-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 56px; border-bottom: 1px solid var(--border); background: rgba(10,22,40,.95); }
@@ -23,9 +23,12 @@
     input, select, textarea { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(18,32,64,.85); color: var(--text); font-size: 14px; margin-bottom: 14px; font-family: inherit; }
     textarea { min-height: 120px; resize: vertical; }
     button { padding: 12px 22px; background: var(--gold); color: var(--navy); font-weight: 600; border: none; border-radius: 12px; cursor: pointer; font-size: 14px; }
-    button:hover { filter: brightness(1.05); }
+    button:disabled { opacity: .55; cursor: not-allowed; }
+    button:hover:not(:disabled) { filter: brightness(1.05); }
     .note { font-size: 12px; color: var(--muted); margin-top: 16px; }
-    #msg { margin-top: 14px; font-size: 14px; display: none; }
+    #msg { margin-top: 14px; font-size: 14px; display: none; line-height: 1.45; }
+    #msg.err { color: var(--red); display: block; }
+    #msg.ok { color: #8c8; display: block; }
   </style>
 </head>
 <body>
@@ -61,7 +64,21 @@
     <p class="note" id="page-note">—</p>
   </div>
   <script src="satellite-i18n.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="bk-auth.js"></script>
   <script>
+  var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
+  var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { detectSessionInUrl: true, persistSession: true, autoRefreshToken: true }
+  });
+  if (typeof BK_AUTH !== 'undefined') {
+    BK_AUTH.initAuthLayer(sb);
+    function renderAuthUI() {
+      /* Навигация contact без отдельного auth-бейджа; слушатель для будущей синхронизации с bk:auth-change. */
+    }
+    window.addEventListener(BK_AUTH.EVENT_NAME, renderAuthUI);
+  }
   window.BK_SAT.init();
   var T = window.BK_SAT.t.bind(window.BK_SAT);
   function esc(s) { return String(s || '').replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -90,23 +107,62 @@
   document.getElementById('btn-submit').textContent = T('contact_submit');
   document.getElementById('page-note').textContent = T('contact_note');
 
-  var SUPPORT = 'support@businessklar.example';
-  document.getElementById('f').addEventListener('submit', function (e) {
+  var _sendLock = false;
+  document.getElementById('f').addEventListener('submit', async function (e) {
     e.preventDefault();
-    var topic = document.getElementById('topic').value;
+    var msg = document.getElementById('msg');
+    msg.className = '';
+    msg.style.display = 'none';
+    var topic = document.getElementById('topic').value.trim();
     var email = document.getElementById('email').value.trim();
     var body = document.getElementById('body').value.trim();
     if (!topic || !email || !body) {
-      var m = document.getElementById('msg');
-      m.style.display = 'block';
-      m.style.color = '#e88';
-      m.textContent = T('contact_fill');
+      msg.className = 'err';
+      msg.style.display = 'block';
+      msg.textContent = T('contact_fill');
       return;
     }
-    var subj = '[BusinessKlar] ' + document.querySelector('#topic option:checked').textContent;
-    var text = 'From: ' + email + '\n\n' + body;
-    var href = 'mailto:' + SUPPORT + '?subject=' + encodeURIComponent(subj) + '&body=' + encodeURIComponent(text);
-    window.location.href = href;
+    if (_sendLock) return;
+    _sendLock = true;
+    var btn = document.getElementById('btn-submit');
+    var prev = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = T('contact_sending');
+    var uid = null;
+    try {
+      var ures = await sb.auth.getUser();
+      uid = ures.data && ures.data.user ? ures.data.user.id : null;
+    } catch (e) {}
+    var row = {
+      topic: topic,
+      email: email,
+      message: body,
+      user_id: uid,
+      status: 'new',
+      lang: window.BK_SAT.getLang(),
+      source_page: 'contact.html'
+    };
+    try {
+      var ins = await sb.from('support_requests').insert([row]).select();
+      if (ins.error) {
+        msg.className = 'err';
+        msg.style.display = 'block';
+        msg.textContent = T('contact_err') + (ins.error.message ? ' (' + esc(ins.error.message) + ')' : '');
+        return;
+      }
+      msg.className = 'ok';
+      msg.style.display = 'block';
+      msg.textContent = T('support_success_message_sent');
+      document.getElementById('f').reset();
+    } catch (ex) {
+      msg.className = 'err';
+      msg.style.display = 'block';
+      msg.textContent = T('contact_err') + (ex && ex.message ? ' (' + esc(ex.message) + ')' : '');
+    } finally {
+      _sendLock = false;
+      btn.disabled = false;
+      btn.textContent = prev;
+    }
   });
   </script>
 </body>

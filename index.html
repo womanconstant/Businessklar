@@ -2337,6 +2337,7 @@
           </div>
         </div>
         <div id="survey-content"></div>
+        <div id="survey-validation-msg" class="no-print" style="display:none;margin:12px 0 0;font-size:14px;color:var(--red);line-height:1.45" role="alert"></div>
         <div class="survey-nav">
           <button class="btn-back" id="btn-back" onclick="prevStep()" style="display:none">&#8592; <span
               id="el-back">Zur&#252;ck</span></button>
@@ -2670,7 +2671,24 @@
       city_fallback_de: 'Stadt nicht in der Liste: Es wird der bundesweit übliche durchschnittliche Hebesatz 400 % verwendet. Bitte Stadtnamen auf Deutsch eingeben oder Zahl mit einem Steuerberater prüfen.',
       legal_disclaimer_de: 'Hinweis: Die dargestellten Berechnungen und Informationen sind unverbindlich und dienen ausschlie\u00dflich der ersten Orientierung. Es handelt sich nicht um Rechts-, Steuer- oder Unternehmensberatung; verbindliche Ausk\u00fcnfte erteilen nur Steuerberater, Rechtsanw\u00e4lte oder andere qualifizierte Berater.',
       auth_email_required: 'Bitte E-Mail angeben.',
-      signup_confirm_de: 'Konto angelegt. Bitte best\u00e4tigen Sie die E-Mail \u00fcber den Link. Danach hier anmelden \u2014 der Speichern-Vorgang wird dann automatisch fortgesetzt. Daten vor\u00fcbergehend im Browser (localStorage).'
+      signup_confirm_de: 'Konto angelegt. Bitte best\u00e4tigen Sie die E-Mail \u00fcber den Link. Danach hier anmelden \u2014 der Speichern-Vorgang wird dann automatisch fortgesetzt. Daten vor\u00fcbergehend im Browser (localStorage).',
+      auth_info_check_email: 'Bitte E-Mail best\u00e4tigen \u2014 wir haben Ihnen eine Nachricht gesendet.',
+      auth_password_required: 'Bitte Passwort angeben.',
+      auth_err_generic: 'Anmeldung fehlgeschlagen.',
+      auth_err_invalid_creds: 'E-Mail oder Passwort ist falsch.',
+      auth_err_email_not_confirmed: 'E-Mail noch nicht best\u00e4tigt.',
+      auth_err_user_exists: 'Diese E-Mail ist bereits registriert.',
+      auth_err_weak_password: 'Passwort zu kurz (mindestens 8 Zeichen).',
+      auth_err_session: 'Sitzung nicht gestartet. Bitte erneut anmelden.',
+      auth_err_network: 'Netzwerkfehler. Verbindung pr\u00fcfen und erneut versuchen.',
+      validation_err_activity: 'Bitte die Art der T\u00e4tigkeit eingeben.',
+      validation_err_activity_detect: 'Bitte eine erkannte Kategorie w\u00e4hlen oder die Beschreibung pr\u00e4zisieren.',
+      validation_err_founders: 'Bitte die Anzahl der Gr\u00fcnder w\u00e4hlen.',
+      validation_err_liability: 'Bitte die Haftungspr\u00e4ferenz w\u00e4hlen.',
+      validation_err_city: 'Bitte die Anmeldestadt eingeben.',
+      validation_err_revenue: 'Bitte einen g\u00fcltigen Umsatz (Zahl \u2265 0) eingeben.',
+      validation_err_expenses: 'Bitte g\u00fcltige monatliche Ausgaben (Zahl \u2265 0) eingeben.',
+      validation_err_salary: 'Bitte einen g\u00fcltigen Bruttolohn f\u00fcr Vollzeit eingeben.'
     };
 
     TX.ru = {
@@ -2791,7 +2809,36 @@
       act_cat_lbl: '\u041a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044f: ',
       act_fb_lbl: '\u0412\u043e\u0437\u043c\u043e\u0436\u0435\u043d Freiberufler',
       visitcnt: '\u0432\u0438\u0437\u0438\u0442\u043e\u0432 \u0432\u0441\u0435\u0433\u043e',
-      city_fallback_de: 'Город не найден в списке: используется средний Hebesatz 400%. Пожалуйста, введите название города на немецком языке или уточните ставку у Steuerberater.'
+      city_fallback_de: 'Город не найден в списке: используется средний Hebesatz 400%. Пожалуйста, введите название города на немецком языке или уточните ставку у Steuerberater.',
+      email_not_configured: '\u041e\u0442\u043f\u0440\u0430\u0432\u043a\u0430 \u043f\u043e\u0447\u0442\u044b \u043d\u0435 \u043d\u0430\u0441\u0442\u0440\u043e\u0435\u043d\u0430 \u043d\u0430 \u0441\u0435\u0440\u0432\u0435\u0440\u0435.',
+      auth_confirmed: 'Email \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043d. \u0412\u044b \u0432\u043e\u0448\u043b\u0438.',
+      pdf_gen_fail: '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0441\u043e\u0437\u0434\u0430\u0442\u044c PDF.',
+      nav_logout: '\u0412\u044b\u0439\u0442\u0438',
+      auth_forgot_link: '\u0417\u0430\u0431\u044b\u043b\u0438 \u043f\u0430\u0440\u043e\u043b\u044c?',
+      auth_back_login: '\u041d\u0430\u0437\u0430\u0434 \u043a\u043e \u0432\u0445\u043e\u0434\u0443',
+      auth_forgot_mode: '\u041e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c \u0441\u0441\u044b\u043b\u043a\u0443',
+      auth_forgot_hint: '\u041c\u044b \u043e\u0442\u043f\u0440\u0430\u0432\u0438\u043c \u0441\u0441\u044b\u043b\u043a\u0443 \u043d\u0430 email (\u0435\u0441\u043b\u0438 \u0430\u043a\u043a\u0430\u0443\u043d\u0442 \u0435\u0441\u0442\u044c).',
+      pw_reset_sent: '\u0421\u0441\u044b\u043b\u043a\u0430 \u043e\u0442\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0430.',
+      pw_reset_err: '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u043e\u0442\u043f\u0440\u0430\u0432\u0438\u0442\u044c email.',
+      auth_email_required: '\u0423\u043a\u0430\u0436\u0438\u0442\u0435 email \u0438 \u043f\u0430\u0440\u043e\u043b\u044c.',
+      signup_confirm_de: '\u0410\u043a\u043a\u0430\u0443\u043d\u0442 \u0441\u043e\u0437\u0434\u0430\u043d. \u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435 email \u043f\u043e \u0441\u0441\u044b\u043b\u043a\u0435, \u0437\u0430\u0442\u0435\u043c \u0432\u043e\u0439\u0434\u0438\u0442\u0435.',
+      auth_info_check_email: '\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0434\u0438\u0442\u0435 email \u2014 \u043c\u044b \u043e\u0442\u043f\u0440\u0430\u0432\u0438\u043b\u0438 \u043f\u0438\u0441\u044c\u043c\u043e.',
+      auth_password_required: '\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043f\u0430\u0440\u043e\u043b\u044c.',
+      auth_err_generic: '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0432\u043e\u0439\u0442\u0438.',
+      auth_err_invalid_creds: '\u041d\u0435\u0432\u0435\u0440\u043d\u044b\u0439 email \u0438\u043b\u0438 \u043f\u0430\u0440\u043e\u043b\u044c.',
+      auth_err_email_not_confirmed: 'Email \u043d\u0435 \u043f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0451\u043d.',
+      auth_err_user_exists: '\u042d\u0442\u043e\u0442 email \u0443\u0436\u0435 \u0437\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u043d.',
+      auth_err_weak_password: '\u041f\u0430\u0440\u043e\u043b\u044c \u0441\u043b\u0438\u0448\u043a\u043e\u043c \u043a\u043e\u0440\u043e\u0442\u043a\u0438\u0439 (\u043c\u0438\u043d\u0438\u043c\u0443\u043c 8 \u0441\u0438\u043c\u0432\u043e\u043b\u043e\u0432).',
+      auth_err_session: '\u0421\u0435\u0441\u0441\u0438\u044f \u043d\u0435 \u0441\u043e\u0437\u0434\u0430\u043d\u0430.',
+      auth_err_network: '\u041e\u0448\u0438\u0431\u043a\u0430 \u0441\u0435\u0442\u0438. \u041f\u0440\u043e\u0432\u0435\u0440\u044c\u0442\u0435 \u043f\u043e\u0434\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435.',
+      validation_err_activity: '\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u0432\u0438\u0434 \u0434\u0435\u044f\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u0438.',
+      validation_err_activity_detect: '\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u043a\u0430\u0442\u0435\u0433\u043e\u0440\u0438\u044e \u0438\u043b\u0438 \u0443\u0442\u043e\u0447\u043d\u0438\u0442\u0435 \u043e\u043f\u0438\u0441\u0430\u043d\u0438\u0435.',
+      validation_err_founders: '\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0447\u0438\u0441\u043b\u043e \u0443\u0447\u0440\u0435\u0434\u0438\u0442\u0435\u043b\u0435\u0439.',
+      validation_err_liability: '\u0412\u044b\u0431\u0435\u0440\u0438\u0442\u0435 \u0432\u0430\u0440\u0438\u0430\u043d\u0442 \u043f\u043e \u043e\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0435\u043d\u043d\u043e\u0441\u0442\u0438.',
+      validation_err_city: '\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u0433\u043e\u0440\u043e\u0434 \u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0430\u0446\u0438\u0438.',
+      validation_err_revenue: '\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u044b\u0439 \u043e\u0431\u043e\u0440\u043e\u0442 (\u0447\u0438\u0441\u043b\u043e \u2265 0).',
+      validation_err_expenses: '\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u044b\u0435 \u043c\u0435\u0441\u044f\u0447\u043d\u044b\u0435 \u0440\u0430\u0441\u0445\u043e\u0434\u044b (\u0447\u0438\u0441\u043b\u043e \u2265 0).',
+      validation_err_salary: '\u0423\u043a\u0430\u0436\u0438\u0442\u0435 \u043a\u043e\u0440\u0440\u0435\u043a\u0442\u043d\u0443\u044e \u0437\u0430\u0440\u043f\u043b\u0430\u0442\u0443 \u043f\u043e\u043b\u043d\u043e\u0439 \u0437\u0430\u043d\u044f\u0442\u043e\u0441\u0442\u0438.'
     };
 
     TX.en = {
@@ -2915,7 +2962,24 @@
       city_fallback_de: 'City not in list: the nationwide average trade-tax multiplier 400% is used for this estimate. Please enter the city name in German or verify with a tax advisor.',
       legal_disclaimer_de: 'Note: The calculations and information shown are non-binding and for initial orientation only. This is not legal, tax, or business advice; only qualified advisors can provide binding guidance.',
       auth_email_required: 'Please enter your email.',
-      signup_confirm_de: 'Account created. Confirm your email via the link, then sign in here — save will resume automatically. Data temporarily in browser (localStorage).'
+      signup_confirm_de: 'Account created. Confirm your email via the link, then sign in here — save will resume automatically. Data temporarily in browser (localStorage).',
+      auth_info_check_email: 'Please confirm your email — we sent you a message.',
+      auth_password_required: 'Please enter a password.',
+      auth_err_generic: 'Sign-in failed.',
+      auth_err_invalid_creds: 'Invalid email or password.',
+      auth_err_email_not_confirmed: 'Email not confirmed yet.',
+      auth_err_user_exists: 'This email is already registered.',
+      auth_err_weak_password: 'Password too short (at least 8 characters).',
+      auth_err_session: 'Could not start a session.',
+      auth_err_network: 'Network error. Check your connection and try again.',
+      validation_err_activity: 'Please describe your activity.',
+      validation_err_activity_detect: 'Pick a detected category or refine your description.',
+      validation_err_founders: 'Please select the number of founders.',
+      validation_err_liability: 'Please select a liability preference.',
+      validation_err_city: 'Please enter your registration city.',
+      validation_err_revenue: 'Please enter a valid revenue (number ≥ 0).',
+      validation_err_expenses: 'Please enter valid monthly expenses (number ≥ 0).',
+      validation_err_salary: 'Please enter a valid full-time gross salary.'
     };
 
     // Per-locale overrides (merged onto EN-first TX[c] below)
@@ -3184,16 +3248,12 @@
             { v: 'personal_data', l: t('ex_pd') }, { v: 'financial_risk', l: t('ex_fr') },
             { v: 'employees_later', l: t('ex_el') }, { v: 'none', l: t('ex_no') }
           ]
-        },
-        {
-          id: 'notes', title: t('q_notes_title'),
-          hint: t('q_notes_hint'),
-          type: 'textarea', p: t('q_notes_ph'), k: 'notes'
         }
       ]);
     }
 
     function renderSurveyStep() {
+      showSurveyError('');
       var steps = getSteps();
       var step = steps[currentStep];
       var total = steps.length;
@@ -3314,16 +3374,145 @@
       }
     }
 
+    function showSurveyError(msg) {
+      var el = document.getElementById('survey-validation-msg');
+      if (!el) return;
+      if (msg) {
+        el.textContent = msg;
+        el.style.display = 'block';
+      } else {
+        el.textContent = '';
+        el.style.display = 'none';
+      }
+    }
+
+    function syncStepInputsFromDom() {
+      var steps = getSteps();
+      var step = steps[currentStep];
+      if (!step) return;
+      if (step.type === 'number' && step.k) {
+        var inp = document.getElementById('inp-' + step.k);
+        if (inp) surveyData[step.k] = inp.value;
+      } else if (step.type === 'dual') {
+        var i1 = document.getElementById('inp-' + step.k1);
+        var i2 = document.getElementById('inp-' + step.k2);
+        if (i1) surveyData[step.k1] = i1.value;
+        if (i2) surveyData[step.k2] = i2.value;
+      } else if (step.type === 'activity_ac') {
+        var ia = document.getElementById('inp-act-ac');
+        if (ia) {
+          surveyData.activity_text = ia.value;
+          var det = detectActivity(ia.value);
+          if (det) {
+            surveyData.activity = det.k;
+            surveyData.activity_bg = det.bg;
+            surveyData.activity_fb = det.fb ? '1' : '0';
+          } else {
+            delete surveyData.activity;
+            delete surveyData.activity_bg;
+            delete surveyData.activity_fb;
+          }
+        }
+      } else if (step.type === 'city_ac') {
+        var ic = document.getElementById('inp-city-ac');
+        if (ic) surveyData.city_name = ic.value;
+      }
+    }
+
+    function validateCurrentStep() {
+      var steps = getSteps();
+      var step = steps[currentStep];
+      if (!step) return true;
+      syncStepInputsFromDom();
+      try { autosave(); } catch (e) {}
+      var sd = surveyData;
+      if (step.id === 'activity') {
+        if (!String(sd.activity_text || '').trim()) { showSurveyError(t('validation_err_activity')); return false; }
+        if (!sd.activity) { showSurveyError(t('validation_err_activity_detect')); return false; }
+        showSurveyError('');
+        return true;
+      }
+      if (step.id === 'founders_count') {
+        if (!sd.founders_count) { showSurveyError(t('validation_err_founders')); return false; }
+        showSurveyError('');
+        return true;
+      }
+      if (step.id === 'liability_preference') {
+        if (!sd.liability_preference) { showSurveyError(t('validation_err_liability')); return false; }
+        showSurveyError('');
+        return true;
+      }
+      if (step.id === 'city') {
+        if (typeof window.applyCityFallbackFromInput === 'function') window.applyCityFallbackFromInput();
+        if (!String(sd.city_name || '').trim()) { showSurveyError(t('validation_err_city')); return false; }
+        showSurveyError('');
+        return true;
+      }
+      if (step.type === 'number' && step.k === 'revenue_y1') {
+        var r = parseFloat(sd.revenue_y1);
+        if (!isFinite(r) || r < 0) { showSurveyError(t('validation_err_revenue')); return false; }
+        showSurveyError('');
+        return true;
+      }
+      if (step.type === 'number' && step.k === 'expenses_monthly') {
+        var e = parseFloat(sd.expenses_monthly);
+        if (!isFinite(e) || e < 0) { showSurveyError(t('validation_err_expenses')); return false; }
+        showSurveyError('');
+        return true;
+      }
+      if (step.id === 'staff_salary') {
+        var sf = parseInt(sd.staff_fulltime, 10) || 0;
+        if (sf > 0) {
+          var sal = parseFloat(sd.staff_salary_ft);
+          if (!isFinite(sal) || sal <= 0) { showSurveyError(t('validation_err_salary')); return false; }
+        }
+        showSurveyError('');
+        return true;
+      }
+      showSurveyError('');
+      return true;
+    }
+
+    function validateEntireSurvey() {
+      var sd = surveyData;
+      if (!String(sd.activity_text || '').trim()) return { ok: false, msg: t('validation_err_activity') };
+      if (!sd.activity) return { ok: false, msg: t('validation_err_activity_detect') };
+      if (!sd.founders_count) return { ok: false, msg: t('validation_err_founders') };
+      if (!sd.liability_preference) return { ok: false, msg: t('validation_err_liability') };
+      if (!String(sd.city_name || '').trim()) return { ok: false, msg: t('validation_err_city') };
+      var ry = parseFloat(sd.revenue_y1);
+      if (!isFinite(ry) || ry < 0) return { ok: false, msg: t('validation_err_revenue') };
+      var em = parseFloat(sd.expenses_monthly);
+      if (!isFinite(em) || em < 0) return { ok: false, msg: t('validation_err_expenses') };
+      var sf = parseInt(sd.staff_fulltime, 10) || 0;
+      if (sf > 0) {
+        var sal = parseFloat(sd.staff_salary_ft);
+        if (!isFinite(sal) || sal <= 0) return { ok: false, msg: t('validation_err_salary') };
+      }
+      return { ok: true };
+    }
+
     function nextStep() {
       var steps = getSteps();
       if (currentStep < steps.length - 1) {
         if (steps[currentStep].id === 'city' && typeof window.applyCityFallbackFromInput === 'function') {
           window.applyCityFallbackFromInput();
         }
+        if (!validateCurrentStep()) return;
         currentStep++;
         renderSurveyStep();
         window.scrollTo(0, 0);
       } else {
+        if (steps[currentStep].id === 'city' && typeof window.applyCityFallbackFromInput === 'function') {
+          window.applyCityFallbackFromInput();
+        }
+        if (!validateCurrentStep()) return;
+        var fin = validateEntireSurvey();
+        if (!fin.ok) {
+          showSurveyError(fin.msg);
+          return;
+        }
+        showSurveyError('');
         generateReport();
         showPage('report');
       }
@@ -3342,6 +3531,15 @@
       }
 
       function generateReport() {
+        try { delete surveyData.notes; } catch (e) {}
+        if (!window._bkLoadingCaseFromCabinet) {
+          var _verRep = validateEntireSurvey();
+          if (!_verRep.ok) {
+            try { showPage('survey'); } catch (e2) {}
+            showSurveyError(_verRep.msg);
+            return;
+          }
+        }
         window._bkDeclineSave = false;
         if (!window._bkLoadingCaseFromCabinet) {
           window._bkActiveCaseId = null;
@@ -3426,6 +3624,8 @@
         }
         var _lfLabels = { eu: 'Einzelunternehmen', ug: 'UG (haftungsbeschränkt)', gmbh: 'GmbH', gbr: 'GbR', partg: 'PartG' };
         lfDE = _lfLabels[lf] || lf;
+        window._bkRecommendedLfKey = lf;
+        window._bkRecommendedLfLabel = lfDE;
 
         var isUG = lf === 'ug' || lf === 'gmbh';
         var isGbR = lf === 'gbr', isPartG = lf === 'partg', isMultiFounder = foundersCount >= 2;
@@ -4054,8 +4254,10 @@
         { k: 'it_digital', bg: 'VBG', fb: true, terms: ['software', 'entwicklung', 'programmierung', 'webentwicklung', 'web development', 'it', 'informatik', 'saas', 'app', 'mobile', 'devops', 'cloud', 'hosting', 'server', 'netzwerk', 'cybersecurity', 'sicherheit', 'datenbank', 'ki', 'ai', 'machine learning', 'data science', 'blockchain', 'chatbot', 'erp', 'crm', 'api', 'embedded', 'fintech', 'ecommerce platform', 'разработка', 'программирование', 'it-консалтинг', 'веб', 'приложение', 'облако', 'безопасность'] },
         // Marketing & Media — VBG
         { k: 'creative', bg: 'VBG', fb: true, terms: ['marketing', 'werbung', 'design', 'grafik', 'foto', 'video', 'film', 'animation', 'content', 'social media', 'seo', 'copywriting', 'pr', 'branding', 'podcast', 'illustration', 'youtube', 'tiktok', 'influencer', 'medien', 'agentur', 'motion', 'маркетинг', 'дизайн', 'фото', 'видео', 'реклама', 'контент', 'бренд'] },
-        // Consulting — VBG
-        { k: 'consulting', bg: 'VBG', fb: true, terms: ['beratung', 'consulting', 'consultant', 'coaching', 'unternehmensberatung', 'strategieberatung', 'managementberatung', 'steuerberatung', 'rechtsberatung', 'finanzberatung', 'personalberatung', 'karriereberatung', 'trainer', 'coach', 'konsultation', 'консалтинг', 'консультация', 'тренинг', 'советник'] },
+        // Regulated professions — do not imply Freiberufler automatically
+        { k: 'regulated_advice', bg: 'VBG', fb: false, terms: ['steuerberatung', 'steuerberater', 'steuerbüro', 'rechtsanwalt', 'rechtsanwältin', 'patentanwalt', 'wirtschaftsprüfung', 'wirtschaftsprüfer', 'wp-stelle', 'tax advisor', 'wirtschaftspruefer'] },
+        // Consulting — VBG (generic; no regulated titles)
+        { k: 'consulting', bg: 'VBG', fb: true, terms: ['beratung', 'consulting', 'consultant', 'coaching', 'unternehmensberatung', 'strategieberatung', 'managementberatung', 'personalberatung', 'karriereberatung', 'trainer', 'coach', 'konsultation', 'консалтинг', 'консультация', 'тренинг', 'советник'] },
         // Education — VBG
         { k: 'consulting', bg: 'VBG', fb: true, terms: ['schule', 'bildung', 'nachhilfe', 'sprachschule', 'sprachkurs', 'training', 'weiterbildung', 'kurs', 'seminar', 'lehre', 'tutoring', 'онлайн-курс', 'обучение', 'репетитор', 'языковая школа'] },
         // Craft/Handwerk — BG BAU / BG ETEM
@@ -4064,16 +4266,18 @@
         { k: 'trade', bg: 'BGHW', fb: false, terms: ['handel', 'shop', 'laden', 'einzelhandel', 'großhandel', 'verkauf', 'ecommerce', 'online shop', 'boutique', 'supermarkt', 'markt', 'import', 'export', 'großhandel', 'handel', 'торговля', 'магазин', 'склад', 'интернет-магазин', 'розница', 'опт'] },
         // Gastronomy — BGN
         { k: 'gastro', bg: 'BGN', fb: false, terms: ['restaurant', 'café', 'bar', 'imbiss', 'catering', 'konditorei', 'bäckerei', 'metzgerei', 'lieferservice', 'gastronomie', 'bistro', 'pizzeria', 'sushi', 'döner', 'food truck', 'winery', 'brauerei', 'ресторан', 'кафе', 'бар', 'доставка еды', 'кейтеринг', 'пекарня', 'кондитерская'] },
+        // Personal care / beauty (typically Gewerbe, not Freiberufler)
+        { k: 'personal_care', bg: 'BG ETEM', fb: false, terms: ['kosmetik', 'kosmetiker', 'kosmetikstudio', 'beauty', 'nagelstudio', 'nagel', 'friseur', 'frisör', 'barbershop', 'haarsalon', 'hairdresser', 'tatoo', 'tattoo', 'парикмахер', 'косметолог', 'маникюр', 'салон красоты'] },
         // Medical — BGW
-        { k: 'medical', bg: 'BGW', fb: true, terms: ['arzt', 'ärztin', 'zahnarzt', 'physiotherapie', 'therapie', 'pflege', 'pflegedienst', 'apotheke', 'optiker', 'heilpraktiker', 'psychotherapie', 'ergotherapie', 'logopädie', 'kosmetik', 'friseur', 'tatoo', 'nagelstudio', 'врач', 'медицина', 'терапия', 'уход', 'аптека', 'косметолог', 'парикмахер'] },
+        { k: 'medical', bg: 'BGW', fb: true, terms: ['arzt', 'ärztin', 'zahnarzt', 'physiotherapie', 'therapie', 'pflege', 'pflegedienst', 'apotheke', 'optiker', 'heilpraktiker', 'psychotherapie', 'ergotherapie', 'logopädie', 'врач', 'медицина', 'терапия', 'уход', 'аптека'] },
         // Transport — BG Verkehr
         { k: 'services', bg: 'BG Verkehr', fb: false, terms: ['transport', 'spedition', 'logistik', 'kurier', 'taxi', 'fahrer', 'umzug', 'lieferung', 'fahrdienst', 'транспорт', 'логистика', 'такси', 'курьер', 'перевозки', 'грузоперевозки'] },
         // Agriculture — SVLFG
         { k: 'services', bg: 'SVLFG', fb: false, terms: ['landwirtschaft', 'gartenbau', 'garten', 'forstwirtschaft', 'landwirt', 'bauer', 'pflanzenbau', 'tierhaltung', 'сельское хозяйство', 'садоводство', 'фермер'] },
         // Real Estate — VBG/varies
         { k: 'consulting', bg: 'VBG', fb: false, terms: ['immobilien', 'makler', 'hausverwaltung', 'verwalter', 'immobilienvermittlung', 'недвижимость', 'маклер', 'аренда', 'риэлтор'] },
-        // Finance — VBG
-        { k: 'consulting', bg: 'VBG', fb: true, terms: ['finanz', 'versicherung', 'finanzberater', 'buchhalter', 'buchhaltung', 'steuer', 'bilanzbuchhalter', 'wirtschaftsprüfer', 'финансы', 'страхование', 'бухгалтерия', 'налоги', 'аудит'] },
+        // Finance / accounting office — conservative (Gewerbe typical unless clearly Freiberuf title above)
+        { k: 'finance_services', bg: 'VBG', fb: false, terms: ['finanz', 'versicherungsmakler', 'buchhalter', 'buchhaltung', 'bilanzbuchhalter', 'lohnbuchhaltung', 'финансы', 'бухгалтерия', 'бухгалтер', 'налоги'] },
         // Events — VBG
         { k: 'creative', bg: 'VBG', fb: false, terms: ['event', 'veranstaltung', 'messe', 'hochzeit', 'party', 'catering event', 'eventmanager', 'мероприятие', 'ивент', 'свадьба', 'организация событий'] },
         // Cleaning — BG varies
@@ -4471,6 +4675,7 @@
   </script>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="bk-auth.js"></script>
 
   <script>
   const SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
@@ -4485,6 +4690,9 @@
   });
 
   window.supabaseClient = supabaseClient;
+  if (typeof BK_AUTH !== 'undefined') {
+    BK_AUTH.initAuthLayer(supabaseClient);
+  }
 
   window.updateNavAuth = async function () {
     var btn = document.getElementById('nb-logout');
@@ -4661,45 +4869,6 @@
     if (typeof window.updateReportAuthUI === 'function') window.updateReportAuthUI();
   };
 
-  function setAuthMode(mode) {
-    window._bkAuthMode = mode;
-    var tLogin = document.getElementById('auth-tab-login');
-    var tReg = document.getElementById('auth-tab-reg');
-    var tabs = document.querySelector('#auth-modal .auth-tabs');
-    var btn = document.getElementById('el-mbtn');
-    var err = document.getElementById('auth-err');
-    var pwWrap = document.getElementById('auth-pw-wrap');
-    var forgotWrap = document.getElementById('auth-forgot-wrap');
-    var forgotLink = document.getElementById('auth-forgot-link');
-    var backLogin = document.getElementById('auth-back-login');
-    var forgotHint = document.getElementById('auth-forgot-hint');
-    if (err) {
-      err.textContent = '';
-      err.style.color = '';
-    }
-    var forgotMsg = document.getElementById('auth-forgot-msg');
-    if (forgotMsg) forgotMsg.textContent = '';
-    var isForgot = mode === 'forgot';
-    if (tabs) tabs.style.display = isForgot ? 'none' : '';
-    if (pwWrap) pwWrap.style.display = isForgot ? 'none' : '';
-    if (forgotLink) forgotLink.style.display = isForgot ? 'none' : '';
-    if (backLogin) backLogin.style.display = isForgot ? 'inline' : 'none';
-    if (forgotHint) {
-      forgotHint.style.display = isForgot ? 'block' : 'none';
-      forgotHint.textContent = isForgot ? tx('auth_forgot_hint') : '';
-    }
-    if (tLogin && tReg && !isForgot) {
-      tLogin.classList.toggle('active', mode === 'login');
-      tReg.classList.toggle('active', mode === 'register');
-      tLogin.setAttribute('aria-selected', mode === 'login' ? 'true' : 'false');
-      tReg.setAttribute('aria-selected', mode === 'register' ? 'true' : 'false');
-    }
-    if (btn) {
-      if (isForgot) btn.textContent = tx('auth_forgot_mode');
-      else btn.textContent = mode === 'login' ? tx('authlogin') : tx('authreg');
-    }
-  }
-
   var _bkResumeInFlight = false;
   async function tryResumePendingSave() {
     if (_bkResumeInFlight) return;
@@ -4737,177 +4906,118 @@
     }
   }
 
+  function bkPersistPendingSurvey() {
+    try {
+      localStorage.setItem('bk_pending_survey_json', JSON.stringify(surveyData));
+      localStorage.setItem('bk_pending_save', '1');
+    } catch (ex) {}
+  }
+
+  async function bkCompleteIndexAfterAuth() {
+    var err = document.getElementById('auth-err');
+    var user = (await supabaseClient.auth.getUser()).data.user;
+    if (!user) {
+      if (err) err.textContent = tx('auth_err_session');
+      return;
+    }
+    var nextIntent = window._bkNextIntent;
+    window._bkNextIntent = null;
+    var hadPending = localStorage.getItem('bk_pending_save') === '1';
+    var am = document.getElementById('auth-modal');
+    if (am) am.classList.add('hidden');
+    if (hadPending) {
+      await tryResumePendingSave();
+      return;
+    }
+    if (nextIntent === 'pdf') {
+      await window.bkHandleAuthenticatedPdf();
+      return;
+    }
+    if (nextIntent === 'spec') {
+      if (window._bkDeclineSave) {
+        flashPdfGate(tx('flashspecneed'));
+      } else {
+        window.location.href = buildSpecialistsUrl();
+      }
+      return;
+    }
+    try {
+      localStorage.removeItem('bk_pending_save');
+      localStorage.removeItem('bk_pending_survey_json');
+    } catch (ex) {}
+    if (window._bkOpenAuthForSave) {
+      window._bkOpenAuthForSave = false;
+      window._bkDeclineSave = false;
+      var saveRes = await saveBusinessCase();
+      if (!saveRes) {
+        flashPdfGate(tx('flashsaveafter'));
+        return;
+      }
+      var newId = saveRes[0] && saveRes[0].id;
+      if (newId) bkEnsurePdfArtifact(newId).catch(function () {});
+      await createLead();
+      try {
+        var lg3 = localStorage.getItem('bk_lang');
+        window.location.href = lg3 ? ('dashboard.html?lang=' + encodeURIComponent(lg3)) : 'dashboard.html';
+      } catch (e2) {
+        window.location.href = 'dashboard.html';
+      }
+    }
+  }
+
   function bindAuthModal() {
-    var mbtn = document.getElementById('el-mbtn');
-    var guest = document.getElementById('el-guest');
-    var tLogin = document.getElementById('auth-tab-login');
-    var tReg = document.getElementById('auth-tab-reg');
-    if (tLogin && !tLogin.getAttribute('data-bk-bound')) {
-      tLogin.setAttribute('data-bk-bound', '1');
-      tLogin.addEventListener('click', function () { setAuthMode('login'); });
-    }
-    if (tReg && !tReg.getAttribute('data-bk-bound')) {
-      tReg.setAttribute('data-bk-bound', '1');
-      tReg.addEventListener('click', function () { setAuthMode('register'); });
-    }
-    var forgotLinkEl = document.getElementById('auth-forgot-link');
-    if (forgotLinkEl && !forgotLinkEl.getAttribute('data-bk-bound')) {
-      forgotLinkEl.setAttribute('data-bk-bound', '1');
-      forgotLinkEl.addEventListener('click', function (e) {
-        e.preventDefault();
-        setAuthMode('forgot');
-      });
-    }
-    var backLoginEl = document.getElementById('auth-back-login');
-    if (backLoginEl && !backLoginEl.getAttribute('data-bk-bound')) {
-      backLoginEl.setAttribute('data-bk-bound', '1');
-      backLoginEl.addEventListener('click', function (e) {
-        e.preventDefault();
-        setAuthMode('login');
-      });
-    }
-    if (mbtn && !mbtn.getAttribute('data-bk-bound')) {
-      mbtn.setAttribute('data-bk-bound', '1');
-      mbtn.addEventListener('click', async function (e) {
-        e.preventDefault();
-        var err = document.getElementById('auth-err');
-        var emEl = document.getElementById('auth-email');
-        var pwEl = document.getElementById('auth-password');
-        var email = emEl ? emEl.value.trim() : '';
-        var password = pwEl ? pwEl.value : '';
-        if (err) err.textContent = '';
-        var mode = window._bkAuthMode || 'login';
-        if (mode === 'forgot') {
-          var forgotMsg = document.getElementById('auth-forgot-msg');
-          if (!email) {
-            if (err) err.textContent = tx('auth_email_required');
-            return;
-          }
-          var rt = new URL('index.html', window.location.href).href.split('#')[0];
-          var rpe = await supabaseClient.auth.resetPasswordForEmail(email, { redirectTo: rt });
-          if (rpe.error) {
-            if (forgotMsg) {
-              forgotMsg.style.color = 'var(--red)';
-              forgotMsg.textContent = tx('pw_reset_err') + ' (' + (rpe.error.message || '') + ')';
-            }
-            return;
-          }
-          if (forgotMsg) {
-            forgotMsg.style.color = 'var(--text-muted)';
-            forgotMsg.textContent = tx('pw_reset_sent');
-          }
-          return;
-        }
-        if (!email || !password) {
-          if (err) err.textContent = tx('auth_email_required');
-          return;
-        }
-        if (mode === 'login') {
-          var loginRes = await supabaseClient.auth.signInWithPassword({ email: email, password: password });
-          if (loginRes.error) {
-            if (err) err.textContent = loginRes.error.message || 'Ошибка входа';
-            return;
-          }
-        } else {
-          var redirectTo = new URL('index.html', window.location.href).href.split('#')[0];
-          var signUpRes = await supabaseClient.auth.signUp({
-            email: email,
-            password: password,
-            options: { emailRedirectTo: redirectTo }
-          });
-          if (signUpRes.error) {
-            var emg = String(signUpRes.error.message || '');
-            if (/smtp|sending confirmation email|email address.*invalid|email not confirmed/i.test(emg) || /500/.test(emg)) {
-              if (err) err.textContent = tx('email_not_configured');
-            } else {
-              if (err) err.textContent = emg || 'Ошибка регистрации';
-            }
-            return;
-          }
-          if (!signUpRes.data.session) {
-            try {
-              localStorage.setItem('bk_pending_survey_json', JSON.stringify(surveyData));
-              localStorage.setItem('bk_pending_save', '1');
-            } catch (ex) {}
-            if (err) {
-              err.style.color = 'var(--text-muted)';
-              err.textContent = tx('signup_confirm_de');
-            }
-            return;
-          }
-        }
-        var user = (await supabaseClient.auth.getUser()).data.user;
-        if (!user) {
-          if (err) err.textContent = 'Сессия не получена. Попробуйте войти после подтверждения email.';
-          return;
-        }
-        var nextIntent = window._bkNextIntent;
-        window._bkNextIntent = null;
-        var hadPending = localStorage.getItem('bk_pending_save') === '1';
-        document.getElementById('auth-modal').classList.add('hidden');
-        if (hadPending) {
-          await tryResumePendingSave();
-          return;
-        }
-        if (nextIntent === 'pdf') {
-          await window.bkHandleAuthenticatedPdf();
-          return;
-        }
-        if (nextIntent === 'spec') {
-          if (window._bkDeclineSave) {
-            flashPdfGate(tx('flashspecneed'));
-          } else {
-            window.location.href = buildSpecialistsUrl();
-          }
-          return;
-        }
-        try {
-          localStorage.removeItem('bk_pending_save');
-          localStorage.removeItem('bk_pending_survey_json');
-        } catch (ex) {}
-        if (window._bkOpenAuthForSave) {
+    if (typeof BK_AUTH === 'undefined') return;
+    BK_AUTH.bindAuthModal({
+      sb: supabaseClient,
+      tx: tx,
+      mode: 'index',
+      indexHooks: {
+        completeIndexAfterAuth: bkCompleteIndexAfterAuth,
+        persistPendingSurvey: bkPersistPendingSurvey,
+        onGuestClose: function () {
           window._bkOpenAuthForSave = false;
-          window._bkDeclineSave = false;
-          var saveRes = await saveBusinessCase();
-          if (!saveRes) {
-            flashPdfGate(tx('flashsaveafter'));
-            return;
-          }
-          var newId = saveRes[0] && saveRes[0].id;
-          if (newId) bkEnsurePdfArtifact(newId).catch(function () {});
-          await createLead();
-          try {
-            var lg3 = localStorage.getItem('bk_lang');
-            window.location.href = lg3 ? ('dashboard.html?lang=' + encodeURIComponent(lg3)) : 'dashboard.html';
-          } catch (e2) {
-            window.location.href = 'dashboard.html';
-          }
+          window._bkNextIntent = null;
         }
-      });
-    }
-    if (guest && !guest.getAttribute('data-bk-bound')) {
-      guest.setAttribute('data-bk-bound', '1');
-      guest.addEventListener('click', function () {
-        window._bkOpenAuthForSave = false;
-        window._bkNextIntent = null;
-        document.getElementById('auth-modal').classList.add('hidden');
-      });
-    }
-    setAuthMode('login');
+      }
+    });
+    window.setAuthMode = function (m) {
+      if (window.BK_AUTH_SET_MODE) window.BK_AUTH_SET_MODE(m);
+    };
+  }
+
+  function renderAuthUI() {
+    if (typeof window.updateNavAuth === 'function') window.updateNavAuth();
+    if (typeof syncGuestPrintMode === 'function') syncGuestPrintMode();
+    if (typeof window.updateReportAuthUI === 'function') window.updateReportAuthUI();
+  }
+  if (typeof BK_AUTH !== 'undefined') {
+    window.addEventListener(BK_AUTH.EVENT_NAME, function (e) {
+      var d = e.detail || {};
+      if (d.source === 'supabase' || d.source === 'handleAuthSuccess') {
+        renderAuthUI();
+      }
+      if (d.source === 'supabase' && d.event === 'SIGNED_IN' && d.session && localStorage.getItem('bk_pending_save') === '1') {
+        setTimeout(function () { tryResumePendingSave(); }, 150);
+      }
+    });
   }
 
   window.addEventListener('load', function () {
+    try {
+      var h0 = window.location.hash;
+      if (h0 && (/type=recovery/i.test(h0) || /recovery/i.test(h0))) {
+        var ru = new URL('recovery.html', window.location.href);
+        ru.hash = h0;
+        try {
+          var lgH = localStorage.getItem('bk_lang');
+          if (lgH) ru.searchParams.set('lang', lgH);
+        } catch (eH) {}
+        window.location.replace(ru.href);
+        return;
+      }
+    } catch (eR) {}
     bindAuthModal();
     if (typeof syncGuestPrintMode === 'function') syncGuestPrintMode();
-    supabaseClient.auth.onAuthStateChange(function (event, sess) {
-      try {
-        if (typeof window.updateNavAuth === 'function') window.updateNavAuth();
-        if (typeof syncGuestPrintMode === 'function') syncGuestPrintMode();
-        if (event === 'SIGNED_IN' && sess && localStorage.getItem('bk_pending_save') === '1') {
-          setTimeout(function () { tryResumePendingSave(); }, 150);
-        }
-      } catch (e) {}
-    });
     (async function bkBootstrapAuthAndPendingSave() {
       await supabaseClient.auth.getSession();
       if (typeof window.updateNavAuth === 'function') await window.updateNavAuth();
@@ -5096,10 +5206,23 @@
           ? document.getElementById('r-name').textContent.trim()
           : null;
 
+        var lfKey = typeof window._bkRecommendedLfKey === 'string' ? window._bkRecommendedLfKey : null;
+        var lfLabel = typeof window._bkRecommendedLfLabel === 'string' ? window._bkRecommendedLfLabel : null;
+
+        var rawPayload = {};
+        try {
+          rawPayload = JSON.parse(JSON.stringify(surveyData || {}));
+          delete rawPayload.notes;
+        } catch (e) {
+          rawPayload = surveyData || {};
+        }
+
         const payload = {
           profile_id: user.id,
           business_name: null,
           legal_form: recommendedLegalForm,
+          recommended_legal_form_key: lfKey,
+          recommended_legal_form_label: lfLabel,
 
           activity_key: surveyData?.activity || null,
           activity_text: surveyData?.activity_text || null,
@@ -5115,22 +5238,38 @@
           staff_minijob: surveyData?.staff_minijob ? parseInt(surveyData.staff_minijob, 10) : 0,
 
           extras: Array.isArray(surveyData?.extras) ? surveyData.extras : [],
-          notes: surveyData?.notes || '',
 
-          raw_data: surveyData || {},
+          raw_data: rawPayload,
           result_data: {
             report_title: reportTitle,
             recommended_legal_form: recommendedLegalForm,
+            recommended_legal_form_key: lfKey,
+            recommended_legal_form_label: lfLabel,
             source_lang: typeof currentLang !== 'undefined' ? currentLang : null
           },
 
           status: 'completed'
         };
 
-        const { data, error } = await supabaseClient
-          .from('business_cases')
-          .insert([payload])
-          .select();
+        var activeId = window._bkActiveCaseId;
+        var data, error;
+        if (activeId) {
+          var upd = await supabaseClient
+            .from('business_cases')
+            .update(payload)
+            .eq('id', activeId)
+            .eq('profile_id', user.id)
+            .select();
+          data = upd.data;
+          error = upd.error;
+        } else {
+          var ins = await supabaseClient
+            .from('business_cases')
+            .insert([payload])
+            .select();
+          data = ins.data;
+          error = ins.error;
+        }
 
         if (error) {
           return null;

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0A1628">
   <title>BusinessKlar</title>
   <style>
-    :root { --navy: #0A1628; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); }
+    :root { --navy: #0A1628; --navy-mid: #122040; --gold: #C9A84C; --text: #F0EDE6; --muted: #8899BB; --border: rgba(201,168,76,.25); --red: #E85555; }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'DM Sans', system-ui, sans-serif; background: var(--navy); color: var(--text); min-height: 100vh; }
     .sat-nav { display: flex; align-items: center; justify-content: space-between; padding: 0 16px; height: 56px; border-bottom: 1px solid var(--border); background: rgba(10,22,40,.95); }
@@ -39,6 +39,29 @@
     #share-box p { font-size: 13px; color: var(--muted); margin-bottom: 10px; word-break: break-all; }
     #share-box .sb-btns { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
     #share-box button { padding: 10px 16px; border-radius: 10px; border: 1px solid var(--border); background: var(--gold); color: var(--navy); font-weight: 600; cursor: pointer; font-family: inherit; }
+    #dash-loading { text-align: center; padding: 48px 20px; color: var(--muted); font-size: 15px; }
+    #dash-toast { display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 3000; background: var(--navy-mid); border: 1px solid var(--border); color: var(--text); padding: 12px 20px; border-radius: 12px; font-size: 14px; max-width: 90vw; }
+    #dash-toast.open { display: block; }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.7); backdrop-filter: blur(6px); z-index: 2500; display: flex; align-items: center; justify-content: center; padding: 24px; }
+    .modal-overlay.hidden { display: none; }
+    .modal { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 24px; padding: 32px; width: 100%; max-width: 440px; position: relative; }
+    .modal h3 { font-family: Georgia, serif; font-size: 1.25rem; color: var(--gold); margin-bottom: 8px; }
+    .modal-fld { margin-bottom: 14px; }
+    .modal-fld label { font-size: 12px; color: var(--muted); display: block; margin-bottom: 6px; }
+    .input-field { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(18,32,64,.85); color: var(--text); font-size: 14px; font-family: inherit; }
+    .auth-tabs { display: flex; gap: 0; margin-bottom: 14px; border-radius: 10px; overflow: hidden; border: 1px solid var(--border); }
+    .auth-tab { flex: 1; padding: 10px 12px; border: none; background: rgba(18,32,64,.6); color: var(--muted); font-size: 13px; cursor: pointer; font-family: inherit; }
+    .auth-tab.active { background: rgba(201,168,76,.2); color: var(--gold); font-weight: 600; }
+    .link-btn { background: none; border: none; color: var(--gold); cursor: pointer; font-size: 13px; text-decoration: underline; font-family: inherit; padding: 0; }
+    .btn-primary { width: 100%; padding: 12px; border-radius: 12px; border: none; background: var(--gold); color: var(--navy); font-weight: 600; cursor: pointer; font-family: inherit; margin-top: 8px; }
+    .btn-secondary { width: 100%; padding: 12px; border-radius: 12px; border: 1px solid var(--border); background: transparent; color: var(--text); cursor: pointer; font-family: inherit; margin-top: 8px; }
+    #auth-err { font-size: 13px; color: var(--red); margin-bottom: 10px; min-height: 1.2em; }
+    #confirm-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.6); z-index: 2600; align-items: center; justify-content: center; padding: 16px; }
+    #confirm-overlay.open { display: flex; }
+    .confirm-box { background: var(--navy-mid); border: 1px solid var(--border); border-radius: 16px; padding: 22px; max-width: 400px; width: 100%; }
+    .confirm-box p { color: var(--muted); font-size: 14px; margin-bottom: 16px; line-height: 1.45; }
+    .confirm-row { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+    .confirm-row button { padding: 10px 18px; border-radius: 10px; cursor: pointer; font-family: inherit; font-size: 13px; }
   </style>
 </head>
 <body>
@@ -53,7 +76,9 @@
     </div>
   </header>
 
-  <div id="gate" style="display:none">
+  <div id="dash-loading" class="wrap">…</div>
+
+  <div id="gate" style="display:none" class="wrap">
     <div id="gate-inner"></div>
   </div>
 
@@ -74,13 +99,81 @@
     </div>
   </div>
 
+  <div id="dash-toast" role="status"></div>
+
+  <div id="confirm-overlay" onclick="if(event.target===this)document.getElementById('confirm-overlay').classList.remove('open')">
+    <div class="confirm-box" onclick="event.stopPropagation()">
+      <p id="confirm-text"></p>
+      <div class="confirm-row">
+        <button type="button" id="confirm-cancel" class="btn-secondary" style="margin-top:0;width:auto;border:1px solid var(--border)"></button>
+        <button type="button" id="confirm-ok" style="margin-top:0;width:auto;background:var(--red);color:var(--text);border:none"></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay hidden" id="auth-modal"
+    onclick="if(event.target===this)document.getElementById('auth-modal').classList.add('hidden')">
+    <div class="modal">
+      <button type="button" style="position:absolute;top:12px;right:12px;background:none;border:none;color:var(--muted);cursor:pointer;font-size:18px"
+        onclick="document.getElementById('auth-modal').classList.add('hidden')">&#10005;</button>
+      <div class="auth-tabs" role="tablist">
+        <button type="button" class="auth-tab active" id="auth-tab-login" role="tab">—</button>
+        <button type="button" class="auth-tab" id="auth-tab-reg" role="tab">—</button>
+      </div>
+      <h3 id="el-login">—</h3>
+      <p id="el-logd" style="font-size:13px;color:var(--muted);margin-bottom:12px">—</p>
+      <p id="auth-forgot-hint" style="display:none;font-size:13px;color:var(--muted);margin-bottom:8px"></p>
+      <p id="auth-err"></p>
+      <div class="modal-fld"><label>Email</label><input class="input-field" id="auth-email" type="email" autocomplete="email"></div>
+      <div class="modal-fld" id="auth-pw-wrap"><label id="el-pw">—</label><input class="input-field" id="auth-password" type="password" autocomplete="current-password"></div>
+      <p id="auth-forgot-wrap" style="margin:8px 0 0;font-size:13px">
+        <button type="button" class="link-btn" id="auth-forgot-link">—</button>
+        <button type="button" class="link-btn" id="auth-back-login" style="display:none;margin-left:12px">—</button>
+      </p>
+      <p id="auth-forgot-msg" style="font-size:13px;color:var(--muted);min-height:1.2em;margin-top:8px"></p>
+      <button type="button" class="btn-primary" id="el-mbtn">—</button>
+      <button type="button" class="btn-secondary" id="el-guest">—</button>
+    </div>
+  </div>
+
   <script src="satellite-i18n.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="bk-auth.js"></script>
   <script>
   var SUPABASE_URL = 'https://gdrvgziuldcrsiqliklu.supabase.co';
   var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdkcnZneml1bGRjcnNpcWxpa2x1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIzNzk2MTUsImV4cCI6MjA4Nzk1NTYxNX0.I2GZlUDEZWZzEUKr41_AkngCja36cPihgMvLEDGIMjU';
-  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  var sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: { detectSessionInUrl: true, persistSession: true, autoRefreshToken: true }
+  });
+  if (typeof BK_AUTH !== 'undefined') {
+    BK_AUTH.initAuthLayer(sb);
+  }
   var T = function (k) { return window.BK_SAT.t(k); };
+
+  var PW_LBL = { de: 'Passwort', en: 'Password', ru: 'Пароль', uk: 'Пароль', pl: 'Hasło', ro: 'Parolă', tr: 'Şifre', es: 'Contraseña' };
+
+  function dashToast(msg) {
+    var t = document.getElementById('dash-toast');
+    if (!t) return;
+    t.textContent = msg || '';
+    t.classList.add('open');
+    clearTimeout(dashToast._tm);
+    dashToast._tm = setTimeout(function () { t.classList.remove('open'); }, 2600);
+  }
+
+  function confirmDialog(message, onOk) {
+    var ov = document.getElementById('confirm-overlay');
+    var tx = document.getElementById('confirm-text');
+    if (tx) tx.textContent = message;
+    document.getElementById('confirm-cancel').textContent = T('dash_confirm_del_cancel');
+    document.getElementById('confirm-ok').textContent = T('dash_confirm_del_ok');
+    document.getElementById('confirm-cancel').onclick = function () { ov.classList.remove('open'); };
+    document.getElementById('confirm-ok').onclick = function () {
+      ov.classList.remove('open');
+      if (typeof onOk === 'function') onOk();
+    };
+    ov.classList.add('open');
+  }
 
   function localeFmt() {
     var m = { de: 'de-DE', en: 'en-GB', ru: 'ru-RU', uk: 'uk-UA', pl: 'pl-PL', ro: 'ro-RO', tr: 'tr-TR', es: 'es-ES' };
@@ -133,7 +226,7 @@
     document.getElementById('share-overlay').classList.add('open');
     document.getElementById('share-copy').onclick = function () {
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(function () { alert(T('dash_copied')); }).catch(function () { prompt(T('dash_copy_prompt'), url); });
+        navigator.clipboard.writeText(url).then(function () { dashToast(T('dash_toast_copied')); }).catch(function () { prompt(T('dash_copy_prompt'), url); });
       } else {
         prompt(T('dash_copy_prompt'), url);
       }
@@ -142,11 +235,24 @@
 
   function sortCases(rows) {
     return rows.slice().sort(function (a, b) {
-      var ta = a.created_at ? Date.parse(a.created_at) : NaN;
-      var tb = b.created_at ? Date.parse(b.created_at) : NaN;
-      if (!isNaN(ta) && !isNaN(tb) && ta !== tb) return tb - ta;
+      var ua = a.updated_at ? Date.parse(a.updated_at) : NaN;
+      var ub = b.updated_at ? Date.parse(b.updated_at) : NaN;
+      var ca = a.created_at ? Date.parse(a.created_at) : NaN;
+      var cb = b.created_at ? Date.parse(b.created_at) : NaN;
+      var sa = !isNaN(ua) ? ua : ca;
+      var sb2 = !isNaN(ub) ? ub : cb;
+      if (!isNaN(sa) && !isNaN(sb2) && sa !== sb2) return sb2 - sa;
       return String(b.id || '').localeCompare(String(a.id || ''));
     });
+  }
+
+  function caseDateLabel(row) {
+    var u = row.updated_at;
+    var c = row.created_at;
+    if (u && c && String(u) !== String(c)) {
+      return escapeHtml(T('dash_updated')) + ' ' + escapeHtml(fmtDate(u));
+    }
+    return escapeHtml(T('dash_created')) + ' ' + escapeHtml(fmtDate(u || c));
   }
 
   function applyNav() {
@@ -165,43 +271,70 @@
     document.getElementById('share-close').textContent = T('dash_close');
     document.getElementById('share-close').onclick = function () { document.getElementById('share-overlay').classList.remove('open'); };
     document.title = T('nav_dashboard') + ' — BusinessKlar';
+    document.getElementById('el-login').textContent = T('dash_gate_title');
+    document.getElementById('el-logd').textContent = T('dash_gate_intro');
+    var epw = document.getElementById('el-pw');
+    if (epw) epw.textContent = PW_LBL[window.BK_SAT.getLang()] || PW_LBL.en;
+    document.getElementById('nav-dash').href = window.BK_SAT.withLang('dashboard.html');
   }
 
-  (async function () {
-    applyNav();
-    var gate = document.getElementById('gate');
-    var main = document.getElementById('main');
-    var inner = document.getElementById('gate-inner');
-    var list = document.getElementById('list');
-    try {
-    var u = (await sb.auth.getUser()).data.user;
-    if (!u) {
-      if (gate) gate.style.display = 'block';
-      if (main) main.style.display = 'none';
-      if (inner) {
-        inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.2rem;margin-bottom:12px">' + escapeHtml(T('dash_gate_title')) + '</h1>' +
-          '<p>' + escapeHtml(T('dash_gate_text')) + '</p>' +
-          '<a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '">' + escapeHtml(T('dash_gate_link')) + '</a>';
-      }
-      return;
-    }
-    if (gate) gate.style.display = 'none';
-    if (main) main.style.display = 'block';
-    var nloBtn = document.getElementById('nav-logout');
-    if (nloBtn) {
-      nloBtn.style.display = 'inline-flex';
-      nloBtn.onclick = async function () {
-        await sb.auth.signOut({ scope: 'global' });
-        window.location.href = window.BK_SAT.withLang('index.html');
-      };
-    }
-    var wEl = document.getElementById('welcome');
-    var wsEl = document.getElementById('welcome-sub');
-    if (wEl) wEl.textContent = T('dash_hello') + (u.email ? ', ' + u.email.split('@')[0] : '');
-    if (wsEl) wsEl.textContent = T('dash_welcome_sub');
-
-    var q = await sb.from('business_cases').select('*').eq('profile_id', u.id);
+  function bindCaseListHandlers(list, u) {
     if (!list) return;
+    list.querySelectorAll('.btn-open-dash').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-id');
+        try { sessionStorage.setItem('bk_open_case_id', id); } catch (e) {}
+        window.location.href = window.BK_SAT.withLang('index.html');
+      });
+    });
+    list.querySelectorAll('.btn-pdf-dash').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-id');
+        try {
+          sessionStorage.setItem('bk_open_case_id', id);
+          sessionStorage.setItem('bk_pdf_request', '1');
+        } catch (e) {}
+        window.location.href = window.BK_SAT.withLang('index.html');
+      });
+    });
+    list.querySelectorAll('.btn-share').forEach(function (btn) {
+      btn.addEventListener('click', async function () {
+        var id = btn.getAttribute('data-id');
+        var tok = await ensureTokenForCase(id, u.id);
+        if (!tok) {
+          dashToast(T('dash_share_fail'));
+          return;
+        }
+        openShareDialog(shareUrlClean(tok));
+      });
+    });
+    list.querySelectorAll('.btn-del').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var id = btn.getAttribute('data-id');
+        confirmDialog(T('dash_confirm_del_title'), async function () {
+          var del = await sb.from('business_cases').delete().eq('id', id).eq('profile_id', u.id);
+          if (del.error) {
+            dashToast(T('dash_del_fail'));
+            return;
+          }
+          var card = btn.closest('.card');
+          if (card) card.remove();
+          if (!list.querySelector('.card')) {
+            list.innerHTML = '<div class="empty"><div class="empty-icon" aria-hidden="true">📊</div>' +
+              '<strong style="color:var(--text);font-size:17px;display:block;margin-bottom:8px">' + escapeHtml(T('dash_empty_title')) + '</strong>' +
+              escapeHtml(T('dash_empty_body')) +
+              '<a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '">' + escapeHtml(T('dash_empty_link')) + '</a></div>';
+          }
+        });
+      });
+    });
+  }
+
+  async function loadDashboardCases(u) {
+    var list = document.getElementById('list');
+    if (!list) return;
+    list.innerHTML = '<div class="empty">' + escapeHtml(T('dash_loading')) + '</div>';
+    var q = await sb.from('business_cases').select('*').eq('profile_id', u.id);
     if (q.error) {
       list.innerHTML = '<div class="empty">' + escapeHtml(T('dash_load_err')) + '</div>';
       return;
@@ -214,16 +347,14 @@
         '<a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '">' + escapeHtml(T('dash_empty_link')) + '</a></div>';
       return;
     }
-
-    var idx = window.BK_SAT.withLang('index.html');
     list.innerHTML = rows.map(function (row) {
       var id = row.id;
       var title = caseTitle(row);
-      var dt = fmtDate(row.created_at);
+      var dtLine = caseDateLabel(row);
       var st = caseStatus(row);
       return '<div class="card" data-case-id="' + id + '">' +
         '<h3>' + escapeHtml(title) + '</h3>' +
-        '<div class="meta">' + escapeHtml(T('dash_created')) + ' ' + escapeHtml(dt) + '</div>' +
+        '<div class="meta">' + dtLine + '</div>' +
         '<div class="status-pill">' + escapeHtml(st) + '</div>' +
         '<div class="row-btns">' +
         '<button type="button" class="btn-open-dash" data-id="' + id + '">' + escapeHtml(T('dash_open')) + '</button>' +
@@ -232,57 +363,79 @@
         '<button type="button" class="danger btn-del" data-id="' + id + '">' + escapeHtml(T('dash_delete')) + '</button>' +
         '</div></div>';
     }).join('');
+    bindCaseListHandlers(list, u);
+  }
 
-    list.querySelectorAll('.btn-open-dash').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var id = btn.getAttribute('data-id');
+  function renderAuthUI() {
+    refreshPageAuthState();
+  }
+  function refreshPageAuthState() {
+    if (typeof BK_AUTH === 'undefined') return;
+    (async function () {
+      var u = await BK_AUTH.getCurrentUser(sb);
+      var main = document.getElementById('main');
+      if (u && main && main.style.display !== 'none') {
+        await loadDashboardCases(u);
+      }
+    })();
+  }
+  if (typeof BK_AUTH !== 'undefined') {
+    window.addEventListener(BK_AUTH.EVENT_NAME, function (e) {
+      var d = e.detail || {};
+      if (d.event === 'TOKEN_REFRESHED') return;
+      renderAuthUI();
+    });
+  }
+
+  (async function () {
+    applyNav();
+    var loading = document.getElementById('dash-loading');
+    var gate = document.getElementById('gate');
+    var main = document.getElementById('main');
+    var inner = document.getElementById('gate-inner');
+    var list = document.getElementById('list');
+    try {
+    if (loading) {
+      loading.textContent = T('dash_loading');
+      loading.style.display = 'block';
+    }
+    var u = (await sb.auth.getUser()).data.user;
+    if (loading) loading.style.display = 'none';
+    if (!u) {
+      if (gate) gate.style.display = 'block';
+      if (main) main.style.display = 'none';
+      if (inner) {
+        inner.innerHTML = '<h1 style="color:var(--gold);font-size:1.2rem;margin-bottom:12px">' + escapeHtml(T('dash_gate_title')) + '</h1>' +
+          '<p style="color:var(--muted);font-size:14px;margin-bottom:18px;line-height:1.5">' + escapeHtml(T('dash_gate_intro')) + '</p>' +
+          '<button type="button" class="empty a" style="border:none;cursor:pointer;font-family:inherit" id="btn-open-auth">' + escapeHtml(T('authlogin')) + ' / ' + escapeHtml(T('authreg')) + '</button>' +
+          '<p style="margin-top:16px;font-size:13px;color:var(--muted)"><a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '" style="color:var(--gold)">' + escapeHtml(T('dash_gate_link')) + '</a></p>';
+        var boa = document.getElementById('btn-open-auth');
+        if (boa) boa.onclick = function () { document.getElementById('auth-modal').classList.remove('hidden'); };
+      }
+      if (typeof window.BK_AUTH !== 'undefined') {
+        window.BK_AUTH.bindAuthModal({ sb: sb, tx: T, mode: 'dashboard' });
+      }
+      return;
+    }
+    if (gate) gate.style.display = 'none';
+    if (main) main.style.display = 'block';
+    var nloBtn = document.getElementById('nav-logout');
+    if (nloBtn) {
+      nloBtn.style.display = 'inline-flex';
+      nloBtn.onclick = async function () {
         try {
-          sessionStorage.setItem('bk_open_case_id', id);
+          if (typeof BK_AUTH !== 'undefined') await BK_AUTH.logout(sb);
+          else await sb.auth.signOut({ scope: 'global' });
         } catch (e) {}
         window.location.href = window.BK_SAT.withLang('index.html');
-      });
-    });
+      };
+    }
+    var wEl = document.getElementById('welcome');
+    var wsEl = document.getElementById('welcome-sub');
+    if (wEl) wEl.textContent = T('dash_hello') + (u.email ? ', ' + u.email.split('@')[0] : '');
+    if (wsEl) wsEl.textContent = T('dash_welcome_sub');
 
-    list.querySelectorAll('.btn-pdf-dash').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var id = btn.getAttribute('data-id');
-        try {
-          sessionStorage.setItem('bk_open_case_id', id);
-          sessionStorage.setItem('bk_pdf_request', '1');
-        } catch (e) {}
-        window.location.href = window.BK_SAT.withLang('index.html');
-      });
-    });
-
-    list.querySelectorAll('.btn-share').forEach(function (btn) {
-      btn.addEventListener('click', async function () {
-        var id = btn.getAttribute('data-id');
-        var tok = await ensureTokenForCase(id, u.id);
-        if (!tok) {
-          alert(T('dash_share_fail'));
-          return;
-        }
-        openShareDialog(shareUrlClean(tok));
-      });
-    });
-
-    list.querySelectorAll('.btn-del').forEach(function (btn) {
-      btn.addEventListener('click', async function () {
-        var id = btn.getAttribute('data-id');
-        if (!confirm(T('dash_del_confirm'))) return;
-        var del = await sb.from('business_cases').delete().eq('id', id).eq('profile_id', u.id);
-        if (del.error) {
-          alert(T('dash_del_fail'));
-          return;
-        }
-        btn.closest('.card').remove();
-        if (!list.querySelector('.card')) {
-          list.innerHTML = '<div class="empty"><div class="empty-icon" aria-hidden="true">📊</div>' +
-            '<strong style="color:var(--text);font-size:17px;display:block;margin-bottom:8px">' + escapeHtml(T('dash_empty_title')) + '</strong>' +
-            '<a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '">' + escapeHtml(T('dash_empty_link')) + '</a></div>';
-        }
-      });
-    });
+    await loadDashboardCases(u);
     } catch (e) {
       if (gate) gate.style.display = 'block';
       if (main) main.style.display = 'none';
