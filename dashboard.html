@@ -124,7 +124,7 @@
       <p id="el-logd" style="font-size:13px;color:var(--muted);margin-bottom:12px">—</p>
       <p id="auth-forgot-hint" style="display:none;font-size:13px;color:var(--muted);margin-bottom:8px"></p>
       <p id="auth-err"></p>
-      <div class="modal-fld"><label>Email</label><input class="input-field" id="auth-email" type="email" autocomplete="email"></div>
+      <div class="modal-fld"><label id="auth-email-label" for="auth-email">Email</label><input class="input-field" id="auth-email" type="email" autocomplete="email"></div>
       <div class="modal-fld" id="auth-pw-wrap"><label id="el-pw">—</label><input class="input-field" id="auth-password" type="password" autocomplete="current-password"></div>
       <p id="auth-forgot-wrap" style="margin:8px 0 0;font-size:13px">
         <button type="button" class="link-btn" id="auth-forgot-link">—</button>
@@ -410,7 +410,10 @@
           '<button type="button" class="empty a" style="border:none;cursor:pointer;font-family:inherit" id="btn-open-auth">' + escapeHtml(T('authlogin')) + ' / ' + escapeHtml(T('authreg')) + '</button>' +
           '<p style="margin-top:16px;font-size:13px;color:var(--muted)"><a href="' + escapeHtml(window.BK_SAT.withLang('index.html')) + '" style="color:var(--gold)">' + escapeHtml(T('dash_gate_link')) + '</a></p>';
         var boa = document.getElementById('btn-open-auth');
-        if (boa) boa.onclick = function () { document.getElementById('auth-modal').classList.remove('hidden'); };
+        if (boa) boa.onclick = function () {
+          document.getElementById('auth-modal').classList.remove('hidden');
+          if (typeof window.BK_AUTH_SET_MODE === 'function') window.BK_AUTH_SET_MODE(window._bkAuthMode || 'login');
+        };
       }
       if (typeof window.BK_AUTH !== 'undefined') {
         window.BK_AUTH.bindAuthModal({ sb: sb, tx: T, mode: 'dashboard' });

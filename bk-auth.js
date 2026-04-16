@@ -224,10 +224,23 @@
         forgotHint.textContent = isForgot ? tx('auth_forgot_hint') : '';
       }
       if (tLogin && tReg && !isForgot) {
+        tLogin.textContent = tx('authtablogin');
+        tReg.textContent = tx('authtabreg');
         tLogin.classList.toggle('active', modeName === 'login');
         tReg.classList.toggle('active', modeName === 'register');
         tLogin.setAttribute('aria-selected', modeName === 'login' ? 'true' : 'false');
         tReg.setAttribute('aria-selected', modeName === 'register' ? 'true' : 'false');
+      }
+      if (forgotLink) forgotLink.textContent = tx('auth_forgot_link');
+      if (backLogin) backLogin.textContent = tx('auth_back_login');
+      var guestBtn = document.getElementById('el-guest');
+      if (guestBtn) guestBtn.textContent = tx('guestclose');
+      var emailLbl = document.getElementById('auth-email-label');
+      if (emailLbl) emailLbl.textContent = tx('auth_email_label');
+      var emailInp = document.getElementById('auth-email');
+      if (emailInp) {
+        var ph = tx('auth_email_ph');
+        if (ph && ph !== 'auth_email_ph') emailInp.placeholder = ph;
       }
       if (btn) {
         if (isForgot) btn.textContent = tx('auth_forgot_mode');

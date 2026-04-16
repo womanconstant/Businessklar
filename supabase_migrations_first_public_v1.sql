@@ -31,6 +31,10 @@ create policy "support_requests_insert_public"
     and (user_id is null or user_id = auth.uid())
   );
 
+-- Explicit INSERT for API roles (table may exist without default grants depending on migration order)
+grant insert on table public.support_requests to anon;
+grant insert on table public.support_requests to authenticated;
+
 -- No client SELECT (operators use Supabase dashboard / service role)
 
 -- ---------------------------------------------------------------------------

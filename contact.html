@@ -143,7 +143,8 @@
       source_page: 'contact.html'
     };
     try {
-      var ins = await sb.from('support_requests').insert([row]).select();
+      /* insert without .select(): no public SELECT on support_requests; returning rows would require a SELECT policy */
+      var ins = await sb.from('support_requests').insert([row]);
       if (ins.error) {
         msg.className = 'err';
         msg.style.display = 'block';

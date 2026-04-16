@@ -2478,7 +2478,7 @@
       <p id="el-logd" style="font-size:13px;color:var(--text-muted);margin-bottom:12px">Сохранить расчёт в облаке</p>
       <p id="auth-forgot-hint" style="display:none;font-size:13px;color:var(--text-muted);margin-bottom:8px"></p>
       <p id="auth-err"></p>
-      <div class="modal-fld"><label>Email</label><input class="input-field" id="auth-email" type="email" placeholder="your@email.de" autocomplete="email">
+      <div class="modal-fld"><label id="auth-email-label" for="auth-email">Email</label><input class="input-field" id="auth-email" type="email" placeholder="your@email.de" autocomplete="email">
       </div>
       <div class="modal-fld" id="auth-pw-wrap"><label id="el-pw">Пароль</label><input class="input-field" id="auth-password" type="password" autocomplete="current-password"></div>
       <p id="auth-forgot-wrap" style="margin:8px 0 0;font-size:13px"><button type="button" class="link-btn" id="auth-forgot-link">Passwort vergessen?</button>
@@ -2619,6 +2619,8 @@
       authreg: 'Registrieren',
       guestclose: 'Schlie\u00dfen',
       authmbtn: 'Fortfahren',
+      auth_email_label: 'E-Mail',
+      auth_email_ph: 'ihre@email.de',
       flashsavefail: 'Speichern fehlgeschlagen. Bitte erneut versuchen.',
       flashsaveretry: 'Speichern fehlgeschlagen. Bericht erneut \u00f6ffnen und erneut speichern.',
       flashsaveafter: 'Speichern nach dem Login fehlgeschlagen.',
@@ -2772,6 +2774,8 @@
       authreg: '\u0417\u0430\u0440\u0435\u0433\u0438\u0441\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u0442\u044c\u0441\u044f',
       guestclose: '\u0417\u0430\u043a\u0440\u044b\u0442\u044c',
       authmbtn: '\u0414\u0430\u043b\u0435\u0435',
+      auth_email_label: 'Email',
+      auth_email_ph: '\u0432\u0430\u0448@email.ru',
       flashsavefail: '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c. \u041f\u043e\u043f\u0440\u043e\u0431\u0443\u0439\u0442\u0435 \u0435\u0449\u0451 \u0440\u0430\u0437.',
       flashsaveretry: '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c. \u041e\u0442\u043a\u0440\u043e\u0439\u0442\u0435 \u043e\u0442\u0447\u0451\u0442 \u0438 \u0441\u043d\u043e\u0432\u0430 \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c.',
       flashsaveafter: '\u041d\u0435 \u0443\u0434\u0430\u043b\u043e\u0441\u044c \u0441\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u043f\u043e\u0441\u043b\u0435 \u0432\u0445\u043e\u0434\u0430.',
@@ -2910,6 +2914,8 @@
       authreg: 'Create account',
       guestclose: 'Close',
       authmbtn: 'Continue',
+      auth_email_label: 'Email',
+      auth_email_ph: 'you@example.com',
       flashsavefail: 'Could not save. Please try again.',
       flashsaveretry: 'Could not save. Open the report and tap save again.',
       flashsaveafter: 'Could not save after sign-in.',
