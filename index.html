@@ -3054,6 +3054,14 @@
 
     function detectLang() {
       try {
+        var urlLang = new URLSearchParams(window.location.search).get('lang');
+        var normalizedUrlLang = urlLang == null ? '' : String(urlLang).toLowerCase().substring(0, 2);
+        if (SUPPORTED_UI_LANGS.indexOf(normalizedUrlLang) >= 0) {
+          localStorage.setItem('bk_lang', normalizedUrlLang);
+          return normalizedUrlLang;
+        }
+      } catch (e) { }
+      try {
         var s = localStorage.getItem('bk_lang');
         if (s) return normalizeUiLang(s);
       } catch (e) { }
