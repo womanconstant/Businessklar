@@ -2522,7 +2522,7 @@
     // ============================================================
     // LANGUAGES
     // ============================================================
-    /** Full locale list kept in code for future; UI shows only these. */
+    /** Full locale list kept in code for future; the switcher shows SUPPORTED_UI_LANGS. */
     var LANGS_ALL = [
       { c: 'de', f: '\uD83C\uDDE9\uD83C\uDDEA', n: 'Deutsch', nat: 'Deutsch' },
       { c: 'ru', f: '\uD83C\uDDF7\uD83C\uDDFA', n: 'Russisch', nat: '\u0420\u0443\u0441\u0441\u043a\u0438\u0439' },
@@ -2546,7 +2546,14 @@
       { c: 'vi', f: '\uD83C\uDDFB\uD83C\uDDF3', n: 'Vietnamesisch', nat: 'Ti\u1ebfng Vi\u1ec7t' },
       { c: 'zh', f: '\uD83C\uDDE8\uD83C\uDDF3', n: 'Chinesisch', nat: '\u4e2d\u6587' }
     ];
-    var SUPPORTED_UI_LANGS = ['de', 'en', 'ru', 'uk', 'pl', 'ro', 'tr', 'es'];
+
+    // Language model: Russian is the source copy; RU/DE/EN are priority quality languages.
+    // Additional switcher languages stay available and inherit missing strings from English.
+    var SOURCE_UI_LANG = 'ru';
+    var PRIORITY_UI_LANGS = ['ru', 'de', 'en'];
+    var ADDITIONAL_UI_LANGS = ['uk', 'pl', 'ro', 'tr', 'es'];
+    var FALLBACK_UI_LANG = 'en';
+    var SUPPORTED_UI_LANGS = PRIORITY_UI_LANGS.concat(ADDITIONAL_UI_LANGS);
     var LANGS = LANGS_ALL.filter(function (x) { return SUPPORTED_UI_LANGS.indexOf(x.c) >= 0; });
 
     // ============================================================
@@ -3035,12 +3042,16 @@
       zh: { h1: '您在德国创业的<em>注册</em>与计算<strong>全面数字指南</strong>', sub: '在德国<strong>正确开始</strong>业务所需的一切。', cta: '填写问卷 → 获取报告', glosbtn: '\ud83d\udcd6 术语表', badge: '\ud83c\udde9\ud83c\uddea 德国 · 杜塞尔多夫', installhint: '\ud83d\udcf1 可安装为应用', s1lbl: '创业者需要什么', s1h: '在德国的创业者可能需要<em>很多东西</em>', s1d: '填写问卷后，您将收到个性化列表。', promise: '我们不仅提供计算 — 您将看到<strong>为何这种业务形式适合您。</strong>', s2lbl: '我们的目标', s2h: '让您在注册前感到<em>自信</em>', tagline: '业务应该以<strong>清晰</strong>开始。', svtitle: '在德国创办业务', svdesc: '回答问题并获取您的个性化报告。', gld: '所有关键术语均已解释。', discd: '此计算仅供参考，不构成法律建议。', gc1h: '了解义务', gc1: '完整列表', gc2h: '了解权利', gc2: '您应得的权益', gc3h: '不要多付', gc3: '最优结构', gc4h: '避免错误', gc4: '风险处于控制之下', home: '首页', glos: '术语表', surv: '问卷 ►', saved: '已保存', back: '返回', next: '下一步 →', finish: '获取报告', qstep: '步骤', qof: '/', fmo: '每月', fqu: '每季度', fye: '每年', tmust: '必须', trec: '推荐', svlbl: '问卷', rplbl: '您的个人报告', tab1: '登记', tab2: '财务', tab3: '日历', tab4: '保险', disct: '重要：' },
     };
 
-    // Build fallback langs — EN-first base so uk/pl/ro/tr/es never inherit stray DE from TX.de when OVERRIDES omit keys (prevents DE+EN mixing on one screen).
-    var fallbackLangs = ['uk', 'tr', 'ar', 'pl', 'fr', 'es', 'ro', 'it', 'pt', 'bg', 'sr', 'hr', 'cs', 'sk', 'hu', 'fa', 'vi', 'zh'];
+    // Build fallback langs from the full locale list. English stays the base fallback;
+    // locale overrides then replace only the strings that are intentionally localized.
+    var fallbackLangs = LANGS_ALL
+      .map(function (l) { return l.c; })
+      .filter(function (c) { return PRIORITY_UI_LANGS.indexOf(c) < 0; });
     fallbackLangs.forEach(function (c) {
       TX[c] = {};
-      var keys = Object.keys(TX.de);
-      var baseEn = TX.en;
+      var keys = Object.keys(TX.de).concat(Object.keys(TX[FALLBACK_UI_LANG] || {}), Object.keys(TX[SOURCE_UI_LANG] || {}))
+        .filter(function (k, i, a) { return a.indexOf(k) === i; });
+      var baseEn = TX[FALLBACK_UI_LANG];
       keys.forEach(function (k) {
         var v = baseEn[k];
         if (v === undefined || v === '') v = TX.de[k];
